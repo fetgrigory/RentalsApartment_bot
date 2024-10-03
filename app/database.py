@@ -9,11 +9,22 @@ Ending //
 import sqlite3
 
 
+def db_connect():
+    """AI is creating summary for db_connect
+
+    Returns:
+        [type]: [description]
+    """
+
+    # The function returns a connection object to the 'catalog.db' database.
+    return sqlite3.connect('catalog.db')
+
+
 def create_database():
     """AI is creating summary for create_database
     """
-    conn = sqlite3.connect('catalog.db')
-    cursor = conn.cursor()
+    with db_connect() as conn:
+        cursor = conn.cursor()
 # Create the 'catalog' table if it does not exist, defining its structure.
     cursor.execute('''CREATE TABLE IF NOT EXISTS catalog
                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,8 +41,8 @@ def create_database():
 def get_catalog_data():
     """AI is creating summary for get_catalog_data
     """
-    conn = sqlite3.connect('catalog.db')
-    cursor = conn.cursor()
+    with db_connect() as conn:
+        cursor = conn.cursor()
 # Execute a SELECT query to fetch all records from the 'catalog' table.
     cursor.execute("SELECT * FROM catalog")
 # Retrieve all the results from the query.
@@ -46,8 +57,8 @@ def insert_apartment_data(data):
     Args:
         data ([type]): [description]
     """
-    conn = sqlite3.connect('catalog.db')
-    cursor = conn.cursor()
+    with db_connect() as conn:
+        cursor = conn.cursor()
 # Insert a new record into the 'catalog' table using the provided data.
     cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, description, price) VALUES (?, ?, ?, ?, ?, ?)", data)
     conn.commit()

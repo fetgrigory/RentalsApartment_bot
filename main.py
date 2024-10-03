@@ -33,6 +33,9 @@ questions = [
 ]
 # Initialize or open database connection.
 create_database()
+# Making sure that the bot is running
+print('Бот успешно запущен!')
+
 # Handle the /start command to greet the user
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
