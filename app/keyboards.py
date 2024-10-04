@@ -30,8 +30,8 @@ def admin_keyboard():
     Returns:
         [type]: [description]
     """
-    # Create an admin-specific keyboard with a button to add data
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add("Добавить данные")
+    # Create a keyboard for a specific administrator with a button to add data and exit administrator mode
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add("Добавить данные").add("Назад")
     return keyboard
 
 

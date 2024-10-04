@@ -57,6 +57,11 @@ async def admin_panel_handler(message: types.Message):
 async def add_data_handler(message: types.Message):
     USER_DATA.clear()
     await ask_next_question(message)
+# The button to exit the administrator mode
+@dp.message_handler(lambda message: message.text == "Назад")
+async def back_to_main_menu(message: types.Message):
+    keyboard = start_keyboard(message.from_user.id)
+    await message.answer("Вы вернулись в основное меню.", reply_markup=keyboard)
 # Fetch and display apartment listings
 @dp.message_handler(lambda message: message.text == "🛍Каталог")
 async def get_apartment_data_handler(message: types.Message):
