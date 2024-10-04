@@ -114,8 +114,12 @@ async def save_apartment_data(message: types.Message):
 # Retrieve and display the next apartment in the catalog
 async def get_next_apartment_data(message: types.Message):
     data = get_catalog_data()
-    index = USER_DATA.get('apartment_index', 0)
+# If the directory is empty issue a message
+    if not data:
+        await message.answer("Каталог пуст!")
+        return
 
+    index = USER_DATA.get('apartment_index', 0)
     if index < len(data):
         record = data[index]
 
