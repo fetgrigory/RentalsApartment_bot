@@ -53,7 +53,7 @@ async def admin_panel_handler(message: types.Message):
         keyboard = admin_keyboard()
         await message.answer("Добро пожаловать в админ-панель!", reply_markup=keyboard)
 # Start data entry process for a new apartment
-@dp.message_handler(lambda message: message.text == "Добавить данные")
+@dp.message_handler(lambda message: message.text == "➕Добавить данные")
 async def add_data_handler(message: types.Message):
     USER_DATA.clear()
     await ask_next_question(message)
