@@ -34,7 +34,7 @@ CVC/CVV-код: 111 <br />
 # Инструкция по использованию бота:<br />
 1. Необходимо заполнить значения в файле ".env" <br />
 Для получения TOKEN и PAYMENTS_TOKEN нужно вызвать бота @BotFather <br />
-Для получения ADMIN_ID нужно вызвать бота @getmyid_bot <br />
+Для получения ADMIN_ID нужно вызвать бота [@getmyid_bot](https://t.me/getmyid_bot) <br />
 2. Запустите бота при помощи команнды "python main.py" <br />
 # Применяемые библиотеки:<br />
 aiogram            2.14.3 <br />
