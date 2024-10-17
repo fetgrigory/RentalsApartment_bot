@@ -33,9 +33,13 @@ CVC/CVV-код: 111 <br />
 Таким образом, данный бот позволяет комфортно и удобно искать и арендовать квартиры, а система оплаты PayMaster обеспечивает безопасные и удобные платежные операции.
 # Инструкция по использованию бота:<br />
 1. Необходимо заполнить значения в файле ".env" <br />
+Пример:
+TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo
+ADMIN_ID=5525270361
+PAYMENTS_TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo
 Для получения TOKEN и PAYMENTS_TOKEN нужно вызвать бота [@BotFather](https://t.me/BotFather) <br />
 Для получения ADMIN_ID нужно вызвать бота [@getmyid_bot](https://t.me/getmyid_bot) <br />
-2. Запустите бота при помощи команнды "python main.py" <br />
+3. Запустите бота при помощи команнды "python main.py" <br />
 # Применяемые библиотеки:<br />
 aiogram            2.14.3 <br />
 python-dotenv  1.0.1 <br />
