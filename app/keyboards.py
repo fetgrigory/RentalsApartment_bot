@@ -67,7 +67,9 @@ def booking_keyboard():
     # Create an InlineKeyboardMarkup for booking options
     keyboard = InlineKeyboardMarkup()
     # Add buttons to modify the number of days and a payment button
-    keyboard.add(InlineKeyboardButton("+1", callback_data="add_days"))
-    keyboard.add(InlineKeyboardButton("-1", callback_data="subtract_days"))
+    keyboard.row(
+        InlineKeyboardButton("-1", callback_data="subtract_days"),
+        InlineKeyboardButton("+1", callback_data="add_days")
+    )
     keyboard.add(InlineKeyboardButton("💳Оплатить", callback_data="pay"))
     return keyboard
