@@ -1,6 +1,6 @@
 # RentalsApartment_bot
 Данный бот представляет собой Telegram-бота, который помогает пользователям арендовать квартиры. Бот имеет две основные функции: администраторская панель и панель пользователя. <br />
-![](https://github.com/user-attachments/assets/a1e4a367-1506-4f7c-8aac-b27c7109bdfd)
+![](https://github.com/user-attachments/assets/a1e4a367-1506-4f7c-8aac-b27c7109bdfd) <br />
 # Администраторская панель:
 ![0](https://github.com/fetgrigory/RentalsApartment_bot/assets/157891679/152adcd0-49fb-48c3-9ffe-b4f9b43a56b3)<br />
 ![202534](https://github.com/user-attachments/assets/3b65fe88-6dc5-4925-a753-3972341ec81b)<br />
