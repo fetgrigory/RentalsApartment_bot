@@ -172,7 +172,7 @@ async def website(message: types.Message):
 
 # Provide contact information
 @dp.message(F.text == '☎️ Контакты')
-async def call(message: types.Message):
+async def contact(message: types.Message):
     await message.answer('Наш телефон: 8-901-133-00-00')
 
 
