@@ -43,6 +43,6 @@ PAYMENTS_TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo<br />
 Для получения ADMIN_ID нужно вызвать бота [@getmyid_bot](https://t.me/getmyid_bot) <br />
 3. Запустите бота при помощи команнды "python main.py" <br />
 ## Применяемые библиотеки:<br />
-aiogram            2.14.3 <br />
+aiogram            3.13.1 <br />
 python-dotenv  1.0.1 <br />
 sqlite3 <br />
