@@ -10,10 +10,11 @@ Ending //
 import os
 import asyncio
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard
@@ -23,10 +24,9 @@ from app.payment import send_invoice, handle_successful_payment
 # Initialize bot and dispatcher in combination with state storage
 load_dotenv()
 
-
 bot = Bot(token=os.getenv('TOKEN'))
 storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+dp = Dispatcher(storage=storage)
 
 
 # States group
@@ -54,7 +54,7 @@ create_database()
 print('Бот успешно запущен!')
 
 
-@dp.message_handler(commands=['start'])
+@dp.message(Command("start"))
 async def start(message: types.Message):
     USER_DATA.clear()
 
@@ -65,7 +65,7 @@ async def start(message: types.Message):
                          parse_mode='html', reply_markup=keyboard)
 
 
-@dp.message_handler(lambda message: message.text == "🛠️Админ-панель")
+@dp.message(F.text == "🛠️Админ-панель")
 async def admin_panel_handler(message: types.Message):
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
         keyboard = admin_keyboard()
@@ -73,41 +73,41 @@ async def admin_panel_handler(message: types.Message):
 
 
 # Start data entry process for a new apartment
-@dp.message_handler(lambda message: message.text == "➕Добавить данные")
-async def add_data_handler(message: types.Message):
-    await AddApartmentState.PHOTO1.set()
+@dp.message(F.text == "➕Добавить данные")
+async def add_data_handler(message: types.Message, state: FSMContext):
+    await state.set_state(AddApartmentState.PHOTO1)
     await message.answer("Загрузите первое фото квартиры:")
 
 
-@dp.message_handler(state=AddApartmentState.PHOTO1, content_types=ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO1, F.content_type == ContentType.PHOTO)
 async def handle_first_photo(message: types.Message, state: FSMContext):
     await state.update_data(photo1=message.photo[-1].file_id)
-    await AddApartmentState.next()
+    await state.set_state(AddApartmentState.PHOTO2)
     await message.answer("Загрузите второе фото квартиры:")
 
 
-@dp.message_handler(state=AddApartmentState.PHOTO2, content_types=ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO2, F.content_type == ContentType.PHOTO)
 async def handle_second_photo(message: types.Message, state: FSMContext):
     await state.update_data(photo2=message.photo[-1].file_id)
-    await AddApartmentState.next()
+    await state.set_state(AddApartmentState.PHOTO3)
     await message.answer("Загрузите третье фото квартиры:")
 
 
-@dp.message_handler(state=AddApartmentState.PHOTO3, content_types=ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO3, F.content_type == ContentType.PHOTO)
 async def handle_third_photo(message: types.Message, state: FSMContext):
     await state.update_data(photo3=message.photo[-1].file_id)
-    await AddApartmentState.next()
+    await state.set_state(AddApartmentState.DESCRIPTION)
     await message.answer("Введите описание квартиры:")
 
 
-@dp.message_handler(state=AddApartmentState.DESCRIPTION)
+@dp.message(AddApartmentState.DESCRIPTION)
 async def handle_description(message: types.Message, state: FSMContext):
     await state.update_data(description=message.text)
-    await AddApartmentState.next()
+    await state.set_state(AddApartmentState.PRICE)
     await message.answer("Введите цену:")
 
 
-@dp.message_handler(state=AddApartmentState.PRICE)
+@dp.message(AddApartmentState.PRICE)
 async def handle_price(message: types.Message, state: FSMContext):
     await state.update_data(price=message.text)
 
@@ -124,31 +124,31 @@ async def handle_price(message: types.Message, state: FSMContext):
     ]
     insert_apartment_data(apartment_data)
 
-    await state.finish()
+    await state.clear()
     await message.answer("Данные о квартире успешно сохранены!")
 
 
 # The button to exit the administrator mode
-@dp.message_handler(lambda message: message.text == "⤴️Назад")
+@dp.message(F.text == "⤴️Назад")
 async def back_to_main_menu(message: types.Message):
     keyboard = start_keyboard(message.from_user.id)
     await message.answer("Вы вернулись в основное меню.", reply_markup=keyboard)
 
 
 # Fetch and display apartment listings
-@dp.message_handler(lambda message: message.text == "🛍Каталог")
+@dp.message(F.text == "🛍Каталог")
 async def get_apartment_data_handler(message: types.Message):
     await get_next_apartment_data(message)
 
 
 #  Inform user about website availability
-@dp.message_handler(text='🌐 Наш сайт')
+@dp.message(F.text == '🌐 Наш сайт')
 async def website(message: types.Message):
     await message.answer('Сожалею, но у нас пока нет сайта')
 
 
 # Provide contact information
-@dp.message_handler(text='☎️ Контакты')
+@dp.message(F.text == '☎️ Контакты')
 async def call(message: types.Message):
     await message.answer('Наш телефон: 8-901-133-00-00')
 
@@ -164,10 +164,10 @@ async def get_next_apartment_data(message: types.Message):
     if index < len(data):
         record = data[index]
 
-        photos_info = []
-        for i in range(2, 5):
-            photo_id = record[i]
-            photos_info.append(types.InputMediaPhoto(media=photo_id, caption=f"Фото квартиры"))
+        photos_info = [
+            types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
+            for i in range(2, 5)
+        ]
 
         description = record[5]
         price = record[6]
@@ -181,19 +181,15 @@ async def get_next_apartment_data(message: types.Message):
 
 
 # Navigate to the next or previous apartment details
-@dp.callback_query_handler(text="add")
+@dp.callback_query(F.data == "add")
 async def add_button(callback_query: types.CallbackQuery):
     USER_DATA['added_button'] = True
     keyboard = booking_keyboard()
-    await bot.edit_message_reply_markup(
-        chat_id=callback_query.message.chat.id,
-        message_id=callback_query.message.message_id,
-        reply_markup=keyboard
-    )
+    await callback_query.message.edit_reply_markup(reply_markup=keyboard)
 
 
 # Show the previous apartment
-@dp.callback_query_handler(text="prev")
+@dp.callback_query(F.data == "prev")
 async def prev_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -202,7 +198,7 @@ async def prev_apartment(callback_query: types.CallbackQuery):
 
 
 # Show the next apartment
-@dp.callback_query_handler(text="next")
+@dp.callback_query(F.data == "next")
 async def next_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -211,7 +207,7 @@ async def next_apartment(callback_query: types.CallbackQuery):
 
 
 # Increase the rental period and calculate the total price
-@dp.callback_query_handler(text="add_days")
+@dp.callback_query(F.data == "add_days")
 async def add_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -221,16 +217,10 @@ async def add_days(callback_query: types.CallbackQuery):
 
         text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
         keyboard = booking_keyboard()
-        await bot.edit_message_text(
-            chat_id=callback_query.message.chat.id,
-            message_id=callback_query.message.message_id,
-            text=text,
-            reply_markup=keyboard
-        )
+        await callback_query.message.edit_text(text=text, reply_markup=keyboard)
 
-# Decrease the rental period but ensure it's at least 1 day
 
-@dp.callback_query_handler(text="subtract_days")
+@dp.callback_query(F.data == "subtract_days")
 async def subtract_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -240,31 +230,25 @@ async def subtract_days(callback_query: types.CallbackQuery):
 
         text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
         keyboard = booking_keyboard()
-        await bot.edit_message_text(
-            chat_id=callback_query.message.chat.id,
-            message_id=callback_query.message.message_id,
-            text=text,
-            reply_markup=keyboard
-        )
+        await callback_query.message.edit_text(text=text, reply_markup=keyboard)
 
 
 # Handle the payment process for renting the apartment
-@dp.callback_query_handler(text="pay")
+@dp.callback_query(F.data == "pay")
 async def pay_for_apartment(callback_query: types.CallbackQuery):
     await send_invoice(bot, callback_query, USER_DATA)
 
 
 # Confirm pre-checkout queries
-@dp.pre_checkout_query_handler(lambda query: True)
+@dp.pre_checkout_query()
 async def pre_checkout_query(pre_checkout_q: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_q.id, ok=True)
 
 
 # Handle successful payment confirmation
-@dp.message_handler(content_types=ContentType.SUCCESSFUL_PAYMENT)
+@dp.message(F.content_type == ContentType.SUCCESSFUL_PAYMENT)
 async def successful_payment(message: types.Message):
     await handle_successful_payment(bot, message)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(dp.start_polling())
+    asyncio.run(dp.start_polling(bot))
