@@ -9,7 +9,8 @@ Ending //
 import os
 from aiogram import Bot, types
 from aiogram.types import LabeledPrice
-from app.database import get_catalog_data
+# from app.database import get_catalog_data
+from app.PostgreSQL import get_catalog_data
 
 
 async def send_invoice(bot: Bot, callback_query: types.CallbackQuery, user_data: dict):
