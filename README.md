@@ -48,6 +48,12 @@ ADMIN_ID=5525270361<br />
 PAYMENTS_TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo<br />
 Для получения TOKEN и PAYMENTS_TOKEN нужно вызвать бота [@BotFather](https://t.me/BotFather) <br />
 Для получения ADMIN_ID нужно вызвать бота [@getmyid_bot](https://t.me/getmyid_bot) <br />
+2. Для подключения базе данных на PostgreSQL нужно в файле ".env" заполнить даные: <br />
+HOST =""
+DBNAME =""
+USER =""
+PASSWORD =""
+PORT = ""
 3. Запустите бота при помощи команнды "python main.py" <br />
 ## Применяемые библиотеки:<br />
 aiogram            3.13.1 <br />
