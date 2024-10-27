@@ -18,8 +18,8 @@ from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard
-# from app.database import create_database, get_catalog_data, insert_apartment_data
-from app.PostgreSQL import create_database, get_catalog_data, insert_apartment_data
+# from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data
+from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
 from app.payment import send_invoice, handle_successful_payment
 
 # Initialize bot and dispatcher in combination with state storage
