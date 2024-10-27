@@ -42,20 +42,22 @@ CVC/CVV-код: 111 <br />
 Таким образом, данный бот позволяет комфортно и удобно искать и арендовать квартиры, а система оплаты PayMaster обеспечивает безопасные и удобные платежные операции.
 ## Инструкция по использованию бота:<br />
 1. Необходимо заполнить значения в файле ".env" <br />
-Пример заполнения:<br />
+ Пример заполнения:<br />
 TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo<br />
 ADMIN_ID=5525270361<br />
 PAYMENTS_TOKEN=5771881671:AAFMRQNCMz6C73-NrI0f0i9kfOC-eHvvkAo<br />
 Для получения TOKEN и PAYMENTS_TOKEN нужно вызвать бота [@BotFather](https://t.me/BotFather) <br />
 Для получения ADMIN_ID нужно вызвать бота [@getmyid_bot](https://t.me/getmyid_bot) <br />
 2. Для подключения базе данных на PostgreSQL нужно в файле ".env" заполнить даные: <br />
-HOST =""<br />
-DBNAME =""<br />
-USER =""<br />
-PASSWORD =""<br />
-PORT = ""<br />
+ Пример заполнения: <br />
+HOST ="127.0.0.1."<br />
+DBNAME ="example_db"<br />
+USER ="admin_user"<br />
+PASSWORD ="strongpassword"<br />
+PORT = "3245"<br />
 3. Запустите бота при помощи команнды "python main.py" <br />
 ## Применяемые библиотеки:<br />
 aiogram            3.13.1 <br />
-python-dotenv  1.0.1 <br />
+python-dotenv      1.0.1 <br />
 sqlite3 <br />
+psycopg2  2.9.10 <br />
