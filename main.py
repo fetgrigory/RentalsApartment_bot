@@ -15,11 +15,11 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, ContentType
+from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard
-# from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data
-from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
+from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data
+# from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
 from app.payment import send_invoice, handle_successful_payment
 
 # Initialize bot and dispatcher in combination with state storage
@@ -311,6 +311,18 @@ async def pre_checkout_query(pre_checkout_q: types.PreCheckoutQuery):
 @dp.message(F.content_type == ContentType.SUCCESSFUL_PAYMENT)
 async def successful_payment(message: types.Message):
     await handle_successful_payment(bot, message)
+
+
+# Add a new handler for deleting an apartment
+@dp.callback_query(F.data.startswith("delete_"))
+async def delete_apartment(callback_query: types.CallbackQuery):
+    index = int(callback_query.data.split("_")[1])
+    # Delete an apartment from the database
+    delete_apartment_data(index)
+    # Update the catalog
+    await show_editing_apartment_data(callback_query.message, edit_mode=True)
+    await callback_query.answer("Квартира удалена!")
+
 
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
