@@ -25,17 +25,16 @@ def create_database():
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-# Create the 'catalog' table if it does not exist, defining its structure.
-    cursor.execute('''CREATE TABLE IF NOT EXISTS catalog
-                   (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   date VARCHAR(50),
-                   photo1 VARCHAR(50),
-                   photo2 VARCHAR(50),
-                   photo3 VARCHAR(50),
-                   description VARCHAR(50),
-                   price VARCHAR(50))''')
-    conn.commit()
-    conn.close()
+        # Create the 'catalog' table if it does not exist, defining its structure.
+        cursor.execute('''CREATE TABLE IF NOT EXISTS catalog
+                      (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      date VARCHAR(50),
+                      photo1 VARCHAR(50),
+                      photo2 VARCHAR(50),
+                      photo3 VARCHAR(50),
+                      description VARCHAR(50),
+                      price VARCHAR(50))''')
+        conn.commit()
 
 
 def get_catalog_data():
@@ -43,11 +42,10 @@ def get_catalog_data():
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-# Execute a SELECT query to fetch all records from the 'catalog' table.
-    cursor.execute("SELECT * FROM catalog")
-# Retrieve all the results from the query.
-    data = cursor.fetchall()
-    conn.close()
+        # Execute a SELECT query to fetch all records from the 'catalog' table.
+        cursor.execute("SELECT * FROM catalog")
+        # Retrieve all the results from the query.
+        data = cursor.fetchall()
     return data
 
 
@@ -59,7 +57,38 @@ def insert_apartment_data(data):
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-# Insert a new record into the 'catalog' table using the provided data.
-    cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, description, price) VALUES (?, ?, ?, ?, ?, ?)", data)
-    conn.commit()
-    conn.close()
+        # Insert a new record into the 'catalog' table using the provided data.
+        cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, description, price) VALUES (?, ?, ?, ?, ?, ?)", data)
+        conn.commit()
+
+
+def delete_apartment_data(index):
+    """AI is creating summary for delete_apartment_data
+
+    Args:
+        index ([type]): [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM catalog WHERE id = ?", (index + 1,))
+        conn.commit()
+
+
+def update_apartment_data(index, photo1, photo2, photo3, description, price):
+    """AI is creating summary for update_apartment_data
+
+    Args:
+        index ([type]): [description]
+        photo1 ([type]): [description]
+        photo2 ([type]): [description]
+        photo3 ([type]): [description]
+        description ([type]): [description]
+        price ([type]): [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE catalog SET photo1=?, photo2=?, photo3=?, description=?, price=? WHERE id=?",
+            (photo1, photo2, photo3, description, price, index + 1)
+        )
+        conn.commit()
