@@ -17,7 +17,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
-from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard
+from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
 from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data
 # from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
 from app.payment import send_invoice, handle_successful_payment
@@ -322,6 +322,13 @@ async def delete_apartment(callback_query: types.CallbackQuery):
     # Update the catalog
     await show_editing_apartment_data(callback_query.message, edit_mode=True)
     await callback_query.answer("Квартира удалена!")
+
+@dp.callback_query(F.data.startswith("edit_"))
+async def edit_apartment(callback_query: types.CallbackQuery):
+    index = int(callback_query.data.split("_")[1])
+    # Display the keyboard for editing specific fields
+    keyboard = edit_apartment_keyboard(index)
+    await callback_query.message.edit_reply_markup(reply_markup=keyboard)
 
 
 if __name__ == '__main__':

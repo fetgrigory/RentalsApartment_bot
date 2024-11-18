@@ -67,6 +67,21 @@ def catalog_navigation_edit_keyboard(index, total_records):
 
     return keyboard.as_markup()
 
+def edit_apartment_keyboard(index):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить первое фото', callback_data=f'update_photo1_{index}'),
+        types.InlineKeyboardButton(text='Обновить второе фото', callback_data=f'update_photo2_{index}')
+    )
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить третье фото', callback_data=f'update_photo3_{index}'),
+        types.InlineKeyboardButton(text='Обновить описание', callback_data=f'update_description_{index}')
+    )
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить цену', callback_data=f'update_price_{index}')
+    )
+    return keyboard.as_markup()
+
 
 def booking_keyboard():
     keyboard = InlineKeyboardBuilder()
