@@ -17,7 +17,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, ContentType
 import datetime
-from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard
+from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard
 # from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data
 from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
 from app.payment import send_invoice, handle_successful_payment
@@ -202,6 +202,44 @@ async def get_next_apartment_data(message: types.Message):
         await bot.send_media_group(message.chat.id, media=photos_info)
         await message.answer(message_text, reply_markup=keyboard)
         USER_DATA['apartment_index'] = index
+
+
+# Displays apartment data with an optional edit mode.
+async def show_editing_apartment_data(message: types.Message, edit_mode=False):
+    data = get_catalog_data()
+    if not data:
+        await message.answer("Каталог пуст!")
+        return
+
+    index = USER_DATA.get('apartment_index', 0)
+    if index < len(data):
+        record = data[index]
+
+        photos_info = [
+            types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
+            for i in range(2, 5)
+        ]
+
+        description = record[5]
+        price = record[6]
+
+        message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
+
+        # Keyboard selection depending on the mode
+        if edit_mode:
+            keyboard = catalog_navigation_edit_keyboard(index, len(data))
+        else:
+            keyboard = catalog_navigation_keyboard(index, len(data))
+
+        await bot.send_media_group(message.chat.id, media=photos_info)
+        await message.answer(message_text, reply_markup=keyboard)
+        USER_DATA['apartment_index'] = index
+
+
+# Handler for editing the catalog
+@dp.message(F.text == "✏️Редактировать каталог")
+async def get_apartment_data_edit_handler(message: types.Message):
+    await show_editing_apartment_data(message, edit_mode=True)
 
 
 # Navigate to the next or previous apartment details

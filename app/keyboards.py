@@ -35,6 +35,7 @@ def admin_keyboard():
     # Create a keyboard for a specific administrator with a button to add data and exit administrator mode
     keyboard = ReplyKeyboardBuilder()
     keyboard.row(types.KeyboardButton(text="➕Добавить данные"))
+    keyboard.row(types.KeyboardButton(text="✏️Редактировать каталог"))
     keyboard.row(types.KeyboardButton(text="⤴️Назад"))
     return keyboard.as_markup(resize_keyboard=True)
 
@@ -52,6 +53,16 @@ def catalog_navigation_keyboard(index, total_records):
 
     return keyboard.as_markup()
 
+def catalog_navigation_edit_keyboard(index, total_records):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(types.InlineKeyboardButton(text="Выбрать", callback_data="add"))
+    if index > 0:
+        keyboard.row(types.InlineKeyboardButton(text="◀ Пред.", callback_data="prev"))
+    if index < total_records - 1:
+        keyboard.row(types.InlineKeyboardButton(text="След. ▶", callback_data="next"))
+
+    return keyboard.as_markup()
+
 
 def booking_keyboard():
     keyboard = InlineKeyboardBuilder()
@@ -62,4 +73,14 @@ def booking_keyboard():
     )
     # Add buttons to modify the number of days and a payment button
     keyboard.row(types.InlineKeyboardButton(text="💳Оплатить", callback_data="pay"))
+    return keyboard.as_markup()
+
+
+def select_keyboard():
+    keyboard = InlineKeyboardBuilder()
+    # Create an InlineKeyboardMarkup for booking options
+    keyboard.add(
+        types.InlineKeyboardButton(text="-1", callback_data="subtract_days"),
+        types.InlineKeyboardButton(text="+1", callback_data="add_days")
+    )
     return keyboard.as_markup()

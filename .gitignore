@@ -6,3 +6,7 @@ app/__pycache__/keyboards.cpython-312.pyc
 app/__pycache__/database.cpython-312.pyc
 app/__pycache__/PostgreSQL.cpython-312.pyc
 app/database/__pycache__/PostgreSQL_db.cpython-312.pyc
+/venv
+app/database/__pycache__/PostgreSQL_db.cpython-311.pyc
+app/__pycache__/payment.cpython-311.pyc
+app/__pycache__/keyboards.cpython-311.pyc
