@@ -182,10 +182,11 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
     price = current_data[6]
 
     update_apartment_data(index, photo1, photo2, photo3, description, price)
-
-    await state.set_state(None)  # Clear the state after updating the photo
+# Clear the state after updating the photo
+    await state.set_state(None)
     await message.answer("Первое фото успешно обновлено!")
-    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+    # Update the displayed apartment data
+    await show_editing_apartment_data(message, edit_mode=True)
 
 @dp.callback_query(F.data.startswith("update_photo2_"))
 async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
@@ -194,14 +195,24 @@ async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PHOTO2)
     await callback_query.message.edit_text(text="Загрузите новое второе фото квартиры:")
 
+
 @dp.message(EditApartmentState.PHOTO2, F.content_type == ContentType.PHOTO)
 async def handle_update_second_photo(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
-    await state.update_data(photo2=message.photo[-1].file_id)
-    await state.set_state(None)  # Clear the state after updating the photo
-    update_apartment_data(index, photo1=None, photo2=message.photo[-1].file_id, photo3=None, description=None, price=None)
+    current_data = get_catalog_data()[index]
+    # Updating data using current_data
+    photo1 = current_data[2]
+    photo2 = message.photo[-1].file_id
+    photo3 = current_data[4]
+    description = current_data[5]
+    price = current_data[6]
+
+    update_apartment_data(index, photo1, photo2, photo3, description, price)
+    # Clear the state after updating the photo
+    await state.set_state(None)
     await message.answer("Второе фото успешно обновлено!")
-    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+    # Update the displayed apartment data
+    await show_editing_apartment_data(message, edit_mode=True)
 
 @dp.callback_query(F.data.startswith("update_photo3_"))
 async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
