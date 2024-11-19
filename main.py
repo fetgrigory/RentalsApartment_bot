@@ -247,14 +247,25 @@ async def update_description(callback_query: types.CallbackQuery, state: FSMCont
     await state.set_state(EditApartmentState.DESCRIPTION)
     await callback_query.message.edit_text(text="Введите новое описание квартиры:")
 
+
 @dp.message(EditApartmentState.DESCRIPTION)
 async def handle_update_description(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
-    await state.update_data(description=message.text)
+    current_data = get_catalog_data()[index]  # Get existing apartment data
+
+    # Updating data using current_data
+    photo1 = current_data[2]
+    photo2 = current_data[3]
+    photo3 = current_data[4]
+    description = message.text  # New description from user
+    price = current_data[6]
+
+    update_apartment_data(index, photo1, photo2, photo3, description, price)
+
     await state.set_state(None)  # Clear the state after updating the description
-    update_apartment_data(index, photo1=None, photo2=None, photo3=None, description=message.text, price=None)
     await message.answer("Описание успешно обновлено!")
-    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+    # Update the displayed apartment data
+    await show_editing_apartment_data(message, edit_mode=True) # Update the displayed apartment data
 
 @dp.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
