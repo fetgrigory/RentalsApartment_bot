@@ -46,10 +46,10 @@ def catalog_navigation_keyboard(index, total_records):
     keyboard.row(types.InlineKeyboardButton(text="Забронировать✅", callback_data="add"))
     # Add a button to go to the previous item if not on the first item
     if index > 0:
-        keyboard.row(types.InlineKeyboardButton(text="◀ Пред.", callback_data="prev"))
+        keyboard.row(types.InlineKeyboardButton(text="◀ Пред.", callback_data="prev_view"))
         # Add a button to go to the next item if not on the last item
     if index < total_records - 1:
-        keyboard.row(types.InlineKeyboardButton(text="След. ▶", callback_data="next"))
+        keyboard.row(types.InlineKeyboardButton(text="След. ▶", callback_data="next_view"))
 
     return keyboard.as_markup()
 
@@ -61,9 +61,9 @@ def catalog_navigation_edit_keyboard(index, total_records):
         types.InlineKeyboardButton(text="Изменить", callback_data=f"edit_{index}")
     )
     if index > 0:
-        keyboard.row(types.InlineKeyboardButton(text="◀ Пред.", callback_data="prev"))
+        keyboard.row(types.InlineKeyboardButton(text="◀ Пред.", callback_data="prev_edit"))
     if index < total_records - 1:
-        keyboard.row(types.InlineKeyboardButton(text="След. ▶", callback_data="next"))
+        keyboard.row(types.InlineKeyboardButton(text="След. ▶", callback_data="next_edit"))
 
     return keyboard.as_markup()
 

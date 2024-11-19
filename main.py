@@ -317,7 +317,7 @@ async def back_to_main_menu(message: types.Message):
 # Fetch and display apartment listings
 @dp.message(F.text == "🛍Каталог")
 async def get_apartment_data_handler(message: types.Message):
-    await get_next_apartment_data(message)
+    await get_next_apartment_data(message, edit_mode=False)
 
 
 #  Inform user about website availability
@@ -333,7 +333,7 @@ async def contact(message: types.Message):
 
 
 # If the directory is empty issue a message
-async def get_next_apartment_data(message: types.Message):
+async def get_next_apartment_data(message: types.Message, edit_mode=False):
     data = get_catalog_data()
     if not data:
         await message.answer("Каталог пуст!")
@@ -352,7 +352,13 @@ async def get_next_apartment_data(message: types.Message):
         price = record[6]
 
         message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
-        keyboard = catalog_navigation_edit_keyboard(index, len(data))
+
+        # Choose the correct keyboard based on edit_mode
+        if edit_mode:
+            keyboard = catalog_navigation_edit_keyboard(index, len(data))
+        else:
+            keyboard = catalog_navigation_keyboard(index, len(data))
+
         await bot.send_media_group(message.chat.id, media=photos_info)
         await message.answer(message_text, reply_markup=keyboard)
         USER_DATA['apartment_index'] = index
@@ -379,8 +385,11 @@ async def show_editing_apartment_data(message: types.Message, edit_mode=False):
 
         message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
 
-        # Используйте `catalog_navigation_edit_keyboard` в обоих случаях
-        keyboard = catalog_navigation_edit_keyboard(index, len(data))
+        # Choose the correct keyboard based on edit_mode
+        if edit_mode:
+            keyboard = catalog_navigation_edit_keyboard(index, len(data))
+        else:
+            keyboard = catalog_navigation_keyboard(index, len(data))
 
         await bot.send_media_group(message.chat.id, media=photos_info)
         await message.answer(message_text, reply_markup=keyboard)
@@ -401,24 +410,33 @@ async def add_button(callback_query: types.CallbackQuery):
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
 
 
-# Show the previous apartment
-@dp.callback_query(F.data == "prev")
-async def prev_apartment(callback_query: types.CallbackQuery):
+@dp.callback_query(F.data == "prev_view")
+async def prev_apartment_view(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
         USER_DATA['apartment_index'] = max(index - 1, 0)
-        await get_next_apartment_data(callback_query.message)
+        await get_next_apartment_data(callback_query.message, edit_mode=False)
 
-
-# Show the next apartment
-@dp.callback_query(F.data == "next")
-async def next_apartment(callback_query: types.CallbackQuery):
+@dp.callback_query(F.data == "next_view")
+async def next_apartment_view(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
         USER_DATA['apartment_index'] = min(index + 1, len(get_catalog_data()) - 1)
-        await get_next_apartment_data(callback_query.message)
+        await get_next_apartment_data(callback_query.message, edit_mode=False)
 
+@dp.callback_query(F.data == "prev_edit")
+async def prev_apartment_edit(callback_query: types.CallbackQuery):
+    if 'apartment_index' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        USER_DATA['apartment_index'] = max(index - 1, 0)
+        await show_editing_apartment_data(callback_query.message, edit_mode=True)
 
+@dp.callback_query(F.data == "next_edit")
+async def next_apartment_edit(callback_query: types.CallbackQuery):
+    if 'apartment_index' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        USER_DATA['apartment_index'] = min(index + 1, len(get_catalog_data()) - 1)
+        await show_editing_apartment_data(callback_query.message, edit_mode=True)
 # Increase the rental period and calculate the total price
 @dp.callback_query(F.data == "add_days")
 async def add_days(callback_query: types.CallbackQuery):
