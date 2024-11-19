@@ -34,6 +34,7 @@ dp = Dispatcher(storage=storage)
 
 # States group
 class AddApartmentState(StatesGroup):
+
     PHOTO1 = State()
     PHOTO2 = State()
     PHOTO3 = State()
@@ -351,8 +352,7 @@ async def get_next_apartment_data(message: types.Message):
         price = record[6]
 
         message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
-        keyboard = catalog_navigation_keyboard(index, len(data))
-
+        keyboard = catalog_navigation_edit_keyboard(index, len(data))
         await bot.send_media_group(message.chat.id, media=photos_info)
         await message.answer(message_text, reply_markup=keyboard)
         USER_DATA['apartment_index'] = index
@@ -379,11 +379,8 @@ async def show_editing_apartment_data(message: types.Message, edit_mode=False):
 
         message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
 
-        # Keyboard selection depending on the mode
-        if edit_mode:
-            keyboard = catalog_navigation_edit_keyboard(index, len(data))
-        else:
-            keyboard = catalog_navigation_keyboard(index, len(data))
+        # Используйте `catalog_navigation_edit_keyboard` в обоих случаях
+        keyboard = catalog_navigation_edit_keyboard(index, len(data))
 
         await bot.send_media_group(message.chat.id, media=photos_info)
         await message.answer(message_text, reply_markup=keyboard)
