@@ -274,22 +274,36 @@ async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PRICE)
     await callback_query.message.edit_text(text="Введите новую цену квартиры:")
 
+
 @dp.message(EditApartmentState.PRICE)
 async def handle_update_price(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
+    current_data = get_catalog_data()[index]  # Get existing apartment data
+
     try:
         price = float(message.text)
         if price <= 0:
             await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
             return
-        await state.update_data(price=message.text)
+
+        # Update apartment data using the existing data
+        photo1 = current_data[2]
+        photo2 = current_data[3]
+        photo3 = current_data[4]
+        description = current_data[5]
+
+        # Convert price back to integer before storing
+        price_int = int(price)
+
+        update_apartment_data(index, photo1, photo2, photo3, description, price_int) 
+
         await state.set_state(None)  # Clear the state after updating the price
-        update_apartment_data(index, photo1=None, photo2=None, photo3=None, description=None, price=message.text)
         await message.answer("Цена успешно обновлена!")
-        await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+        # Update the displayed apartment data
+        await show_editing_apartment_data(message, edit_mode=True)
+
     except ValueError:
         await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
-
 
 
 # The button to exit the administrator mode
