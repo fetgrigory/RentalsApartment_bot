@@ -7,8 +7,8 @@ Ending //
 
 '''
 # Installing the necessary libraries
-import os
 import asyncio
+import os
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -18,11 +18,13 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data
+from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
 # from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data
 from app.payment import send_invoice, handle_successful_payment
 
 # Initialize bot and dispatcher in combination with state storage
+
+
 load_dotenv()
 
 bot = Bot(token=os.getenv('TOKEN'))
@@ -32,6 +34,14 @@ dp = Dispatcher(storage=storage)
 
 # States group
 class AddApartmentState(StatesGroup):
+    PHOTO1 = State()
+    PHOTO2 = State()
+    PHOTO3 = State()
+    DESCRIPTION = State()
+    PRICE = State()
+
+
+class EditApartmentState(StatesGroup):
     PHOTO1 = State()
     PHOTO2 = State()
     PHOTO3 = State()
@@ -150,6 +160,94 @@ async def handle_price(message: types.Message, state: FSMContext):
     except ValueError:
         # Handle the case where the provided price is not a valid float
         await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
+
+@dp.callback_query(F.data.startswith("update_photo1_"))
+async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.PHOTO1)
+    await callback_query.message.edit_text(text="Загрузите новое первое фото квартиры:")
+
+@dp.message(EditApartmentState.PHOTO1, F.content_type == ContentType.PHOTO)
+async def handle_update_first_photo(message: types.Message, state: FSMContext):
+    index = USER_DATA['apartment_index']
+    await state.update_data(photo1=message.photo[-1].file_id)
+    await state.set_state(None)  # Clear the state after updating the photo
+    update_apartment_data(index, photo1=message.photo[-1].file_id, photo2=None, photo3=None, description=None, price=None)
+    await message.answer("Первое фото успешно обновлено!")
+    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+
+@dp.callback_query(F.data.startswith("update_photo2_"))
+async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.PHOTO2)
+    await callback_query.message.edit_text(text="Загрузите новое второе фото квартиры:")
+
+@dp.message(EditApartmentState.PHOTO2, F.content_type == ContentType.PHOTO)
+async def handle_update_second_photo(message: types.Message, state: FSMContext):
+    index = USER_DATA['apartment_index']
+    await state.update_data(photo2=message.photo[-1].file_id)
+    await state.set_state(None)  # Clear the state after updating the photo
+    update_apartment_data(index, photo1=None, photo2=message.photo[-1].file_id, photo3=None, description=None, price=None)
+    await message.answer("Второе фото успешно обновлено!")
+    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+
+@dp.callback_query(F.data.startswith("update_photo3_"))
+async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.PHOTO3)
+    await callback_query.message.edit_text(text="Загрузите новое третье фото квартиры:")
+
+@dp.message(EditApartmentState.PHOTO3, F.content_type == ContentType.PHOTO)
+async def handle_update_third_photo(message: types.Message, state: FSMContext):
+    index = USER_DATA['apartment_index']
+    await state.update_data(photo3=message.photo[-1].file_id)
+    await state.set_state(None)  # Clear the state after updating the photo
+    update_apartment_data(index, photo1=None, photo2=None, photo3=message.photo[-1].file_id, description=None, price=None)
+    await message.answer("Третье фото успешно обновлено!")
+    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+
+@dp.callback_query(F.data.startswith("update_description_"))
+async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.DESCRIPTION)
+    await callback_query.message.edit_text(text="Введите новое описание квартиры:")
+
+@dp.message(EditApartmentState.DESCRIPTION)
+async def handle_update_description(message: types.Message, state: FSMContext):
+    index = USER_DATA['apartment_index']
+    await state.update_data(description=message.text)
+    await state.set_state(None)  # Clear the state after updating the description
+    update_apartment_data(index, photo1=None, photo2=None, photo3=None, description=message.text, price=None)
+    await message.answer("Описание успешно обновлено!")
+    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+
+@dp.callback_query(F.data.startswith("update_price_"))
+async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.PRICE)
+    await callback_query.message.edit_text(text="Введите новую цену квартиры:")
+
+@dp.message(EditApartmentState.PRICE)
+async def handle_update_price(message: types.Message, state: FSMContext):
+    index = USER_DATA['apartment_index']
+    try:
+        price = float(message.text)
+        if price <= 0:
+            await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
+            return
+        await state.update_data(price=message.text)
+        await state.set_state(None)  # Clear the state after updating the price
+        update_apartment_data(index, photo1=None, photo2=None, photo3=None, description=None, price=message.text)
+        await message.answer("Цена успешно обновлена!")
+        await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+    except ValueError:
+        await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
+
 
 
 # The button to exit the administrator mode
@@ -322,6 +420,7 @@ async def delete_apartment(callback_query: types.CallbackQuery):
     # Update the catalog
     await show_editing_apartment_data(callback_query.message, edit_mode=True)
     await callback_query.answer("Квартира удалена!")
+
 
 @dp.callback_query(F.data.startswith("edit_"))
 async def edit_apartment(callback_query: types.CallbackQuery):
