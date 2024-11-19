@@ -161,6 +161,7 @@ async def handle_price(message: types.Message, state: FSMContext):
         # Handle the case where the provided price is not a valid float
         await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
 
+
 @dp.callback_query(F.data.startswith("update_photo1_"))
 async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
@@ -221,14 +222,23 @@ async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PHOTO3)
     await callback_query.message.edit_text(text="Загрузите новое третье фото квартиры:")
 
+
 @dp.message(EditApartmentState.PHOTO3, F.content_type == ContentType.PHOTO)
 async def handle_update_third_photo(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
-    await state.update_data(photo3=message.photo[-1].file_id)
-    await state.set_state(None)  # Clear the state after updating the photo
-    update_apartment_data(index, photo1=None, photo2=None, photo3=message.photo[-1].file_id, description=None, price=None)
+    current_data = get_catalog_data()[index]
+    photo1 = current_data[2]
+    photo2 = current_data[3]
+    photo3 = message.photo[-1].file_id
+    description = current_data[5]
+    price = current_data[6]
+
+    update_apartment_data(index, photo1, photo2, photo3, description, price)
+
+    await state.set_state(None)
     await message.answer("Третье фото успешно обновлено!")
-    await show_editing_apartment_data(message, edit_mode=True)  # Update the displayed apartment data
+    await show_editing_apartment_data(message, edit_mode=True)
+
 
 @dp.callback_query(F.data.startswith("update_description_"))
 async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
