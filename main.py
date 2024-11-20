@@ -488,8 +488,6 @@ async def delete_apartment(callback_query: types.CallbackQuery):
     index = int(callback_query.data.split("_")[1])
     # Delete an apartment from the database
     delete_apartment_data(index)
-    # Update the catalog
-    await show_editing_apartment_data(callback_query.message, edit_mode=True)
     await callback_query.answer("Квартира удалена!")
 
 
