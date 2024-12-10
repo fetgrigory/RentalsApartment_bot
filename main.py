@@ -485,10 +485,16 @@ async def successful_payment(message: types.Message):
 # Add a new handler for deleting an apartment
 @dp.callback_query(F.data.startswith("delete_"))
 async def delete_apartment(callback_query: types.CallbackQuery):
-    index = int(callback_query.data.split("_")[1])
-    # Delete an apartment from the database
-    delete_apartment_data(index)
-    await callback_query.answer("Квартира удалена!")
+    # Get the index of the apartment
+    index = int(callback_query.data.split("_")[1])  
+    # Getting the catalog data
+    data = get_catalog_data()
+    if index < len(data):
+        # Get the apartment ID by index
+        apartment_id = data[index][0]
+        # Deleting an apartment from the database using the ID
+        delete_apartment_data(apartment_id)
+        await callback_query.answer("Квартира удалена!")
 
 
 @dp.callback_query(F.data.startswith("edit_"))

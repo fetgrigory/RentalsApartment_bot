@@ -62,23 +62,23 @@ def insert_apartment_data(data):
         conn.commit()
 
 
-def delete_apartment_data(index):
+def delete_apartment_data(apartment_id):
     """AI is creating summary for delete_apartment_data
 
     Args:
-        index ([type]): [description]
+        apartment_id ([type]): [description]
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM catalog WHERE id = ?", (index + 1,))
+        cursor.execute("DELETE FROM catalog WHERE id = ?", (apartment_id,))
         conn.commit()
 
 
-def update_apartment_data(index, photo1, photo2, photo3, description, price):
+def update_apartment_data(apartment_id, photo1, photo2, photo3, description, price):
     """AI is creating summary for update_apartment_data
 
     Args:
-        index ([type]): [description]
+        apartment_id ([type]): [description]
         photo1 ([type]): [description]
         photo2 ([type]): [description]
         photo3 ([type]): [description]
@@ -89,6 +89,6 @@ def update_apartment_data(index, photo1, photo2, photo3, description, price):
         cursor = conn.cursor()
         cursor.execute(
             "UPDATE catalog SET photo1=?, photo2=?, photo3=?, description=?, price=? WHERE id=?",
-            (photo1, photo2, photo3, description, price, index + 1)
+            (photo1, photo2, photo3, description, price, apartment_id)
         )
         conn.commit()
