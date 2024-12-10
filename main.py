@@ -279,32 +279,34 @@ async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
 @dp.message(EditApartmentState.PRICE)
 async def handle_update_price(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
-    current_data = get_catalog_data()[index]  # Get existing apartment data
+    # Get existing apartment data
+    current_data = get_catalog_data()
+    # Get the apartment ID by index
+    apartment_id = current_data[index][0]
 
     try:
-        price = float(message.text)
+        # Convert the price to an integer
+        price = int(message.text)
         if price <= 0:
             await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
             return
 
         # Update apartment data using the existing data
-        photo1 = current_data[2]
-        photo2 = current_data[3]
-        photo3 = current_data[4]
-        description = current_data[5]
+        photo1 = current_data[index][2]
+        photo2 = current_data[index][3]
+        photo3 = current_data[index][4]
+        description = current_data[index][5]
 
-        # Convert price back to integer before storing
-        price_int = int(price)
-
-        update_apartment_data(index, photo1, photo2, photo3, description, price_int) 
-
-        await state.set_state(None)  # Clear the state after updating the price
+        # Updating the data in the database
+        update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+    # Clear the state after updating the price
+        await state.set_state(None)
         await message.answer("Цена успешно обновлена!")
-        # Update the displayed apartment data
+    # Updating the displayed apartment data
         await show_editing_apartment_data(message, edit_mode=True)
 
     except ValueError:
-        await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
+        await message.answer("Пожалуйста, введите корректное целое числовое значение для цены.")
 
 
 # The button to exit the administrator mode
