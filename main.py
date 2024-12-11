@@ -209,14 +209,12 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
     photo3 = current_data[4]
     description = current_data[5]
     price = current_data[6]
-
-    update_apartment_data(index, photo1, photo2, photo3, description, price)
+    update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
     # Clear the state after updating the photo
     await state.set_state(None)
     await message.answer("Второе фото успешно обновлено!")
     # Update the displayed apartment data
     await show_editing_apartment_data(message, edit_mode=True)
-
 @dp.callback_query(F.data.startswith("update_photo3_"))
 async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
@@ -229,13 +227,13 @@ async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
 async def handle_update_third_photo(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
     current_data = get_catalog_data()[index]
+
     photo1 = current_data[2]
     photo2 = current_data[3]
     photo3 = message.photo[-1].file_id
     description = current_data[5]
     price = current_data[6]
-
-    update_apartment_data(index, photo1, photo2, photo3, description, price)
+    update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
 
     await state.set_state(None)
     await message.answer("Третье фото успешно обновлено!")
