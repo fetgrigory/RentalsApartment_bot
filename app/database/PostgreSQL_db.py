@@ -80,3 +80,35 @@ def insert_apartment_data(data):
         # Commit the transaction
         conn.commit()
         cursor.close()
+
+
+def delete_apartment_data(apartment_id):
+    """AI is creating summary for delete_apartment_data
+
+    Args:
+        apartment_id ([type]): [description]
+    """
+    with db_connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM catalog WHERE id = %s", (apartment_id,))
+            conn.commit()
+
+
+def update_apartment_data(apartment_id, photo1, photo2, photo3, description, price):
+    """AI is creating summary for update_apartment_data
+
+    Args:
+        apartment_id ([type]): [description]
+        photo1 ([type]): [description]
+        photo2 ([type]): [description]
+        photo3 ([type]): [description]
+        description ([type]): [description]
+        price ([type]): [description]
+    """
+    with db_connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, description=%s, price=%s WHERE id=%s",
+                (photo1, photo2, photo3, description, price, apartment_id)
+            )
+            conn.commit()
