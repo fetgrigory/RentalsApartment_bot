@@ -215,6 +215,8 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
     await message.answer("Второе фото успешно обновлено!")
     # Update the displayed apartment data
     await show_editing_apartment_data(message, edit_mode=True)
+
+
 @dp.callback_query(F.data.startswith("update_photo3_"))
 async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
@@ -251,21 +253,22 @@ async def update_description(callback_query: types.CallbackQuery, state: FSMCont
 @dp.message(EditApartmentState.DESCRIPTION)
 async def handle_update_description(message: types.Message, state: FSMContext):
     index = USER_DATA['apartment_index']
-    current_data = get_catalog_data()[index]  # Get existing apartment data
+    # Get existing apartment data
+    current_data = get_catalog_data()
+    apartment_id = current_data[index][0]
 
     # Updating data using current_data
-    photo1 = current_data[2]
-    photo2 = current_data[3]
-    photo3 = current_data[4]
-    description = message.text  # New description from user
-    price = current_data[6]
-
-    update_apartment_data(index, photo1, photo2, photo3, description, price)
-
-    await state.set_state(None)  # Clear the state after updating the description
+    photo1 = current_data[index][2]
+    photo2 = current_data[index][3]
+    photo3 = current_data[index][4]
+    description = message.text
+    price = current_data[index][6]
+    update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+    # Clear the state after updating the description
+    await state.set_state(None)
     await message.answer("Описание успешно обновлено!")
     # Update the displayed apartment data
-    await show_editing_apartment_data(message, edit_mode=True) # Update the displayed apartment data
+    await show_editing_apartment_data(message, edit_mode=True)
 
 @dp.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
