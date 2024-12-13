@@ -274,23 +274,27 @@ async def update_description(callback_query: types.CallbackQuery, state: FSMCont
 
 @dp.message(EditApartmentState.DESCRIPTION)
 async def handle_update_description(message: types.Message, state: FSMContext):
-    index = USER_DATA['apartment_index']
-    # Get existing apartment data
-    current_data = get_catalog_data()
-    apartment_id = current_data[index][0]
+    if message.content_type == ContentType.TEXT:
+        index = USER_DATA['apartment_index']
+        # Get existing apartment data
+        current_data = get_catalog_data()
+        apartment_id = current_data[index][0]
 
-    # Updating data using current_data
-    photo1 = current_data[index][2]
-    photo2 = current_data[index][3]
-    photo3 = current_data[index][4]
-    description = message.text
-    price = current_data[index][6]
-    update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
-    # Clear the state after updating the description
-    await state.set_state(None)
-    await message.answer("Описание успешно обновлено!")
-    # Update the displayed apartment data
-    await show_editing_apartment_data(message, edit_mode=True)
+        # Updating data using current_data
+        photo1 = current_data[index][2]
+        photo2 = current_data[index][3]
+        photo3 = current_data[index][4]
+        description = message.text
+        price = current_data[index][6]
+        update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+        # Clear the state after updating the description
+        await state.clear()
+        await message.answer("Описание успешно обновлено!")
+        # Update the displayed apartment data
+        await show_editing_apartment_data(message, edit_mode=True)
+    else:
+        await message.answer("Введите текст")
+
 
 @dp.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
@@ -302,34 +306,42 @@ async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.message(EditApartmentState.PRICE)
 async def handle_update_price(message: types.Message, state: FSMContext):
-    index = USER_DATA['apartment_index']
-    # Get existing apartment data
-    current_data = get_catalog_data()
-    # Get the apartment ID by index
-    apartment_id = current_data[index][0]
+    if message.content_type == ContentType.TEXT:
+        index = USER_DATA['apartment_index']
 
-    try:
-        # Convert the price to an integer
-        price = int(message.text)
-        if price <= 0:
-            await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
-            return
+        # Get existing apartment data
+        current_data = get_catalog_data()
 
-        # Update apartment data using the existing data
-        photo1 = current_data[index][2]
-        photo2 = current_data[index][3]
-        photo3 = current_data[index][4]
-        description = current_data[index][5]
+        # Get the apartment ID by index
+        apartment_id = current_data[index][0]
 
-        # Updating the data in the database
-        update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
-    # Clear the state after updating the price
-        await state.set_state(None)
-        await message.answer("Цена успешно обновлена!")
-    # Updating the displayed apartment data
-        await show_editing_apartment_data(message, edit_mode=True)
+        try:
+            # Convert the price to an integer
+            price = int(message.text)
 
-    except ValueError:
+            if price <= 0:
+                await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
+                return
+
+            # Update apartment data using the existing data
+            photo1 = current_data[index][2]
+            photo2 = current_data[index][3]
+            photo3 = current_data[index][4]
+            description = current_data[index][5]
+
+            # Updating the data in the database
+            update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+
+            # Clear the state after updating the price
+            await state.clear()
+            await message.answer("Цена успешно обновлена!")
+
+        except ValueError:
+            await message.answer("Пожалуйста, введите корректное целое числовое значение для цены.")
+            # Updating the displayed apartment data
+            await show_editing_apartment_data(message, edit_mode=True)
+
+    else:
         await message.answer("Пожалуйста, введите корректное целое числовое значение для цены.")
 
 
