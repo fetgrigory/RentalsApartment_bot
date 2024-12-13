@@ -182,24 +182,27 @@ async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(text="Загрузите новое первое фото квартиры:")
 
 
-@dp.message(EditApartmentState.PHOTO1, F.content_type == ContentType.PHOTO)
+@dp.message(EditApartmentState.PHOTO1)
 async def handle_update_first_photo(message: types.Message, state: FSMContext):
-    index = USER_DATA['apartment_index']
-    current_data = get_catalog_data()[index]
+    # Checking if this is really a photo
+    if message.content_type == ContentType.PHOTO:
+        index = USER_DATA['apartment_index']
+        current_data = get_catalog_data()[index]
 
-# Updating data using current_data
-    photo1 = message.photo[-1].file_id
-    photo2 = current_data[3]
-    photo3 = current_data[4]
-    description = current_data[5]
-    price = current_data[6]
-
-    update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
-# Clear the state after updating the photo
-    await state.set_state(None)
-    await message.answer("Первое фото успешно обновлено!")
-    # Update the displayed apartment data
-    await show_editing_apartment_data(message, edit_mode=True)
+        # Updating data using current_data
+        photo1 = message.photo[-1].file_id
+        photo2 = current_data[3]
+        photo3 = current_data[4]
+        description = current_data[5]
+        price = current_data[6]
+        update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
+        # Clear the state after updating the photo
+        await state.set_state(None)
+        await message.answer("Первое фото успешно обновлено!")
+        # Update the displayed apartment data
+        await show_editing_apartment_data(message, edit_mode=True)
+    else:
+        await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
 @dp.callback_query(F.data.startswith("update_photo2_"))
