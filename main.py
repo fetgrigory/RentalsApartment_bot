@@ -196,14 +196,13 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         description = current_data[5]
         price = current_data[6]
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
-        # Clear the state after updating the photo
-        await state.set_state(None)
+    # Clear the state after updating the photo
+        await state.clear()
         await message.answer("Первое фото успешно обновлено!")
         # Update the displayed apartment data
         await show_editing_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
-        await state.clear()
 
 
 @dp.callback_query(F.data.startswith("update_photo2_"))
