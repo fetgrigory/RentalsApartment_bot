@@ -214,6 +214,7 @@ async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.message(EditApartmentState.PHOTO2)
 async def handle_update_second_photo(message: types.Message, state: FSMContext):
+    # Checking if this is really a photo
     if message.content_type == ContentType.PHOTO:
         index = USER_DATA['apartment_index']
         current_data = get_catalog_data()[index]
@@ -225,13 +226,12 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
         price = current_data[6]
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
         # Clear the state after updating the photo
-        await state.set_state(None)
+        await state.clear()
         await message.answer("Второе фото успешно обновлено!")
         # Update the displayed apartment data
         await show_editing_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
-        await state.clear()
 
 
 @dp.callback_query(F.data.startswith("update_photo3_"))
@@ -244,6 +244,7 @@ async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.message(EditApartmentState.PHOTO3)
 async def handle_update_third_photo(message: types.Message, state: FSMContext):
+    # Checking if this is really a photo
     if message.content_type == ContentType.PHOTO:
         index = USER_DATA['apartment_index']
         current_data = get_catalog_data()[index]
@@ -254,14 +255,13 @@ async def handle_update_third_photo(message: types.Message, state: FSMContext):
         description = current_data[5]
         price = current_data[6]
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
-
-        await state.set_state(None)
+        # Clear the state after updating the photo
+        await state.clear()
         await message.answer("Третье фото успешно обновлено!")
         # Update the displayed apartment data
         await show_editing_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
-        await state.clear()
 
 
 @dp.callback_query(F.data.startswith("update_description_"))
@@ -450,6 +450,7 @@ async def next_apartment_view(callback_query: types.CallbackQuery):
         USER_DATA['apartment_index'] = min(index + 1, len(get_catalog_data()) - 1)
         await get_next_apartment_data(callback_query.message, edit_mode=False)
 
+
 @dp.callback_query(F.data == "prev_edit")
 async def prev_apartment_edit(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
@@ -457,12 +458,15 @@ async def prev_apartment_edit(callback_query: types.CallbackQuery):
         USER_DATA['apartment_index'] = max(index - 1, 0)
         await show_editing_apartment_data(callback_query.message, edit_mode=True)
 
+
 @dp.callback_query(F.data == "next_edit")
 async def next_apartment_edit(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
         USER_DATA['apartment_index'] = min(index + 1, len(get_catalog_data()) - 1)
         await show_editing_apartment_data(callback_query.message, edit_mode=True)
+
+
 # Increase the rental period and calculate the total price
 @dp.callback_query(F.data == "add_days")
 async def add_days(callback_query: types.CallbackQuery):
