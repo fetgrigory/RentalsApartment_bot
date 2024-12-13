@@ -203,6 +203,7 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         await show_editing_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
+        await state.clear()
 
 
 @dp.callback_query(F.data.startswith("update_photo2_"))
