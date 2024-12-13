@@ -188,7 +188,6 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.PHOTO:
         index = USER_DATA['apartment_index']
         current_data = get_catalog_data()[index]
-
         # Updating data using current_data
         photo1 = message.photo[-1].file_id
         photo2 = current_data[3]
