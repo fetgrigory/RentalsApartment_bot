@@ -90,26 +90,34 @@ async def add_data_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddApartmentState.PHOTO1)
     await message.answer("Загрузите первое фото квартиры:")
 
-
-@dp.message(AddApartmentState.PHOTO1, F.content_type == ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO1)
 async def handle_first_photo(message: types.Message, state: FSMContext):
-    await state.update_data(photo1=message.photo[-1].file_id)
-    await state.set_state(AddApartmentState.PHOTO2)
-    await message.answer("Загрузите второе фото квартиры:")
+    if message.content_type == ContentType.PHOTO:
+        await state.update_data(photo1=message.photo[-1].file_id)
+        await state.set_state(AddApartmentState.PHOTO2)
+        await message.answer("Загрузите второе фото квартиры:")
+    else:
+        await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.message(AddApartmentState.PHOTO2, F.content_type == ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO2)
 async def handle_second_photo(message: types.Message, state: FSMContext):
-    await state.update_data(photo2=message.photo[-1].file_id)
-    await state.set_state(AddApartmentState.PHOTO3)
-    await message.answer("Загрузите третье фото квартиры:")
+    if message.content_type == ContentType.PHOTO:
+        await state.update_data(photo2=message.photo[-1].file_id)
+        await state.set_state(AddApartmentState.PHOTO3)
+        await message.answer("Загрузите третье фото квартиры:")
+    else:
+        await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.message(AddApartmentState.PHOTO3, F.content_type == ContentType.PHOTO)
+@dp.message(AddApartmentState.PHOTO3)
 async def handle_third_photo(message: types.Message, state: FSMContext):
-    await state.update_data(photo3=message.photo[-1].file_id)
-    await state.set_state(AddApartmentState.DESCRIPTION)
-    await message.answer("Введите описание квартиры:")
+    if message.content_type == ContentType.PHOTO:
+        await state.update_data(photo3=message.photo[-1].file_id)
+        await state.set_state(AddApartmentState.DESCRIPTION)
+        await message.answer("Введите описание квартиры:")
+    else:
+        await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
 @dp.message(AddApartmentState.DESCRIPTION)
