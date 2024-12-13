@@ -122,53 +122,56 @@ async def handle_third_photo(message: types.Message, state: FSMContext):
 
 @dp.message(AddApartmentState.DESCRIPTION)
 async def handle_description(message: types.Message, state: FSMContext):
-    await state.update_data(description=message.text)
-    await state.set_state(AddApartmentState.PRICE)
-    await message.answer("Введите цену:")
+    if message.content_type == ContentType.TEXT:
+        await state.update_data(description=message.text)
+        await state.set_state(AddApartmentState.PRICE)
+        await message.answer("Введите цену:")
+    else:
+        await message.answer("Пожалуйста, введите текстовое описание квартиры!")
 
 
 @dp.message(AddApartmentState.PRICE)
 async def handle_price(message: types.Message, state: FSMContext):
-    try:
-        # Attempt to convert the text message into a float representing the price
-        price = float(message.text)
+    if message.content_type == ContentType.TEXT:
+        try:
+            # Attempt to convert the text message into a float representing the price
+            price = float(message.text)
+            # Check if the price is valid (greater than 0)
+            if price <= 0:
+                # Send a message to the user if the price is invalid
+                await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
+                return
+            # Update the FSM context with the valid price data
+            await state.update_data(price=message.text)
 
-        # Check if the price is valid (greater than 0)
-        if price <= 0:
-            # Send a message to the user if the price is invalid
-            await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
-            return
-        # Update the FSM context with the valid price data
-        await state.update_data(price=message.text)
+            # Retrieve all data collected so far in the FSM context
+            data = await state.get_data()
 
-        # Retrieve all data collected so far in the FSM context
-        data = await state.get_data()
+            # Get the current date and time, formatted as a string
+            current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # Get the current date and time, formatted as a string
-        current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # Create a list containing the data to be inserted into the database
+            apartment_data = [
+                current_date,
+                data['photo1'],
+                data['photo2'],
+                data['photo3'],
+                data['description'],
+                data['price']
+            ]
+            # Call a function to insert the data into the database
+            insert_apartment_data(apartment_data)
+            # Clear the FSM context, indicating the end of the data collection process
+            await state.clear()
+            # Inform the user that the apartment data has been successfully saved
+            await message.answer("Данные о квартире успешно сохранены!")
 
-        # Create a list containing the data to be inserted into the database
-        apartment_data = [
-            current_date,
-            data['photo1'],
-            data['photo2'],
-            data['photo3'],
-            data['description'],
-            data['price']
-        ]
-
-        # Call a function to insert the data into the database
-        insert_apartment_data(apartment_data)
-
-        # Clear the FSM context, indicating the end of the data collection process
-        await state.clear()
-
-        # Inform the user that the apartment data has been successfully saved
-        await message.answer("Данные о квартире успешно сохранены!")
-
-    except ValueError:
-        # Handle the case where the provided price is not a valid float
-        await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
+        except ValueError:
+            # Handle the case where the provided price is not a valid float
+            await message.answer("Пожалуйста, введите корректное числовое значение для цены.")
+            # Checking text input
+    else:
+        await message.answer("Пожалуйста, введите текстовое значение для цены!")
 
 
 @dp.callback_query(F.data.startswith("update_photo1_"))
