@@ -128,7 +128,7 @@ async def handle_description(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         await state.update_data(description=message.text)
         await state.set_state(AddApartmentState.ADDRESS)
-        await message.answer("Введите адрес квартиры:")  
+        await message.answer("Введите адрес квартиры:")
     else:
         await message.answer("Пожалуйста, введите текстовое описание квартиры!")
 
@@ -338,6 +338,7 @@ async def handle_update_address(message: types.Message, state: FSMContext):
         price = current_data[index][7]
         new_address = message.text
         update_apartment_data(apartment_id, photo1, photo2, photo3, description, new_address, price)
+        # Clear the state after updating the address
         await state.clear()
         await message.answer("Адрес успешно обновлен!")
         await show_editing_apartment_data(message, edit_mode=True)
@@ -483,7 +484,9 @@ async def show_editing_apartment_data(message: types.Message, edit_mode=False):
 
 # Handler for editing the catalog
 @dp.message(F.text == "✏️Редактировать каталог")
-async def get_apartment_data_edit_handler(message: types.Message):
+async def get_apartment_data_edit_handler(message: types.Message, state: FSMContext):
+    # Reset the FSM state
+    await state.clear()
     await show_editing_apartment_data(message, edit_mode=True)
 
 
