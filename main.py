@@ -19,7 +19,7 @@ from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
 from app.database.sqlite3_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
-#from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
+# from app.database.PostgreSQL_db import create_database, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
 from app.payment import send_invoice, handle_successful_payment
 
 # Initialize bot and dispatcher in combination with state storage
@@ -39,6 +39,7 @@ class AddApartmentState(StatesGroup):
     PHOTO2 = State()
     PHOTO3 = State()
     DESCRIPTION = State()
+    ADDRESS = State()
     PRICE = State()
 
 
@@ -47,6 +48,7 @@ class EditApartmentState(StatesGroup):
     PHOTO2 = State()
     PHOTO3 = State()
     DESCRIPTION = State()
+    ADDRESS = State()
     PRICE = State()
 
 
@@ -57,7 +59,8 @@ questions = [
     "Загрузите второе фото квартиры:",
     "Загрузите третье фото квартиры:",
     "Введите описание квартиры:",
-    "Введите цену:"
+    "Введите адрес квартиры",
+    "Введите цену:",
 ]
 
 # Initialize or open database connection.
@@ -76,7 +79,6 @@ async def start(message: types.Message):
                          f"Меня зовут {me.first_name}. Я помогу вам арендовать квартиру.",
                          parse_mode='html', reply_markup=keyboard)
 
-
 @dp.message(F.text == "🛠️Админ-панель")
 async def admin_panel_handler(message: types.Message):
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
@@ -89,6 +91,7 @@ async def admin_panel_handler(message: types.Message):
 async def add_data_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddApartmentState.PHOTO1)
     await message.answer("Загрузите первое фото квартиры:")
+
 
 @dp.message(AddApartmentState.PHOTO1)
 async def handle_first_photo(message: types.Message, state: FSMContext):
@@ -124,10 +127,20 @@ async def handle_third_photo(message: types.Message, state: FSMContext):
 async def handle_description(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         await state.update_data(description=message.text)
+        await state.set_state(AddApartmentState.ADDRESS)
+        await message.answer("Введите адрес квартиры:")  
+    else:
+        await message.answer("Пожалуйста, введите текстовое описание квартиры!")
+
+
+@dp.message(AddApartmentState.ADDRESS)
+async def handle_address(message: types.Message, state: FSMContext):
+    if message.content_type == ContentType.TEXT:
+        await state.update_data(address=message.text)
         await state.set_state(AddApartmentState.PRICE)
         await message.answer("Введите цену:")
     else:
-        await message.answer("Пожалуйста, введите текстовое описание квартиры!")
+        await message.answer("Пожалуйста, введите текстовое значение для адреса!")
 
 
 @dp.message(AddApartmentState.PRICE)
@@ -157,6 +170,7 @@ async def handle_price(message: types.Message, state: FSMContext):
                 data['photo2'],
                 data['photo3'],
                 data['description'],
+                data["address"],
                 data['price']
             ]
             # Call a function to insert the data into the database
@@ -193,8 +207,10 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         photo2 = current_data[3]
         photo3 = current_data[4]
         description = current_data[5]
-        price = current_data[6]
-        update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
+        address = current_data[6]
+        price = current_data[7]
+
+        update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price)
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Первое фото успешно обновлено!")
@@ -223,8 +239,10 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
         photo2 = message.photo[-1].file_id
         photo3 = current_data[4]
         description = current_data[5]
-        price = current_data[6]
-        update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
+        address = current_data[6]
+        price = current_data[7]
+        update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price)
+
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Второе фото успешно обновлено!")
@@ -253,8 +271,10 @@ async def handle_update_third_photo(message: types.Message, state: FSMContext):
         photo2 = current_data[3]
         photo3 = message.photo[-1].file_id
         description = current_data[5]
-        price = current_data[6]
-        update_apartment_data(current_data[0], photo1, photo2, photo3, description, price)
+        address = current_data[6]
+        price = current_data[7]
+
+        update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price)
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Третье фото успешно обновлено!")
@@ -285,8 +305,9 @@ async def handle_update_description(message: types.Message, state: FSMContext):
         photo2 = current_data[index][3]
         photo3 = current_data[index][4]
         description = message.text
-        price = current_data[index][6]
-        update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+        address = current_data[index][6]
+        price = current_data[index][7]
+        update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price)
         # Clear the state after updating the description
         await state.clear()
         await message.answer("Описание успешно обновлено!")
@@ -308,17 +329,13 @@ async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
 async def handle_update_price(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         index = USER_DATA['apartment_index']
-
         # Get existing apartment data
         current_data = get_catalog_data()
-
         # Get the apartment ID by index
         apartment_id = current_data[index][0]
-
         try:
             # Convert the price to an integer
             price = int(message.text)
-
             if price <= 0:
                 await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
                 return
@@ -328,9 +345,10 @@ async def handle_update_price(message: types.Message, state: FSMContext):
             photo2 = current_data[index][3]
             photo3 = current_data[index][4]
             description = current_data[index][5]
+            address = current_data[index][6]
 
             # Updating the data in the database
-            update_apartment_data(apartment_id, photo1, photo2, photo3, description, price)
+            update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price)
 
             # Clear the state after updating the price
             await state.clear()
@@ -383,13 +401,14 @@ async def get_next_apartment_data(message: types.Message, edit_mode=False):
 
         photos_info = [
             types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
-            for i in range(2, 5)
+            for i in range(2, 5)  # Photos from index 2 to 4
         ]
 
         description = record[5]
-        price = record[6]
+        address = record[6]
+        price = record[7]
 
-        message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
+        message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
 
         # Choose the correct keyboard based on edit_mode
         if edit_mode:
@@ -419,10 +438,10 @@ async def show_editing_apartment_data(message: types.Message, edit_mode=False):
         ]
 
         description = record[5]
-        price = record[6]
+        address = record[6]
+        price = record[7]
 
-        message_text = f"Описание квартиры: {description}\nЦена(в сутки): {price}"
-
+        message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
         # Choose the correct keyboard based on edit_mode
         if edit_mode:
             keyboard = catalog_navigation_edit_keyboard(index, len(data))
@@ -455,6 +474,7 @@ async def prev_apartment_view(callback_query: types.CallbackQuery):
         USER_DATA['apartment_index'] = max(index - 1, 0)
         await get_next_apartment_data(callback_query.message, edit_mode=False)
 
+
 @dp.callback_query(F.data == "next_view")
 async def next_apartment_view(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
@@ -484,7 +504,7 @@ async def next_apartment_edit(callback_query: types.CallbackQuery):
 async def add_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
-        price = get_catalog_data()[index][6]
+        price = get_catalog_data()[index][7]
         USER_DATA['rent_days'] = USER_DATA.get('rent_days', 1) + 1
         new_price = int(price) * USER_DATA['rent_days']
 
@@ -497,7 +517,7 @@ async def add_days(callback_query: types.CallbackQuery):
 async def subtract_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
-        price = get_catalog_data()[index][6]
+        price = get_catalog_data()[index][7]
         USER_DATA['rent_days'] = max(USER_DATA.get('rent_days', 1) - 1, 1)
         new_price = int(price) * USER_DATA['rent_days']
 
@@ -528,7 +548,7 @@ async def successful_payment(message: types.Message):
 @dp.callback_query(F.data.startswith("delete_"))
 async def delete_apartment(callback_query: types.CallbackQuery):
     # Get the index of the apartment
-    index = int(callback_query.data.split("_")[1])  
+    index = int(callback_query.data.split("_")[1])
     # Getting the catalog data
     data = get_catalog_data()
     if index < len(data):

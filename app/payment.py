@@ -25,8 +25,8 @@ async def send_invoice(bot: Bot, callback_query: types.CallbackQuery, user_data:
     index = user_data.get('apartment_index')
     # Retrieve catalog data and get the price for the selected apartment
     data = get_catalog_data()
-    # Price is located at the 7th position (index 6) in the data list
-    price = int(data[index][6])
+    # Price is located at the 8th position (index 7) in the data list
+    price = int(data[index][7])
     # Set the currency for the invoice
     currency = "RUB"
     # Calculate the total price based on the number of days the apartment is rented
