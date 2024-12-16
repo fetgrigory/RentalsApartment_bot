@@ -67,6 +67,7 @@ def catalog_navigation_edit_keyboard(index, total_records):
 
     return keyboard.as_markup()
 
+
 def edit_apartment_keyboard(index):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
@@ -79,6 +80,9 @@ def edit_apartment_keyboard(index):
     )
     keyboard.row(
         types.InlineKeyboardButton(text='Обновить цену', callback_data=f'update_price_{index}')
+    )
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить адрес', callback_data=f'update_address_{index}')
     )
     return keyboard.as_markup()
 

@@ -317,6 +317,34 @@ async def handle_update_description(message: types.Message, state: FSMContext):
         await message.answer("Введите текст")
 
 
+@dp.callback_query(F.data.startswith("update_address_"))
+async def update_address(callback_query: types.CallbackQuery, state: FSMContext):
+    index = int(callback_query.data.split("_")[2])
+    USER_DATA['apartment_index'] = index
+    await state.set_state(EditApartmentState.ADDRESS)
+    await callback_query.message.edit_text(text="Введите новый адрес квартиры:")
+
+
+@dp.message(EditApartmentState.ADDRESS)
+async def handle_update_address(message: types.Message, state: FSMContext):
+    if message.content_type == ContentType.TEXT:
+        index = USER_DATA['apartment_index']
+        current_data = get_catalog_data()
+        apartment_id = current_data[index][0]
+        photo1 = current_data[index][2]
+        photo2 = current_data[index][3]
+        photo3 = current_data[index][4]
+        description = current_data[index][5]
+        price = current_data[index][7]
+        new_address = message.text
+        update_apartment_data(apartment_id, photo1, photo2, photo3, description, new_address, price)
+        await state.clear()
+        await message.answer("Адрес успешно обновлен!")
+        await show_editing_apartment_data(message, edit_mode=True)
+    else:
+        await message.answer("Введите текст для адреса.")
+
+
 @dp.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
