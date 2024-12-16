@@ -36,6 +36,7 @@ def create_database():
     """
     with db_connect() as conn:
         cursor = conn.cursor()
+        # Create the 'catalog' table if it does not exist, defining its structure.
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS catalog (
                 id SERIAL PRIMARY KEY,
@@ -44,10 +45,11 @@ def create_database():
                 photo2 VARCHAR(250),
                 photo3 VARCHAR(250),
                 description VARCHAR(250),
+                address VARCHAR(250),
                 price VARCHAR(250)
-            )''')
+            )
+        ''')
         conn.commit()
-        cursor.close()
 
 
 def get_catalog_data():
@@ -58,28 +60,27 @@ def get_catalog_data():
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-# Execute a SELECT query to fetch all records from the 'catalog' table.
+        # Execute a SELECT query to fetch all records from the 'catalog' table.
         cursor.execute("SELECT * FROM catalog")
-# Retrieve all the results from the query.
+        # Retrieve all the results from the query.
         data = cursor.fetchall()
-        cursor.close()
-        return data
+    return data
 
 
 def insert_apartment_data(data):
+    """AI is creating summary for insert_apartment_data
+
+    Args:
+        data ([type]): [description]
+    """
     with db_connect() as conn:
         cursor = conn.cursor()
-        # Use %s placeholders for parameterized queries in psycopg2.
+        # Insert a new record into the 'catalog' table using the provided data.
         cursor.execute(
-            """
-            INSERT INTO catalog (date, photo1, photo2, photo3, description, price)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            """,
+            "INSERT INTO catalog (date, photo1, photo2, photo3, description, address, price) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
             data
         )
-        # Commit the transaction
         conn.commit()
-        cursor.close()
 
 
 def delete_apartment_data(apartment_id):
@@ -89,12 +90,12 @@ def delete_apartment_data(apartment_id):
         apartment_id ([type]): [description]
     """
     with db_connect() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM catalog WHERE id = %s", (apartment_id,))
-            conn.commit()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM catalog WHERE id = %s", (apartment_id,))
+        conn.commit()
 
 
-def update_apartment_data(apartment_id, photo1, photo2, photo3, description, price):
+def update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price):
     """AI is creating summary for update_apartment_data
 
     Args:
@@ -103,12 +104,13 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, description, pri
         photo2 ([type]): [description]
         photo3 ([type]): [description]
         description ([type]): [description]
+        address ([type]): [description]
         price ([type]): [description]
     """
     with db_connect() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute(
-                "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, description=%s, price=%s WHERE id=%s",
-                (photo1, photo2, photo3, description, price, apartment_id)
-            )
-            conn.commit()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, description=%s, address=%s, price=%s WHERE id=%s",
+            (photo1, photo2, photo3, description, address, price, apartment_id)
+        )
+        conn.commit()
