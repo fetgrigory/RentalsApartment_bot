@@ -3,6 +3,9 @@
 ## Администраторская панель:
 ![0](https://github.com/fetgrigory/RentalsApartment_bot/assets/157891679/152adcd0-49fb-48c3-9ffe-b4f9b43a56b3)<br />
 ![143714](https://github.com/user-attachments/assets/e64046bb-48bb-4931-a3ce-2dec01f6c7ed)<br />
+![144855](https://github.com/user-attachments/assets/459005a5-e61f-4d2a-bd00-4a26b99b8cf3)<br />
+![145221](https://github.com/user-attachments/assets/a8e084a6-97b7-4590-8b38-fa1c5b18f31e)<br />
+
 
 
 - При входе в админ-панель администратору отображается возможность добавления данных.
