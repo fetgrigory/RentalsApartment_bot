@@ -349,7 +349,8 @@ async def handle_update_address(message: types.Message, state: FSMContext):
         description = current_data[index][5]
         price = current_data[index][7]
         new_address = message.text
-        update_apartment_data(apartment_id, photo1, photo2, photo3, description, new_address, price)
+        category = current_data[index][8]
+        update_apartment_data(apartment_id, photo1, photo2, photo3, description, new_address, price, category)
         # Clear the state after updating the address
         await state.clear()
         await message.answer("Адрес успешно обновлен!")
@@ -387,9 +388,10 @@ async def handle_update_price(message: types.Message, state: FSMContext):
             photo3 = current_data[index][4]
             description = current_data[index][5]
             address = current_data[index][6]
+            category = current_data[index][8]
 
             # Updating the data in the database
-            update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price)
+            update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category)
 
             # Clear the state after updating the price
             await state.clear()
