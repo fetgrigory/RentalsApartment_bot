@@ -67,7 +67,7 @@ def catalog_navigation_keyboard(index, total_records):
     return keyboard.as_markup()
 
 
-def catalog_navigation_edit_keyboard(index, total_records):   
+def catalog_navigation_edit_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Удалить", callback_data=f"delete_{index}"),

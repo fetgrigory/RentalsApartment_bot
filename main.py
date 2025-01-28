@@ -543,6 +543,7 @@ async def prev_apartment_view(callback_query: types.CallbackQuery):
             USER_DATA['apartment_index'] = index - 1
             await get_next_apartment_data(callback_query.message, edit_mode=False, apartments=apartments)
 
+
 @dp.callback_query(F.data == "next_view")
 async def next_apartment_view(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
@@ -551,7 +552,6 @@ async def next_apartment_view(callback_query: types.CallbackQuery):
         if index < len(apartments) - 1:
             USER_DATA['apartment_index'] = index + 1
             await get_next_apartment_data(callback_query.message, edit_mode=False, apartments=apartments)
-
 
 
 @dp.callback_query(F.data == "prev_edit")

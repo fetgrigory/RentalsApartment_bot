@@ -74,7 +74,7 @@ def get_catalog_by_category(category):
 
     Returns:
         [type]: [description]
-    """    
+    """
     with db_connect() as conn:
         cursor = conn.cursor()
         # Executing SQL query to retrieve all items from the catalog for the given category
