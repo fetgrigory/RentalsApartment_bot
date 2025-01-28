@@ -39,6 +39,7 @@ def admin_keyboard():
     keyboard.row(types.KeyboardButton(text="⤴️Назад"))
     return keyboard.as_markup(resize_keyboard=True)
 
+
 def catalog_categories_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
@@ -50,6 +51,7 @@ def catalog_categories_keyboard():
         types.InlineKeyboardButton(text="Студия", callback_data="studio")
     )
     return keyboard.as_markup()
+
 
 def catalog_navigation_keyboard(index, total_records):
     # Create an InlineKeyboardMarkup for catalog navigation
@@ -65,7 +67,7 @@ def catalog_navigation_keyboard(index, total_records):
     return keyboard.as_markup()
 
 
-def catalog_navigation_edit_keyboard(index, total_records):
+def catalog_navigation_edit_keyboard(index, total_records):   
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Удалить", callback_data=f"delete_{index}"),
