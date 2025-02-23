@@ -18,7 +18,7 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
+from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data
 # from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data
 from app.payment import send_invoice, handle_successful_payment
 
@@ -51,6 +51,12 @@ class EditApartmentState(StatesGroup):
     ADDRESS = State()
     PRICE = State()
     CATEGORY = State()
+
+
+class BookingState(StatesGroup):
+    FIRST_NAME = State()
+    LAST_NAME = State()
+    PHONE = State()
 
 
 # Dictionary to store user data temporarily
@@ -528,10 +534,57 @@ async def get_apartment_data_edit_handler(message: types.Message, state: FSMCont
 
 # Navigate to the next or previous apartment details
 @dp.callback_query(F.data == "add")
-async def add_button(callback_query: types.CallbackQuery):
-    USER_DATA['added_button'] = True
-    keyboard = booking_keyboard()
-    await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
+    user_id = callback_query.from_user.id
+    # Check if there is a user in the database
+    if check_user_exists(user_id):
+        # If the user is already registered, proceed to booking
+        keyboard = booking_keyboard()
+        await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+    else:
+        # If the user is not registered, request data
+        await state.set_state(BookingState.FIRST_NAME)
+        await callback_query.message.answer("Введите ваше имя:")
+
+
+@dp.message(BookingState.FIRST_NAME)
+async def process_first_name(message: types.Message, state: FSMContext):
+    await state.update_data(first_name=message.text)
+    await state.set_state(BookingState.LAST_NAME)
+    await message.answer("Введите вашу фамилию:")
+
+
+@dp.message(BookingState.LAST_NAME)
+async def process_last_name(message: types.Message, state: FSMContext):
+    await state.update_data(last_name=message.text)
+    await state.set_state(BookingState.PHONE)
+    await message.answer("Введите ваш номер телефона:")
+
+@dp.message(BookingState.PHONE)
+async def process_phone(message: types.Message, state: FSMContext):
+    await state.update_data(phone=message.text)
+    user_data = await state.get_data()
+    user_id = message.from_user.id
+    first_name = user_data['first_name']
+    last_name = user_data['last_name']
+    phone = user_data['phone']
+
+    # Adding the user to the database
+    insert_user_data(user_id, first_name, last_name, phone)
+    # Getting information about the current apartment
+    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        apartments = USER_DATA['apartments']
+        price = apartments[index][7]
+        rent_days = USER_DATA.get('rent_days', 1)
+        total_price = int(price) * rent_days
+        text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
+        keyboard = booking_keyboard()
+        await message.answer("Данные сохранены. Продолжайте бронирование.")
+        await message.answer(text, reply_markup=keyboard)
+    else:
+        await message.answer("Ошибка: данные о квартире не найдены.")
+        await state.clear()
 
 
 @dp.callback_query(F.data == "prev_view")
