@@ -544,6 +544,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     else:
         # If the user is not registered, request data
         await state.set_state(BookingState.FIRST_NAME)
+        await callback_query.message.answer("Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!")
         await callback_query.message.answer("Введите ваше имя:")
 
 
@@ -559,6 +560,7 @@ async def process_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
     await state.set_state(BookingState.PHONE)
     await message.answer("Введите ваш номер телефона:")
+
 
 @dp.message(BookingState.PHONE)
 async def process_phone(message: types.Message, state: FSMContext):
@@ -580,7 +582,7 @@ async def process_phone(message: types.Message, state: FSMContext):
         total_price = int(price) * rent_days
         text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
         keyboard = booking_keyboard()
-        await message.answer("Данные сохранены. Продолжайте бронирование.")
+        await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
         await message.answer(text, reply_markup=keyboard)
     else:
         await message.answer("Ошибка: данные о квартире не найдены.")
