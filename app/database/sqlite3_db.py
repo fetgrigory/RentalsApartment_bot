@@ -36,6 +36,45 @@ def create_database():
                           address VARCHAR(50),
                           price VARCHAR(50),
                           category VARCHAR(50))''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users
+                          (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                          user_id INTEGER UNIQUE,
+                          first_name VARCHAR(50),
+                          last_name VARCHAR(50),
+                          phone VARCHAR(50))''')
+        conn.commit()
+
+
+# Check if there is a user in the database
+def check_user_exists(user_id):
+    """AI is creating summary for check_user_exists
+
+    Args:
+        user_id ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+        return cursor.fetchone() is not None
+
+
+# Adding the user to the database
+def insert_user_data(user_id, first_name, last_name, phone):
+    """AI is creating summary for insert_user_data
+
+    Args:
+        user_id ([type]): [description]
+        first_name ([type]): [description]
+        last_name ([type]): [description]
+        phone ([type]): [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (user_id, first_name, last_name, phone) VALUES (?, ?, ?, ?)",
+                       (user_id, first_name, last_name, phone))
         conn.commit()
 
 
