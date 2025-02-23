@@ -86,6 +86,7 @@ async def start(message: types.Message):
                          f"Меня зовут {me.first_name}. Я помогу вам арендовать квартиру.",
                          parse_mode='html', reply_markup=keyboard)
 
+
 @dp.message(F.text == "🛠️Админ-панель")
 async def admin_panel_handler(message: types.Message):
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
@@ -100,11 +101,13 @@ async def add_data_handler(message: types.Message, state: FSMContext):
     keyboard = catalog_categories_keyboard()
     await message.answer("Выберите категорию квартиры:", reply_markup=keyboard)
 
+
 @dp.callback_query(AddApartmentState.CATEGORY)
 async def handle_category_selection(callback_query: types.CallbackQuery, state: FSMContext):
     await state.update_data(category=callback_query.data)
     await state.set_state(AddApartmentState.PHOTO1)
     await callback_query.message.answer("Загрузите первое фото квартиры:")
+
 
 @dp.message(AddApartmentState.PHOTO1)
 async def handle_first_photo(message: types.Message, state: FSMContext):
