@@ -547,7 +547,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     else:
         # If the user is not registered, request data
         await state.set_state(BookingState.FIRST_NAME)
-        await callback_query.message.answer("Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!")
+        await callback_query.message.answer("👤Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!\n Эти данные мы не передаем третьим лицам и нигде не публикуем кроме внутренних ресурсов.")
         await callback_query.message.answer("Шаг 1 из 3. 🟩⬜️⬜️")
         await callback_query.message.answer("Введите ваше имя:")
 
