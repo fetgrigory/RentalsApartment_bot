@@ -548,6 +548,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
         # If the user is not registered, request data
         await state.set_state(BookingState.FIRST_NAME)
         await callback_query.message.answer("Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!")
+        await callback_query.message.answer("Шаг 1 из 3. 🟩⬜️⬜️")
         await callback_query.message.answer("Введите ваше имя:")
 
 
@@ -555,6 +556,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
 async def process_first_name(message: types.Message, state: FSMContext):
     await state.update_data(first_name=message.text)
     await state.set_state(BookingState.LAST_NAME)
+    await message.answer("Шаг 2 из 3. 🟩🟩⬜️")
     await message.answer("Введите вашу фамилию:")
 
 
@@ -562,6 +564,7 @@ async def process_first_name(message: types.Message, state: FSMContext):
 async def process_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
     await state.set_state(BookingState.PHONE)
+    await message.answer("Шаг 3 из 3. 🟩🟩🟩")
     await message.answer("Введите ваш номер телефона:")
 
 
