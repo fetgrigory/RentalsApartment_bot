@@ -579,6 +579,8 @@ async def process_phone(message: types.Message, state: FSMContext):
 
     # Adding the user to the database
     insert_user_data(user_id, first_name, last_name, phone)
+    await state.clear()
+    await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
     # Getting information about the current apartment
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -588,11 +590,9 @@ async def process_phone(message: types.Message, state: FSMContext):
         total_price = int(price) * rent_days
         text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
         keyboard = booking_keyboard()
-        await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
         await message.answer(text, reply_markup=keyboard)
     else:
         await message.answer("Ошибка: данные о квартире не найдены.")
-        await state.clear()
 
 
 @dp.callback_query(F.data == "prev_view")
