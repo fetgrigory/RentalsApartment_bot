@@ -73,8 +73,16 @@ def insert_user_data(user_id, first_name, last_name, phone):
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (user_id, first_name, last_name, phone) VALUES (?, ?, ?, ?)",
-                       (user_id, first_name, last_name, phone))
+        if check_user_exists(user_id):
+            cursor.execute(
+                "UPDATE users SET first_name=?, last_name=?, phone=? WHERE user_id=?",
+                (first_name, last_name, phone, user_id)
+            )
+        else:
+            cursor.execute(
+                "INSERT INTO users (user_id, first_name, last_name, phone) VALUES (?, ?, ?, ?)",
+                (user_id, first_name, last_name, phone)
+            )
         conn.commit()
 
 
