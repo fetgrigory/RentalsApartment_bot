@@ -18,9 +18,9 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data
+from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings
 # from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data
-from app.payment import send_invoice, handle_successful_payment
+from app.payment import send_invoice
 
 # Initialize bot and dispatcher in combination with state storage
 
@@ -535,6 +535,26 @@ async def get_apartment_data_edit_handler(message: types.Message, state: FSMCont
     await message.answer("Выберите категорию квартиры для редактирования:", reply_markup=keyboard)
 
 
+# Fetch and display list of bookings
+@dp.message(F.text == "📜Список бронирований")
+async def show_bookings(message: types.Message):
+    bookings = get_bookings()
+    if not bookings:
+        await message.answer("Бронирования не найдены.")
+        return
+
+    bookings_text = "Список бронирований:\n\n"
+    for booking in bookings:
+        bookings_text += (f"ID брони: {booking[0]}\n"
+        f"Имя: {booking[1]} {booking[2]}\n"
+        f"Адрес квартиры: {booking[3]}\n"
+        f"Дата начала: {booking[4]}\n"
+        f"Дата окончания: {booking[5]}\n"
+        f"Дней аренды: {booking[6]}\n"
+        f"Общая стоимость: {booking[7]} RUB\n\n")
+
+    await message.answer(bookings_text)
+
 # Navigate to the next or previous apartment details
 @dp.callback_query(F.data == "add")
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
@@ -678,6 +698,18 @@ async def pre_checkout_query(pre_checkout_q: types.PreCheckoutQuery):
 @dp.message(F.content_type == ContentType.SUCCESSFUL_PAYMENT)
 async def successful_payment(message: types.Message):
     await handle_successful_payment(bot, message)
+
+
+# Handle successful payment
+async def handle_successful_payment(bot, message):
+    user_id = message.from_user.id
+    apartment_id = USER_DATA.get('current_apartment')[0]
+    start_date = datetime.datetime.now().date()
+    rent_days = USER_DATA.get('rent_days', 1)
+    total_price = int(USER_DATA.get('current_apartment')[7]) * rent_days
+    insert_booking_data(user_id, apartment_id, start_date, rent_days, total_price)
+
+    await bot.send_message(user_id, "Оплата прошла успешно! Ваше бронирование подтверждено.")
 
 
 # Add a new handler for deleting an apartment

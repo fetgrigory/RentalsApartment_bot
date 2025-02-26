@@ -36,6 +36,7 @@ def admin_keyboard():
     keyboard = ReplyKeyboardBuilder()
     keyboard.row(types.KeyboardButton(text="➕Добавить данные"))
     keyboard.row(types.KeyboardButton(text="✏️Редактировать каталог"))
+    keyboard.row(types.KeyboardButton(text="📜Список бронирований"))
     keyboard.row(types.KeyboardButton(text="⤴️Назад"))
     return keyboard.as_markup(resize_keyboard=True)
 
