@@ -18,7 +18,7 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings
+from app.database.sqlite3_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings
 # from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, check_user_exists, insert_user_data
 from app.payment import send_invoice
 
@@ -555,21 +555,36 @@ async def show_bookings(message: types.Message):
 
     await message.answer(bookings_text)
 
+
 # Navigate to the next or previous apartment details
 @dp.callback_query(F.data == "add")
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    # Check if there is a user in the database
-    if check_user_exists(user_id):
-        # If the user is already registered, proceed to booking
-        keyboard = booking_keyboard()
-        await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        apartment = USER_DATA['apartments'][index]
+        apartment_id = apartment[0]
+        start_date = datetime.datetime.now().date()
+        rent_days = USER_DATA.get('rent_days', 1)
+        end_date = start_date + datetime.timedelta(days=rent_days)
+        # Check if the apartment is available
+        if is_apartment_available(apartment_id, start_date, end_date):
+            # Check if there is a user in the database
+            if check_user_exists(user_id):
+                # If the user is already registered, proceed to booking
+                keyboard = booking_keyboard()
+                await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+            else:
+                # If the user is not registered, request data
+                await state.set_state(BookingState.FIRST_NAME)
+                await callback_query.message.answer("👤Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!\n Эти данные мы не передаем третьим лицам и нигде не публикуем кроме внутренних ресурсов.")
+                await callback_query.message.answer("Шаг 1 из 3. 🟩⬜️⬜️")
+                await callback_query.message.answer("Введите ваше имя:")
+        else:
+            # Notify the user that the apartment is already booked
+            await callback_query.answer("К сожалению, квартира уже забронирована. Пожалуйста, выберите другую квартиру.")
     else:
-        # If the user is not registered, request data
-        await state.set_state(BookingState.FIRST_NAME)
-        await callback_query.message.answer("👤Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!\n Эти данные мы не передаем третьим лицам и нигде не публикуем кроме внутренних ресурсов.")
-        await callback_query.message.answer("Шаг 1 из 3. 🟩⬜️⬜️")
-        await callback_query.message.answer("Введите ваше имя:")
+        await callback_query.answer("Ошибка: данные о квартире не найдены.")
 
 
 @dp.message(BookingState.FIRST_NAME)
