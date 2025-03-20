@@ -126,6 +126,29 @@ def get_catalog_by_category(category):
     return data
 
 
+# Checking if the apartment is available
+def is_apartment_available(apartment_id, start_date, end_date):
+    """AI is creating summary for is_apartment_available
+
+    Args:
+        apartment_id ([type]): [description]
+        start_date ([type]): [description]
+        end_date ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM bookings
+            WHERE apartment_id = ?
+            AND ((start_date <= ? AND end_date >= ?)
+            OR (start_date <= ? AND end_date >= ?))
+        """, (apartment_id, start_date, start_date, end_date, end_date))
+        return cursor.fetchone() is None
+
+
 # Inserts a new booking record
 def insert_booking_data(user_id, apartment_id, start_date, rent_days, total_price):
     """AI is creating summary for insert_booking_data
