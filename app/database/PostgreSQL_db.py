@@ -1,12 +1,13 @@
 '''
 This module make
 
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
+Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
 Starting 27/10/2024
 Ending //
 '''
 import psycopg2
 import os
+import datetime
 
 
 def db_connect():
@@ -36,29 +37,32 @@ def create_database():
     with db_connect() as conn:
         cursor = conn.cursor()
         # Create the 'catalog' table if it does not exist, defining its structure.
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS catalog (
-                id SERIAL PRIMARY KEY,
-                date VARCHAR(250),
-                photo1 VARCHAR(250),
-                photo2 VARCHAR(250),
-                photo3 VARCHAR(250),
-                description VARCHAR(250),
-                address VARCHAR(250),
-                price VARCHAR(250),
-                category VARCHAR(250)
-            )
-        ''')
-        # Create the 'users' table if it does not exist, defining its structure.
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                user_id INTEGER UNIQUE,
-                first_name VARCHAR(50),
-                last_name VARCHAR(50),
-                phone VARCHAR(50)
-            )
-        ''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS catalog
+                          (id SERIAL PRIMARY KEY,
+                          date TEXT,
+                          photo1 TEXT,
+                          photo2 TEXT,
+                          photo3 TEXT,
+                          description TEXT,
+                          address TEXT,
+                          price TEXT,
+                          category TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users
+                          (id SERIAL PRIMARY KEY,
+                          user_id INTEGER UNIQUE,
+                          first_name TEXT,
+                          last_name TEXT,
+                          phone TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS bookings
+                          (id SERIAL PRIMARY KEY,
+                          user_id INTEGER,
+                          apartment_id INTEGER,
+                          start_date DATE,
+                          end_date DATE,
+                          rent_days INTEGER,
+                          total_price INTEGER,
+                          FOREIGN KEY (user_id) REFERENCES users(user_id),
+                          FOREIGN KEY (apartment_id) REFERENCES catalog(id))''')
         conn.commit()
 
 
@@ -90,8 +94,16 @@ def insert_user_data(user_id, first_name, last_name, phone):
     """
     with db_connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (user_id, first_name, last_name, phone) VALUES (%s, %s, %s, %s)",
-                       (user_id, first_name, last_name, phone))
+        if check_user_exists(user_id):
+            cursor.execute(
+                "UPDATE users SET first_name=%s, last_name=%s, phone=%s WHERE user_id=%s",
+                (first_name, last_name, phone, user_id)
+            )
+        else:
+            cursor.execute(
+                "INSERT INTO users (user_id, first_name, last_name, phone) VALUES (%s, %s, %s, %s)",
+                (user_id, first_name, last_name, phone)
+            )
         conn.commit()
 
 
@@ -103,6 +115,7 @@ def get_catalog_data():
     """
     with db_connect() as conn:
         cursor = conn.cursor()
+        # Execute a SELECT query to fetch all records from the 'catalog' table.
         cursor.execute("SELECT * FROM catalog")
         # Retrieve all the results from the query.
         data = cursor.fetchall()
@@ -126,6 +139,68 @@ def get_catalog_by_category(category):
     return data
 
 
+# Checking if the apartment is available
+def is_apartment_available(apartment_id, start_date, end_date):
+    """AI is creating summary for is_apartment_available
+
+    Args:
+        apartment_id ([type]): [description]
+        start_date ([type]): [description]
+        end_date ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM bookings
+            WHERE apartment_id = %s
+            AND ((start_date <= %s AND end_date >= %s)
+            OR (start_date <= %s AND end_date >= %s))
+        """, (apartment_id, start_date, start_date, end_date, end_date))
+        return cursor.fetchone() is None
+
+
+# Inserts a new booking record
+def insert_booking_data(user_id, apartment_id, start_date, rent_days, total_price):
+    """AI is creating summary for insert_booking_data
+
+    Args:
+        user_id ([type]): [description]
+        apartment_id ([type]): [description]
+        start_date ([type]): [description]
+        rent_days ([type]): [description]
+        total_price ([type]): [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        end_date = start_date + datetime.timedelta(days=rent_days)
+        cursor.execute(
+            "INSERT INTO bookings (user_id, apartment_id, start_date, end_date, rent_days, total_price) VALUES (%s, %s, %s, %s, %s, %s)",
+            (user_id, apartment_id, start_date, end_date, rent_days, total_price)
+        )
+        conn.commit()
+
+
+# Retrieves all booking records along with user and apartment details.
+def get_bookings():
+    """AI is creating summary for get_bookings
+
+    Returns:
+        [type]: [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT bookings.id, users.first_name, users.last_name, catalog.address, bookings.start_date, bookings.end_date, bookings.rent_days, bookings.total_price
+            FROM bookings
+            JOIN users ON bookings.user_id = users.user_id
+            JOIN catalog ON bookings.apartment_id = catalog.id
+        """)
+        return cursor.fetchall()
+
+
 def insert_apartment_data(data):
     """AI is creating summary for insert_apartment_data
 
@@ -135,10 +210,7 @@ def insert_apartment_data(data):
     with db_connect() as conn:
         cursor = conn.cursor()
         # Insert a new record into the 'catalog' table using the provided data.
-        cursor.execute(
-            "INSERT INTO catalog (date, photo1, photo2, photo3, description, address, price, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            data
-        )
+        cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, description, address, price, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", data)
         conn.commit()
 
 

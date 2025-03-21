@@ -159,7 +159,7 @@ def insert_booking_data(user_id, apartment_id, start_date, rent_days, total_pric
         start_date ([type]): [description]
         rent_days ([type]): [description]
         total_price ([type]): [description]
-    """    
+    """
     with db_connect() as conn:
         cursor = conn.cursor()
         end_date = start_date + datetime.timedelta(days=rent_days)
@@ -176,7 +176,7 @@ def get_bookings():
 
     Returns:
         [type]: [description]
-    """    
+    """
     with db_connect() as conn:
         cursor = conn.cursor()
         cursor.execute("""
