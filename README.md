@@ -49,11 +49,11 @@
 
 ## Платежные системы
 ### PayMaster
-![Процесс оплаты](https://github.com/user-attachments/assets/a1bb13ea-8507-4279-bb67-a746d8241c31)
+![Процесс оплаты](https://github.com/user-attachments/assets/a1bb13ea-8507-4279-bb67-a746d8241c31)<br />
 *Преимущество: мгновенное подтверждение брони*
 
 ### Сбербанк (с бонусами СПАСИБО)
-![Оплата с бонусами](https://github.com/user-attachments/assets/20850011-884a-449c-8d39-ee02ee141f5f)
+![Оплата с бонусами](https://github.com/user-attachments/assets/20850011-884a-449c-8d39-ee02ee141f5f)<br />
 *Дополнительный бонус: снижение стоимости за счет баллов*
 
 ### Тестовые реквизиты:
