@@ -132,10 +132,10 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-4. Запустите бота командой:
+3. Установка зависимостей:
    ```bash
-   python main.py
-   ```
+     pip install -r requirements.txt
+     ```
 4. Запустите бота командой:
    ```bash
    python main.py
