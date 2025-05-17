@@ -68,6 +68,8 @@ def create_database():
                           user_id INTEGER,
                           apartment_id INTEGER,
                           review_text TEXT,
+                        sentiment_label TEXT,
+                        sentiment_score FLOAT,
                            date DATE DEFAULT CURRENT_DATE,
                           FOREIGN KEY (user_id) REFERENCES users(user_id),
                           FOREIGN KEY (apartment_id) REFERENCES catalog(id))''')
