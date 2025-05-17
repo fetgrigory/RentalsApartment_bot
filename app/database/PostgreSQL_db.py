@@ -63,6 +63,14 @@ def create_database():
                           total_price INTEGER,
                           FOREIGN KEY (user_id) REFERENCES users(user_id),
                           FOREIGN KEY (apartment_id) REFERENCES catalog(id))''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS reviews
+                          (id SERIAL PRIMARY KEY,
+                          user_id INTEGER,
+                          apartment_id INTEGER,
+                          review_text TEXT,
+                           date DATE DEFAULT CURRENT_DATE,
+                          FOREIGN KEY (user_id) REFERENCES users(user_id),
+                          FOREIGN KEY (apartment_id) REFERENCES catalog(id))''')
         conn.commit()
 
 
@@ -244,5 +252,22 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, description, add
         cursor.execute(
             "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, description=%s, address=%s, price=%s, category=%s WHERE id=%s",
             (photo1, photo2, photo3, description, address, price, category, apartment_id)
+        )
+        conn.commit()
+
+
+def insert_review(user_id, apartment_id, review_text):
+    """AI is creating summary for insert_review
+
+    Args:
+        user_id ([type]): [description]
+        apartment_id ([type]): [description]
+        review_text ([type]): [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO reviews (user_id, apartment_id, review_text) VALUES (%s, %s, %s)",
+            (user_id, apartment_id, review_text)
         )
         conn.commit()

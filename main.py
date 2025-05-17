@@ -18,7 +18,7 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings
+from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review
 from app.payment import send_invoice
 
 # Initialize bot and dispatcher in combination with state storage
@@ -56,6 +56,10 @@ class BookingState(StatesGroup):
     FIRST_NAME = State()
     LAST_NAME = State()
     PHONE = State()
+
+
+class ReviewState(StatesGroup):
+    TEXT = State()
 
 
 # Dictionary to store user data temporarily
@@ -748,6 +752,24 @@ async def edit_apartment(callback_query: types.CallbackQuery):
     keyboard = edit_apartment_keyboard(index)
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
 
+# Add apartment review
+@dp.callback_query(F.data == "add_review")
+async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(ReviewState.TEXT)
+    await callback_query.message.answer("Пожалуйста, введите ваш отзыв:")
+
+
+@dp.message(ReviewState.TEXT)
+async def save_review(message: types.Message, state: FSMContext):
+    review_text = message.text
+    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
+        apartment_id = USER_DATA['apartments'][USER_DATA['apartment_index']][0]
+        user_id = message.from_user.id
+        insert_review(user_id, apartment_id, review_text)
+        await message.answer("Спасибо за ваш отзыв!")
+    else:
+        await message.answer("Ошибка: не удалось сохранить отзыв.")
+    await state.clear()
 
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
