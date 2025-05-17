@@ -8,6 +8,7 @@ Ending //
 import psycopg2
 import os
 import datetime
+from app.nlp_processor import analyze_review
 
 
 def db_connect():
@@ -268,8 +269,9 @@ def insert_review(user_id, apartment_id, review_text):
     """
     with db_connect() as conn:
         cursor = conn.cursor()
+        analysis = analyze_review(review_text)
         cursor.execute(
-            "INSERT INTO reviews (user_id, apartment_id, review_text) VALUES (%s, %s, %s)",
-            (user_id, apartment_id, review_text)
+            "INSERT INTO reviews (user_id, apartment_id, review_text, sentiment_label, sentiment_score) VALUES (%s, %s, %s, %s, %s)",
+            (user_id, apartment_id, review_text, analysis["label"], analysis["score"])
         )
         conn.commit()

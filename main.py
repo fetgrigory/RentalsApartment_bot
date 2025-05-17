@@ -752,6 +752,7 @@ async def edit_apartment(callback_query: types.CallbackQuery):
     keyboard = edit_apartment_keyboard(index)
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
 
+
 # Add apartment review
 @dp.callback_query(F.data == "add_review")
 async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
