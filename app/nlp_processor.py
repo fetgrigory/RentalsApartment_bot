@@ -18,7 +18,7 @@ def load_sentiment_model():
     """
     return pipeline(
         task='sentiment-analysis',
-        model='SkolkovoInstitute/russian_toxicity_classifier'
+        model='blanchefort/rubert-base-cased-sentiment'
     )
 
 

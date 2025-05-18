@@ -18,7 +18,7 @@ from aiogram.filters import Command
 from aiogram.types import ContentType
 import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
-from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review
+from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review, get_reviews
 from app.payment import send_invoice
 
 # Initialize bot and dispatcher in combination with state storage
@@ -772,5 +772,25 @@ async def save_review(message: types.Message, state: FSMContext):
         await message.answer("Ошибка: не удалось сохранить отзыв.")
     await state.clear()
 
+
+@dp.message(F.text == "📝Просмотр отзывов")
+async def show_reviews(message: types.Message):
+    reviews = get_reviews()
+    if not reviews:
+        await message.answer("Отзывы не найдены.")
+        return
+
+    reviews_text = "Список отзывов:\n\n"
+    for review in reviews:
+        reviews_text += (
+            f"ID отзыва: {review[0]}\n"
+            f"ID пользователя: {review[1]}\n"
+            f"ID квартиры: {review[2]}\n"
+            f"Текст отзыва: {review[3]}\n"
+            f"Оценка: {review[4]} ({review[5]})\n"
+            f"Дата: {review[6]}\n\n"
+        )
+
+    await message.answer(reviews_text)
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
