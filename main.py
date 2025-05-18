@@ -773,6 +773,7 @@ async def save_review(message: types.Message, state: FSMContext):
     await state.clear()
 
 
+# View all reviews
 @dp.message(F.text == "📝Просмотр отзывов")
 async def show_reviews(message: types.Message):
     reviews = get_reviews()
