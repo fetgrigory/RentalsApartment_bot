@@ -275,3 +275,19 @@ def insert_review(user_id, apartment_id, review_text):
             (user_id, apartment_id, review_text, analysis["label"], analysis["score"])
         )
         conn.commit()
+
+
+def get_reviews():
+    """AI is creating summary for get_reviews
+
+    Returns:
+        [type]: [description]
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, user_id, apartment_id, review_text, sentiment_label, sentiment_score, date
+            FROM reviews
+            ORDER BY date DESC
+        """)
+        return cursor.fetchall()

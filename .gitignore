@@ -4,3 +4,4 @@ app/__pycache__/payment.cpython-311.pyc
 app/__pycache__/keyboards.cpython-311.pyc
 app/database/__pycache__/PostgreSQL_db.cpython-311.pyc
 app/__pycache__/sentiment_analysis.cpython-311.pyc
+app/__pycache__/nlp_processor.cpython-311.pyc
