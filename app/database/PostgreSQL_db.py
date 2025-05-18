@@ -237,6 +237,7 @@ def delete_apartment_data(apartment_id):
         conn.commit()
 
 
+# Updates apartment data in the 'catalog' table by the specified ID
 def update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category):
     """AI is creating summary for update_apartment_data
 
@@ -259,6 +260,7 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, description, add
         conn.commit()
 
 
+# Adds an apartment review to the 'reviews' table with text tonality analysis
 def insert_review(user_id, apartment_id, review_text):
     """AI is creating summary for insert_review
 
@@ -277,6 +279,7 @@ def insert_review(user_id, apartment_id, review_text):
         conn.commit()
 
 
+# Retrieves a list of all reviews from the database, sorted by date (new first)
 def get_reviews():
     """AI is creating summary for get_reviews
 
