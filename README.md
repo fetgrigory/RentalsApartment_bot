@@ -32,8 +32,6 @@ Telegram-бот для аренды квартир с административ
 - Стоимость одной аренды: 3 000 руб.
 - Конверсия до бота: 40% → после: 60%
 ## Администраторская панель:
-![Снимок экрана админ-панели](https://github.com/user-attachments/assets/2b35828b-cf0a-4a5c-b80f-a779f415db83)<br />
-## Администраторская панель:
 ![Снимок экрана 2025-01-28 135058](https://github.com/user-attachments/assets/2b35828b-cf0a-4a5c-b80f-a779f415db83)<br />
 ![Снимок экрана 2025-01-28 135607](https://github.com/user-attachments/assets/008934e7-f866-4451-bf93-e2dfa87b173f)<br />
 ![Снимок экрана 2025-01-28 140221](https://github.com/user-attachments/assets/c055d313-841f-4acf-93cf-b9e206807f94)<br />
