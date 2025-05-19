@@ -34,7 +34,7 @@ Telegram-бот для аренды квартир с административ
 ## Администраторская панель:
 ![Снимок экрана 2025-01-28 135058](https://github.com/user-attachments/assets/2b35828b-cf0a-4a5c-b80f-a779f415db83)<br />
 ![Снимок экрана 2025-05-19 203315](https://github.com/user-attachments/assets/79582897-ae75-42a9-9500-3410c01c4786)<br />
-![Снимок экрана 2025-01-28 140221](https://github.com/user-attachments/assets/c055d313-841f-4acf-93cf-b9e206807f94)<br />
+![Снимок экрана 2025-05-19 204407](https://github.com/user-attachments/assets/fc5f0f3f-a8d7-44ab-9088-3632b4ae8691)<br />
 ![Снимок экрана 2025-01-28 140650](https://github.com/user-attachments/assets/a6cb4cb2-a280-4859-89b7-bbd24c121437)<br />
 ![Снимок экрана 2025-01-28 140726](https://github.com/user-attachments/assets/441b2945-240a-4cce-8f8a-8ca351c81622)<br />
 - При входе в админ-панель администратору отображается возможность добавления данных.
