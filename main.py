@@ -550,6 +550,7 @@ async def show_bookings(message: types.Message):
     for booking in bookings:
         bookings_text += (f"ID брони: {booking[0]}\n"
         f"Имя: {booking[1]} {booking[2]}\n"
+        f"Телефон: {booking[8]}\n"
         f"Адрес квартиры: {booking[3]}\n"
         f"Дата начала: {booking[4]}\n"
         f"Дата окончания: {booking[5]}\n"
