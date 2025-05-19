@@ -50,7 +50,7 @@ Telegram-бот для аренды квартир с административ
  ## Пользовательская панель:
 ![1](https://github.com/user-attachments/assets/1b289697-0949-4ca2-9b7b-e09d968fd17c)<br />
 ![Снимок экрана 2025-01-28 130904](https://github.com/user-attachments/assets/56b35dfb-efe7-4867-aa7a-ff19832cf2aa)<br />
-![Снимок экрана 2025-01-28 131330](https://github.com/user-attachments/assets/8335b039-acc9-4570-b04d-35c80486fd98)<br />
+![Снимок экрана 2025-05-19 224650](https://github.com/user-attachments/assets/4c736daf-1330-4849-84c2-804b6cf03c78)<br />
 ![Снимок экрана 2025-01-28 132101](https://github.com/user-attachments/assets/f96e7dec-cd54-467d-b166-e88177aee595)<br />
 
 - В каталоге квартир вы сможете просматривать доступные квартиры, просматривать фотографии, описание и цены квартир, а также оплачивать аренду фотографий через инлайн-оплату.
