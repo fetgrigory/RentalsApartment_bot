@@ -204,7 +204,9 @@ def get_bookings():
     with db_connect() as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT bookings.id, users.first_name, users.last_name, catalog.address, bookings.start_date, bookings.end_date, bookings.rent_days, bookings.total_price
+            SELECT bookings.id, users.first_name, users.last_name, catalog.address,
+                   bookings.start_date, bookings.end_date, bookings.rent_days,
+                   bookings.total_price, users.phone
             FROM bookings
             JOIN users ON bookings.user_id = users.user_id
             JOIN catalog ON bookings.apartment_id = catalog.id
