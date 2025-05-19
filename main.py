@@ -785,7 +785,6 @@ async def show_reviews(message: types.Message):
     for review in reviews:
         reviews_text += (
             f"ID отзыва: {review[0]}\n"
-            f"ID пользователя: {review[1]}\n"
             f"ID квартиры: {review[2]}\n"
             f"Текст отзыва: {review[3]}\n"
             f"Оценка: {review[4]} ({review[5]})\n"
