@@ -799,7 +799,7 @@ async def show_reviews(message: types.Message):
     await message.answer(reviews_text)
 
 
-# Question handling: set state and prompt user for rental-related question
+# User support: question input handler
 @dp.message(F.text == "🎧 Задать вопрос")
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
