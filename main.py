@@ -62,6 +62,10 @@ class ReviewState(StatesGroup):
     TEXT = State()
 
 
+class QuestionState(StatesGroup):
+    WAITING_QUESTION = State()
+
+
 # Dictionary to store user data temporarily
 USER_DATA = {}
 questions = [
@@ -793,5 +797,12 @@ async def show_reviews(message: types.Message):
         )
 
     await message.answer(reviews_text)
+
+
+# Question handling: set state and prompt user for rental-related question
+@dp.message(F.text == "🎧 Задать вопрос")
+async def ask_question_handler(message: types.Message, state: FSMContext):
+    await state.set_state(QuestionState.WAITING_QUESTION)
+    await message.answer("Пожалуйста, задайте ваш вопрос по аренде жилья. Я постараюсь помочь!")
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
