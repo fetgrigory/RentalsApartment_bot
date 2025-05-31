@@ -19,7 +19,8 @@ def start_keyboard(user_id):
         keyboard.add(types.KeyboardButton(text="🛠️Админ-панель"),
                      types.KeyboardButton(text="🛍Каталог"),)
         keyboard.row(
-            types.KeyboardButton(text="🌐 Наш сайт")
+            types.KeyboardButton(text="🌐 Наш сайт"),
+            types.KeyboardButton(text="🎧 Задать вопрос")
         )
         # For regular users, provide buttons for catalog and site, with contacts
     else:
