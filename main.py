@@ -20,7 +20,7 @@ import datetime
 from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review, get_reviews
 from app.payment import send_invoice
-
+from app.nlp_processor import ask_gpt
 # Initialize bot and dispatcher in combination with state storage
 
 
@@ -804,5 +804,22 @@ async def show_reviews(message: types.Message):
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
     await message.answer("Пожалуйста, задайте ваш вопрос по аренде жилья. Я постараюсь помочь!")
+
+
+@dp.message(QuestionState.WAITING_QUESTION)
+async def handle_question(message: types.Message, state: FSMContext):
+    question = message.text
+    messages = [{"role": "user", "content": question}]
+    # Show loading message
+    thinking_msg = await message.answer("Думаю над ответом...")
+    try:
+        # Get GPT response
+        response = ask_gpt(messages)
+        await bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
+        # Send the answer
+        await message.answer(response)
+    except Exception as e:
+        print(f"Error processing question: {e}")
+        await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
