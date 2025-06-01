@@ -84,6 +84,7 @@
 | `transformers` | Библиотека для NLP и работы с трансформерами от Hugging Face|
 | `torch` |Фреймворк глубокого обучения PyTorch|
 | `evaluate` |Библиотека для оценки моделей машинного обучения|
+| `g4f`           | Бесплатный аналог ChatGPT         |
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
 ---
