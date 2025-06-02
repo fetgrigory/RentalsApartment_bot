@@ -806,20 +806,23 @@ async def ask_question_handler(message: types.Message, state: FSMContext):
     await message.answer("Пожалуйста, задайте ваш вопрос по аренде жилья. Я постараюсь помочь!")
 
 
+# Handles user's question, saves message history, and returns GPT's response
 @dp.message(QuestionState.WAITING_QUESTION)
-async def handle_question(message: types.Message, state: FSMContext):
-    question = message.text
-    messages = [{"role": "user", "content": question}]
-    # Show loading message
+async def handle_question(message: types.Message):
+    user_id = message.from_user.id
+    # Initialize message history if the user is new
+    USER_DATA.setdefault(user_id, {'messages': []})
+    # Save user's question
+    USER_DATA[user_id]['messages'].append({"role": "user", "content": message.text})
     thinking_msg = await message.answer("Думаю над ответом...")
     try:
-        # Get GPT response
-        response = ask_gpt(messages)
+        # Get GPT's response, remove the indicator, and send the response
+        response = ask_gpt(USER_DATA[user_id]['messages'])
         await bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
-        # Send the answer
+        USER_DATA[user_id]['messages'].append({"role": "assistant", "content": response})
         await message.answer(response)
     except Exception as e:
-        print(f"Error processing question: {e}")
+        print(f"Error (User {user_id}): {e}")
         await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
