@@ -1,7 +1,7 @@
 '''
 This bot make
 
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
+Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
 Starting 28/05/2024
 Ending //
 
@@ -240,7 +240,7 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         await state.clear()
         await message.answer("Первое фото успешно обновлено!")
         # Update the displayed apartment data
-        await show_editing_apartment_data(message, edit_mode=True)
+        await show_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
@@ -268,12 +268,11 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
         price = current_data[7]
         category = current_data[8]
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price, category)
-
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Второе фото успешно обновлено!")
         # Update the displayed apartment data
-        await show_editing_apartment_data(message, edit_mode=True)
+        await show_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
@@ -306,7 +305,7 @@ async def handle_update_third_photo(message: types.Message, state: FSMContext):
         await state.clear()
         await message.answer("Третье фото успешно обновлено!")
         # Update the displayed apartment data
-        await show_editing_apartment_data(message, edit_mode=True)
+        await show_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
@@ -340,7 +339,7 @@ async def handle_update_description(message: types.Message, state: FSMContext):
         await state.clear()
         await message.answer("Описание успешно обновлено!")
         # Update the displayed apartment data
-        await show_editing_apartment_data(message, edit_mode=True)
+        await show_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Введите текст")
 
@@ -370,7 +369,7 @@ async def handle_update_address(message: types.Message, state: FSMContext):
         # Clear the state after updating the address
         await state.clear()
         await message.answer("Адрес успешно обновлен!")
-        await show_editing_apartment_data(message, edit_mode=True)
+        await show_apartment_data(message, edit_mode=True)
     else:
         await message.answer("Введите текст для адреса.")
 
@@ -405,19 +404,15 @@ async def handle_update_price(message: types.Message, state: FSMContext):
             description = current_data[index][5]
             address = current_data[index][6]
             category = current_data[index][8]
-
             # Updating the data in the database
             update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category)
-
             # Clear the state after updating the price
             await state.clear()
             await message.answer("Цена успешно обновлена!")
+            await show_apartment_data(message, edit_mode=True)
 
         except ValueError:
             await message.answer("Пожалуйста, введите корректное целое числовое значение для цены.")
-            # Updating the displayed apartment data
-            await show_editing_apartment_data(message, edit_mode=True)
-
     else:
         await message.answer("Пожалуйста, введите корректное целое числовое значение для цены.")
 
@@ -449,30 +444,14 @@ async def show_apartments_by_category(callback_query: types.CallbackQuery):
 
     USER_DATA['apartments'] = apartments
     USER_DATA['apartment_index'] = 0
-    # Check if from the edit catalog menu
     is_edit_mode = USER_DATA.get('edit_mode', False)
-    if is_edit_mode:
-        await show_editing_apartment_data(callback_query.message, edit_mode=True)
-    else:
-        await get_next_apartment_data(callback_query.message, edit_mode=False, apartments=apartments)
+    await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
 
-#  Inform user about website availability
-@dp.message(F.text == '🌐 Наш сайт')
-async def website(message: types.Message):
-    await message.answer('Сожалею, но у нас пока нет сайта')
-
-
-# Provide contact information
-@dp.message(F.text == '☎️ Контакты')
-async def contact(message: types.Message):
-    await message.answer('Наш телефон: 8-901-133-00-00')
-
-
-# If the directory is empty issue a message
-async def get_next_apartment_data(message: types.Message, edit_mode=False, apartments=None):
+# Apartment data display function
+async def show_apartment_data(message: types.Message, edit_mode=False, apartments=None):
     if apartments is None:
-        apartments = USER_DATA.get('apartments', [])
+        apartments = USER_DATA.get('apartments', get_catalog_data())
     if not apartments:
         await message.answer("Каталог пуст!")
         return
@@ -492,7 +471,7 @@ async def get_next_apartment_data(message: types.Message, edit_mode=False, apart
 
         message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
 
-        # Choose the correct keyboard based on edit_mode
+        # Keyboard selection depending on the mode
         if edit_mode:
             keyboard = catalog_navigation_edit_keyboard(index, len(apartments))
         else:
@@ -503,32 +482,40 @@ async def get_next_apartment_data(message: types.Message, edit_mode=False, apart
         USER_DATA['apartment_index'] = index
 
 
-# Displays apartment data with an optional edit mode.
-async def show_editing_apartment_data(message: types.Message, edit_mode=False):
-    data = get_catalog_data()
-    if not data:
-        await message.answer("Каталог пуст!")
-        return
+# Handler for the previous record
+@dp.callback_query(F.data.in_(["prev_view", "prev_edit"]))
+async def prev_apartment(callback_query: types.CallbackQuery):
+    if 'apartment_index' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        apartments = USER_DATA.get('apartments', get_catalog_data())
+        if index > 0:
+            USER_DATA['apartment_index'] = index - 1
+            is_edit_mode = callback_query.data == "prev_edit"
+            await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
-    index = USER_DATA.get('apartment_index', 0)
-    if index < len(data):
-        record = data[index]
 
-        photos_info = [
-            types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
-            for i in range(2, 5)
-        ]
+# Handler for the next record
+@dp.callback_query(F.data.in_(["next_view", "next_edit"]))
+async def next_apartment(callback_query: types.CallbackQuery):
+    if 'apartment_index' in USER_DATA:
+        index = USER_DATA['apartment_index']
+        apartments = USER_DATA.get('apartments', get_catalog_data())
+        if index < len(apartments) - 1:
+            USER_DATA['apartment_index'] = index + 1
+            is_edit_mode = callback_query.data == "next_edit"
+            await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
-        description = record[5]
-        address = record[6]
-        price = record[7]
 
-        message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
-        keyboard = catalog_navigation_edit_keyboard(index, len(data)) if edit_mode else catalog_navigation_keyboard(index, len(data))
+#  Inform user about website availability
+@dp.message(F.text == '🌐 Наш сайт')
+async def website(message: types.Message):
+    await message.answer('Сожалею, но у нас пока нет сайта')
 
-        await bot.send_media_group(message.chat.id, media=photos_info)
-        await message.answer(message_text, reply_markup=keyboard)
-        USER_DATA['apartment_index'] = index
+
+# Provide contact information
+@dp.message(F.text == '☎️ Контакты')
+async def contact(message: types.Message):
+    await message.answer('Наш телефон: 8-901-133-00-00')
 
 
 # Handler for editing the catalog
@@ -636,42 +623,6 @@ async def process_phone(message: types.Message, state: FSMContext):
         await message.answer(text, reply_markup=keyboard)
     else:
         await message.answer("Ошибка: данные о квартире не найдены.")
-
-
-@dp.callback_query(F.data == "prev_view")
-async def prev_apartment_view(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartments = USER_DATA.get('apartments', [])
-        if index > 0:
-            USER_DATA['apartment_index'] = index - 1
-            await get_next_apartment_data(callback_query.message, edit_mode=False, apartments=apartments)
-
-
-@dp.callback_query(F.data == "next_view")
-async def next_apartment_view(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartments = USER_DATA.get('apartments', [])
-        if index < len(apartments) - 1:
-            USER_DATA['apartment_index'] = index + 1
-            await get_next_apartment_data(callback_query.message, edit_mode=False, apartments=apartments)
-
-
-@dp.callback_query(F.data == "prev_edit")
-async def prev_apartment_edit(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        USER_DATA['apartment_index'] = max(index - 1, 0)
-        await show_editing_apartment_data(callback_query.message, edit_mode=True)
-
-
-@dp.callback_query(F.data == "next_edit")
-async def next_apartment_edit(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        USER_DATA['apartment_index'] = min(index + 1, len(get_catalog_data()) - 1)
-        await show_editing_apartment_data(callback_query.message, edit_mode=True)
 
 
 # Increase the rental period and calculate the total price
