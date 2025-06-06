@@ -76,7 +76,7 @@ CVC/CVV: 111<br />
 ![Снимок экрана 2025-05-19 225710](https://github.com/user-attachments/assets/6b6b5c31-b507-4830-8334-0b9a2502da1f)<br />
 
 ### Пользовательский интерфейс
-![1](https://github.com/user-attachments/assets/1b289697-0949-4ca2-9b7b-e09d968fd17c)<br />
+![Снимок экрана 2025-06-06 164056](https://github.com/user-attachments/assets/863e2b1a-277e-4d5c-b589-1539369ab59e)<br />
 ![Снимок экрана 2025-01-28 130904](https://github.com/user-attachments/assets/56b35dfb-efe7-4867-aa7a-ff19832cf2aa)<br />
 ![Снимок экрана 2025-05-19 224650](https://github.com/user-attachments/assets/4c736daf-1330-4849-84c2-804b6cf03c78)<br />
 ![Снимок экрана 2025-01-28 132101](https://github.com/user-attachments/assets/f96e7dec-cd54-467d-b166-e88177aee595)<br />
