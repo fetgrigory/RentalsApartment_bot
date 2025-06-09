@@ -103,7 +103,16 @@ CVC/CVV: 111<br />
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
 ---
-
+## 🌐 Архитектура
+```mermaid
+graph TD
+    A[Telegram Client] --> B[Bot Server]
+    B --> C[PostgreSQL]
+    B --> D[Payment Gateway]
+    C --> E[(Analytics DB)]
+    B --> F[NLP Model]
+    F --> G[Sentiment Analysis]
+```
 ## 🚧 Дорожная карта
 
 - ✅ **Реализовано**:  
