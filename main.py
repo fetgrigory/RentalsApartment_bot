@@ -776,4 +776,5 @@ async def handle_question(message: types.Message):
         print(f"Error (User {user_id}): {e}")
         await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
 if __name__ == '__main__':
-    asyncio.run(dp.start_polling(bot))
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(dp.start_polling(bot))
