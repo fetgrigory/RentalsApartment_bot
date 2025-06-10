@@ -153,7 +153,7 @@ PAYMENTS_TOKEN=ВАШ_PAYMENT_TOKEN
 
 ### Пример заполнения:
 ```plaintext
-HOST="127.0.0.1"
+HOST="host.docker.internal"
 DBNAME="example_db"
 USER="admin_user"
 PASSWORD="strongpassword"
