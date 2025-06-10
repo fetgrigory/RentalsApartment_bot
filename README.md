@@ -107,23 +107,36 @@ CVC/CVV: 111<br />
 ## 🌐 Архитектура
 ```mermaid
 graph TD
-    A[Telegram Client] --> B[Bot Server]
-    B --> C[(PostgreSQL
-        Catalog
-        Users
-        Bookings
-        Reviews)]
-    
-    B --> D[Payment Provider]
-    B --> E[NLP Processor]
-    E --> F[RuBERT/Sentiment]
-    E --> G[Custom Assistant\nGPT-4 + System Prompt]
-    
-    B --> H[MemoryStorage/FSM]
+    subgraph Admin
+        A[Админ-панель] --> B[Управление каталогом]
+        A --> C[Просмотр бронирований]
+        A --> D[Просмотр отзывов]
+        B --> PostgreSQL
+        C --> PostgreSQL
+        D --> PostgreSQL
+    end
 
-    style C fill:#f9f,stroke:#333
-    style D fill:#ccf,stroke:#333
-    style G fill:#9f9,stroke:#333
+    subgraph User
+        U[Пользователь] --> E[Каталог квартир]
+        U --> F[Бронирование]
+        U --> G[Отзывы]
+        U --> H[Чат-помощник]
+        E --> PostgreSQL
+        F --> Payment
+        G --> PostgreSQL
+        H --> NLP_Processor
+    end
+
+    subgraph Системные компоненты
+        PostgreSQL[(PostgreSQL)]
+        Payment[Платежная система]
+        NLP_Processor[NLP Процессор\nRuBERT + Кастомизированный GPT-4]
+        MemoryStorage[Хранение состояний]
+    end
+
+    Admin --> MemoryStorage
+    User --> MemoryStorage
+
 ```
 ## 🚧 Дорожная карта
 
