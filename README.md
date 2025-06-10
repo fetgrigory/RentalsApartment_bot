@@ -107,36 +107,25 @@ CVC/CVV: 111<br />
 ## 🌐 Архитектура
 ```mermaid
 graph TD
-    subgraph Admin
+    subgraph "👨‍💼 Администратор"
         A[Админ-панель] --> B[Управление каталогом]
         A --> C[Просмотр бронирований]
         A --> D[Просмотр отзывов]
-        B --> PostgreSQL
+        B --> PostgreSQL[(PostgreSQL)]
         C --> PostgreSQL
         D --> PostgreSQL
     end
 
-    subgraph User
+    subgraph "👤 Пользователь"
         U[Пользователь] --> E[Каталог квартир]
         U --> F[Бронирование]
         U --> G[Отзывы]
         U --> H[Чат-помощник]
         E --> PostgreSQL
-        F --> Payment
+        F --> Payment[Платежная система]
         G --> PostgreSQL
-        H --> NLP_Processor
+        H --> NLP[NLP: RuBERT + GPT-4]
     end
-
-    subgraph Системные компоненты
-        PostgreSQL[(PostgreSQL)]
-        Payment[Платежная система]
-        NLP_Processor[NLP Процессор\nRuBERT + Кастомизированный GPT-4]
-        MemoryStorage[Хранение состояний]
-    end
-
-    Admin --> MemoryStorage
-    User --> MemoryStorage
-
 ```
 ## 🚧 Дорожная карта
 
