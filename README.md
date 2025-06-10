@@ -108,21 +108,22 @@ CVC/CVV: 111<br />
 ```mermaid
 graph TD
     A[Telegram Client] --> B[Bot Server]
-    B --> C[PostgreSQL]
-    B --> D[Payment Gateway]
-    B --> F[NLP Processor]
-    F --> G[RuBERT]
-    F --> H[GPT-4]
-    B --> I[MemoryStorage]
+    B --> C[(PostgreSQL
+        Catalog
+        Users
+        Bookings
+        Reviews)]
     
-    C --> Catalog
-    C --> Users
-    C --> Bookings
-    C --> Reviews
+    B --> D[Payment Provider]
+    B --> E[NLP Processor]
+    E --> F[RuBERT/Sentiment]
+    E --> G[Custom Assistant\nGPT-4 + System Prompt]
     
-    G --> SentimentAnalysis
-    H --> ChatProcessing
-    I --> FSM
+    B --> H[MemoryStorage/FSM]
+
+    style C fill:#f9f,stroke:#333
+    style D fill:#ccf,stroke:#333
+    style G fill:#9f9,stroke:#333
 ```
 ## 🚧 Дорожная карта
 
