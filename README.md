@@ -110,9 +110,19 @@ graph TD
     A[Telegram Client] --> B[Bot Server]
     B --> C[PostgreSQL]
     B --> D[Payment Gateway]
-    C --> E[(Analytics DB)]
-    B --> F[NLP Model]
-    F --> G[Sentiment Analysis]
+    B --> F[NLP Processor]
+    F --> G[RuBERT]
+    F --> H[GPT-4]
+    B --> I[MemoryStorage]
+    
+    C --> Catalog
+    C --> Users
+    C --> Bookings
+    C --> Reviews
+    
+    G --> SentimentAnalysis
+    H --> ChatProcessing
+    I --> FSM
 ```
 ## 🚧 Дорожная карта
 
