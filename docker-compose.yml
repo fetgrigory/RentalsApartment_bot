@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    environment:
+      - TOKEN=${TOKEN}
+      - ADMIN_ID=${ADMIN_ID}
+      - PAYMENTS_TOKEN=${PAYMENTS_TOKEN}
+      - HOST=host.docker.internal
+      - DBNAME=${DBNAME}
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
+      - PORT=${PORT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
