@@ -191,13 +191,13 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-3. Сборка образа в Docker:
+3. Сборка образа в Docker с очисткой кэша:
    ```bash
-     docker build -t rental-bot .
+     docker-compose build --no-cache
      ```
 4. Запуск контейнера:
    ```bash
-   docker run --name rental-apartment-bot -d rental-bot
+   docker-compose up
    ```
 
 Теперь бот должен быть готов к использованию. Убедитесь, что ваше соединение с интернетом активно и все конфигурации настроены корректно. Если возникнут ошибки, проверьте файл ".env" на наличие опечаток или некорректных значений.
