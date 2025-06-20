@@ -238,6 +238,7 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price, category)
         # Updating the cache
         USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['apartment_index'] = index
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Первое фото успешно обновлено!")
@@ -272,6 +273,7 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price, category)
         # Updating the cache
         USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['apartment_index'] = index
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Второе фото успешно обновлено!")
@@ -307,6 +309,7 @@ async def handle_update_third_photo(message: types.Message, state: FSMContext):
         update_apartment_data(current_data[0], photo1, photo2, photo3, description, address, price, category)
         # Updating the cache
         USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['apartment_index'] = index
         # Clear the state after updating the photo
         await state.clear()
         await message.answer("Третье фото успешно обновлено!")
@@ -343,6 +346,7 @@ async def handle_update_description(message: types.Message, state: FSMContext):
         update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category)
         # Updating the cache
         USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['apartment_index'] = index
         # Clear the state after updating the description
         await state.clear()
         await message.answer("Описание успешно обновлено!")
@@ -376,6 +380,7 @@ async def handle_update_address(message: types.Message, state: FSMContext):
         update_apartment_data(apartment_id, photo1, photo2, photo3, description, new_address, price, category)
         # Updating the cache
         USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['apartment_index'] = index
         # Clear the state after updating the address
         await state.clear()
         await message.answer("Адрес успешно обновлен!")
@@ -418,6 +423,7 @@ async def handle_update_price(message: types.Message, state: FSMContext):
             update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category)
             # Updating the cache
             USER_DATA['apartments'] = get_catalog_data()
+            USER_DATA['apartment_index'] = index
             # Clear the state after updating the price
             await state.clear()
             await message.answer("Цена успешно обновлена!")
