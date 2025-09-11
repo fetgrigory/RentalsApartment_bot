@@ -90,17 +90,17 @@ RentalsApartment_bot/
 │
 ├── app/
 │   ├── database/
-│   │   └── PostgreSQL_db.py
-│   ├── keyboards.py
-│   ├── nlp_processor.py
-│   └── payment.py
-├── main.py
-├── Dockerfile
-├── docker-compose.yml
-├── .env
+│   │   └── PostgreSQL_db.py       # Работа с PostgreSQL
+│   ├── keyboards.py               # Клавиатуры Telegram
+│   ├── nlp_processor.py           # NLP и обработка текста
+│   └── payment.py                 # Логика платежей
+├── main.py                        # Точка входа бота
+├── Dockerfile                     # Контейнеризация
+├── docker-compose.yml             # Сборка и запуск контейнеров
+├── .env                           # Переменные окружения
 ├── .gitignore
 ├── .dockerignore
-└── requirements.txt
+└── requirements.txt               # Зависимости проекта
 ```
 ## 🛠️ Технологии
 
