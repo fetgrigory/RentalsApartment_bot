@@ -100,7 +100,6 @@ RentalsApartment_bot/
 ├── .env
 ├── .gitignore
 ├── .dockerignore
-├── README.md
 └── requirements.txt
 ```
 ## 🛠️ Технологии
