@@ -17,7 +17,8 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.types import ContentType
-from app.keyboards import start_keyboard, admin_keyboard, catalog_navigation_keyboard, catalog_categories_keyboard, booking_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
+from app.keyboards.user_keyboard import start_keyboard, catalog_categories_keyboard, catalog_navigation_keyboard, booking_keyboard
+from app.keyboards.admin_keyboard import admin_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review, get_reviews
 from app.payment import send_invoice
 from app.nlp_processor import ask_gpt
