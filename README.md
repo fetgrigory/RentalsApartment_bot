@@ -83,6 +83,23 @@ CVC/CVV: 111<br />
 *Преимущество: мгновенное подтверждение брони*
 
 ---
+## 📂 Структура проекта
+
+```text
+RentalsApartment_bot/
+│
+├── app/
+│   ├── database/
+│   ├── keyboards.py
+│   ├── nlp_processor.py
+│   └── payment.py
+├── main.py
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+├── .gitignore
+├── .dockerignore
+└── requirements.txt
 
 ## 🛠️ Технологии
 
