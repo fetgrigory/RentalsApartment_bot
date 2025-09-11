@@ -109,7 +109,7 @@ RentalsApartment_bot/
 | `aiohttp`      |Асинхронные HTTP-запросы и веб-сервер|
 | `python-dotenv` | Работа с переменными окружения|
 | `transformers` | Библиотека для NLP и работы с трансформерами от Hugging Face|
-| `torch` |Фреймворк глубокого обучения PyTorch|
+| `torch` |Фреймворк PyTorch, используется для загрузки и работы с NLP-моделью RuBERT для анализа отзывов пользователей|
 | `evaluate` |Библиотека для оценки моделей машинного обучения|
 | `g4f`           | Бесплатный аналог ChatGPT         |
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
