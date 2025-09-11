@@ -90,6 +90,7 @@ RentalsApartment_bot/
 │
 ├── app/
 │   ├── database/
+│   │   └── PostgreSQL_db.py
 │   ├── keyboards.py
 │   ├── nlp_processor.py
 │   └── payment.py
@@ -99,6 +100,7 @@ RentalsApartment_bot/
 ├── .env
 ├── .gitignore
 ├── .dockerignore
+├── README.md
 └── requirements.txt
 ```
 ## 🛠️ Технологии
