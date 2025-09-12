@@ -5,9 +5,9 @@ Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
 Starting 27/10/2024
 Ending //
 '''
-import psycopg2
-import os
 import datetime
+import os
+import psycopg2
 from app.nlp_processor import analyze_review
 
 

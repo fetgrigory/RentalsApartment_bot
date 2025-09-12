@@ -11,7 +11,7 @@ from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 
-def start_keyboard(user_id):
+async def start_keyboard(user_id):
     # Check if the user is an admin by comparing user_id with the ADMIN_ID environment variable
     keyboard = ReplyKeyboardBuilder()
     if user_id == int(os.getenv('ADMIN_ID')):
@@ -33,7 +33,7 @@ def start_keyboard(user_id):
 
 
 # Apartment category selection keyboard
-def catalog_categories_keyboard():
+async def catalog_categories_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Однокомнатная", callback_data="one-room_apartment"),
