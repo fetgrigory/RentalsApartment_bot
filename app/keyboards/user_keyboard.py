@@ -11,7 +11,7 @@ from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 
-async def start_keyboard(user_id):
+def start_keyboard(user_id):
     # Check if the user is an admin by comparing user_id with the ADMIN_ID environment variable
     keyboard = ReplyKeyboardBuilder()
     if user_id == int(os.getenv('ADMIN_ID')):
@@ -33,7 +33,7 @@ async def start_keyboard(user_id):
 
 
 # Apartment category selection keyboard
-async def catalog_categories_keyboard():
+def catalog_categories_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Однокомнатная", callback_data="one-room_apartment"),
@@ -47,7 +47,7 @@ async def catalog_categories_keyboard():
 
 
 # Create an InlineKeyboardMarkup for catalog navigation
-async def catalog_navigation_keyboard(index, total_records):
+def catalog_navigation_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(types.InlineKeyboardButton(text="Забронировать ✅", callback_data="add"))
     keyboard.row(types.InlineKeyboardButton(text="Оставить отзыв ⭐", callback_data="add_review"))
@@ -62,7 +62,7 @@ async def catalog_navigation_keyboard(index, total_records):
 
 
 # Create an InlineKeyboardMarkup for booking options
-async def booking_keyboard():
+def booking_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
         types.InlineKeyboardButton(text="-1", callback_data="subtract_days"),

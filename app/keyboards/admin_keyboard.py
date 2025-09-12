@@ -12,7 +12,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 
 # Create a keyboard for a specific administrator with a button to add data and exit administrator mode
-async def admin_keyboard():
+def admin_keyboard():
     keyboard = ReplyKeyboardBuilder()
     keyboard.row(types.KeyboardButton(text="➕Добавить данные"))
     keyboard.row(types.KeyboardButton(text="✏️Редактировать каталог"))
@@ -22,8 +22,22 @@ async def admin_keyboard():
     return keyboard.as_markup(resize_keyboard=True)
 
 
+# Apartment category selection keyboard for admin
+def admin_category_keyboard():
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        types.InlineKeyboardButton(text="Однокомнатная", callback_data="one-room_apartment"),
+        types.InlineKeyboardButton(text="Двухкомнатная", callback_data="two-room_apartment")
+    )
+    keyboard.row(
+        types.InlineKeyboardButton(text="Трехкомнатная", callback_data="three-room_apartment"),
+        types.InlineKeyboardButton(text="Студия", callback_data="studio")
+    )
+    return keyboard.as_markup()
+
+
 # Keyboard for navigation and editing of the catalog
-async def catalog_navigation_edit_keyboard(index, total_records):
+def catalog_navigation_edit_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Удалить", callback_data=f"delete_{index}"),
@@ -38,7 +52,7 @@ async def catalog_navigation_edit_keyboard(index, total_records):
 
 
 # Keyboard for editing apartment parameters
-async def edit_apartment_keyboard(index):
+def edit_apartment_keyboard(index):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text='Обновить первое фото', callback_data=f'update_photo1_{index}'),

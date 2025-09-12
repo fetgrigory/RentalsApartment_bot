@@ -18,7 +18,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.types import ContentType
 from app.keyboards.user_keyboard import start_keyboard, catalog_categories_keyboard, catalog_navigation_keyboard, booking_keyboard
-from app.keyboards.admin_keyboard import admin_keyboard, catalog_navigation_edit_keyboard, edit_apartment_keyboard
+from app.keyboards.admin_keyboard import admin_keyboard, catalog_navigation_edit_keyboard, admin_category_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review, get_reviews
 from app.payment import send_invoice
 from app.nlp_processor import ask_gpt
@@ -106,7 +106,7 @@ async def admin_panel_handler(message: types.Message):
 @dp.message(F.text == "➕Добавить данные")
 async def add_data_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddApartmentState.CATEGORY)
-    keyboard = catalog_categories_keyboard()
+    keyboard = admin_category_keyboard()
     await message.answer("Выберите категорию квартиры:", reply_markup=keyboard)
 
 
@@ -542,7 +542,7 @@ async def contact(message: types.Message):
 # Handler for editing the catalog
 @dp.message(F.text == "✏️Редактировать каталог")
 async def get_apartment_data_edit_handler(message: types.Message, state: FSMContext):
-    keyboard = catalog_categories_keyboard()
+    keyboard = admin_category_keyboard()
     # Set edit mode flag
     USER_DATA['edit_mode'] = True
     # Reset the FSM state
