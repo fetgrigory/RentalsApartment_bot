@@ -12,7 +12,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 
 # Create a keyboard for a specific administrator with a button to add data and exit administrator mode
-def admin_keyboard():
+async def admin_keyboard():
     keyboard = ReplyKeyboardBuilder()
     keyboard.row(types.KeyboardButton(text="➕Добавить данные"))
     keyboard.row(types.KeyboardButton(text="✏️Редактировать каталог"))
@@ -23,7 +23,7 @@ def admin_keyboard():
 
 
 # Keyboard for navigation and editing of the catalog
-def catalog_navigation_edit_keyboard(index, total_records):
+async def catalog_navigation_edit_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text="Удалить", callback_data=f"delete_{index}"),
@@ -38,7 +38,7 @@ def catalog_navigation_edit_keyboard(index, total_records):
 
 
 # Keyboard for editing apartment parameters
-def edit_apartment_keyboard(index):
+async def edit_apartment_keyboard(index):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         types.InlineKeyboardButton(text='Обновить первое фото', callback_data=f'update_photo1_{index}'),
