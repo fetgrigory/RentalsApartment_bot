@@ -93,7 +93,7 @@ RentalsApartment_bot/
 │   │   └── PostgreSQL_db.py       # Работа с PostgreSQL
 │   ├── keyboards/
 │       └── admin_keyboard.py      # Клавиатура для админа
-        └── user_keyboard.py       # Клавиатура для пользователя
+│       └── user_keyboard.py       # Клавиатура для пользователя
 │   ├── nlp_processor.py           # NLP и обработка текста
 │   └── payment.py                 # Логика платежей
 ├── main.py                        # Точка входа бота
