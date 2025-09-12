@@ -47,7 +47,7 @@ async def catalog_categories_keyboard():
 
 
 # Create an InlineKeyboardMarkup for catalog navigation
-def catalog_navigation_keyboard(index, total_records):
+async def catalog_navigation_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
     keyboard.row(types.InlineKeyboardButton(text="Забронировать ✅", callback_data="add"))
     keyboard.row(types.InlineKeyboardButton(text="Оставить отзыв ⭐", callback_data="add_review"))
