@@ -128,7 +128,7 @@ RentalsApartment_bot/
 Файл ".env" содержит все важные параметры конфигурации, которые необходимы для работы бота. Убедитесь, что вы заполнили все требуемые поля:
 
 - **TOKEN**: Токен вашего бота, который можно получить, обратившись к [@BotFather](https://t.me/BotFather).
-- **ADMIN_ID**: Ваш личный ID в Telegram. Получить его можно с помощью бота [@TheGetAnyID_bot]((https://t.me/TheGetAnyID_bot)).
+- **ADMIN_ID**: Ваш личный ID в Telegram. Получить его можно с помощью бота [@TheGetAnyID_bot](https://t.me/TheGetAnyID_bot).
 - **PAYMENTS_TOKEN**: Токен для обработки платежей. Также можно получить у [@BotFather](https://t.me/BotFather).
 
 ### Пример заполнения файла .env:
