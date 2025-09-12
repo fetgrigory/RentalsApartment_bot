@@ -62,7 +62,7 @@ async def catalog_navigation_keyboard(index, total_records):
 
 
 # Create an InlineKeyboardMarkup for booking options
-def booking_keyboard():
+async def booking_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
         types.InlineKeyboardButton(text="-1", callback_data="subtract_days"),
