@@ -11,9 +11,8 @@ import asyncio
 import os
 import datetime
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, types, F
+from aiogram import Bot, Router, Dispatcher, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.types import ContentType
@@ -21,50 +20,16 @@ from app.keyboards.user_keyboard import start_keyboard, catalog_categories_keybo
 from app.keyboards.admin_keyboard import admin_keyboard, catalog_navigation_edit_keyboard, admin_category_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import create_database, get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, is_apartment_available, update_apartment_data, check_user_exists, insert_user_data, insert_booking_data, get_bookings, insert_review, get_reviews
 from app.payment import send_invoice
+from states import AddApartmentState, EditApartmentState, BookingState, ReviewState, QuestionState
 from app.nlp_processor import ask_gpt
 # Initialize bot and dispatcher in combination with state storage
 
 
 load_dotenv()
-
+router = Router()
 bot = Bot(token=os.getenv('TOKEN'))
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
-
-
-# States group
-class AddApartmentState(StatesGroup):
-    PHOTO1 = State()
-    PHOTO2 = State()
-    PHOTO3 = State()
-    DESCRIPTION = State()
-    ADDRESS = State()
-    PRICE = State()
-    CATEGORY = State()
-
-
-class EditApartmentState(StatesGroup):
-    PHOTO1 = State()
-    PHOTO2 = State()
-    PHOTO3 = State()
-    DESCRIPTION = State()
-    ADDRESS = State()
-    PRICE = State()
-    CATEGORY = State()
-
-
-class BookingState(StatesGroup):
-    FIRST_NAME = State()
-    LAST_NAME = State()
-    PHONE = State()
-
-
-class ReviewState(StatesGroup):
-    TEXT = State()
-
-
-class QuestionState(StatesGroup):
-    WAITING_QUESTION = State()
 
 
 # Dictionary to store user data temporarily
@@ -84,7 +49,7 @@ create_database()
 print('Бот успешно запущен!')
 
 
-@dp.message(Command("start"))
+@router.message(Command("start"))
 async def start(message: types.Message):
     USER_DATA.clear()
 
@@ -95,7 +60,7 @@ async def start(message: types.Message):
                          parse_mode='html', reply_markup=keyboard)
 
 
-@dp.message(F.text == "🛠️Админ-панель")
+@router.message(F.text == "🛠️Админ-панель")
 async def admin_panel_handler(message: types.Message):
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
         keyboard = admin_keyboard()
@@ -103,21 +68,21 @@ async def admin_panel_handler(message: types.Message):
 
 
 # Start data entry process for a new apartment
-@dp.message(F.text == "➕Добавить данные")
+@router.message(F.text == "➕Добавить данные")
 async def add_data_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddApartmentState.CATEGORY)
     keyboard = admin_category_keyboard()
     await message.answer("Выберите категорию квартиры:", reply_markup=keyboard)
 
 
-@dp.callback_query(AddApartmentState.CATEGORY)
+@router.callback_query(AddApartmentState.CATEGORY)
 async def handle_category_selection(callback_query: types.CallbackQuery, state: FSMContext):
     await state.update_data(category=callback_query.data)
     await state.set_state(AddApartmentState.PHOTO1)
     await callback_query.message.answer("Загрузите первое фото квартиры:")
 
 
-@dp.message(AddApartmentState.PHOTO1)
+@router.message(AddApartmentState.PHOTO1)
 async def handle_first_photo(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.PHOTO:
         await state.update_data(photo1=message.photo[-1].file_id)
@@ -127,7 +92,7 @@ async def handle_first_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.message(AddApartmentState.PHOTO2)
+@router.message(AddApartmentState.PHOTO2)
 async def handle_second_photo(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.PHOTO:
         await state.update_data(photo2=message.photo[-1].file_id)
@@ -137,7 +102,7 @@ async def handle_second_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.message(AddApartmentState.PHOTO3)
+@router.message(AddApartmentState.PHOTO3)
 async def handle_third_photo(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.PHOTO:
         await state.update_data(photo3=message.photo[-1].file_id)
@@ -147,7 +112,7 @@ async def handle_third_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.message(AddApartmentState.DESCRIPTION)
+@router.message(AddApartmentState.DESCRIPTION)
 async def handle_description(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         await state.update_data(description=message.text)
@@ -157,7 +122,7 @@ async def handle_description(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, введите текстовое описание квартиры!")
 
 
-@dp.message(AddApartmentState.ADDRESS)
+@router.message(AddApartmentState.ADDRESS)
 async def handle_address(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         await state.update_data(address=message.text)
@@ -167,7 +132,7 @@ async def handle_address(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, введите текстовое значение для адреса!")
 
 
-@dp.message(AddApartmentState.PRICE)
+@router.message(AddApartmentState.PRICE)
 async def handle_price(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         try:
@@ -213,7 +178,7 @@ async def handle_price(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, введите текстовое значение для цены!")
 
 
-@dp.callback_query(F.data.startswith("update_photo1_"))
+@router.callback_query(F.data.startswith("update_photo1_"))
 async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -221,7 +186,7 @@ async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(text="Загрузите новое первое фото квартиры:")
 
 
-@dp.message(EditApartmentState.PHOTO1)
+@router.message(EditApartmentState.PHOTO1)
 async def handle_update_first_photo(message: types.Message, state: FSMContext):
     # Checking if this is really a photo
     if message.content_type == ContentType.PHOTO:
@@ -249,7 +214,7 @@ async def handle_update_first_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.callback_query(F.data.startswith("update_photo2_"))
+@router.callback_query(F.data.startswith("update_photo2_"))
 async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -257,7 +222,7 @@ async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(text="Загрузите новое второе фото квартиры:")
 
 
-@dp.message(EditApartmentState.PHOTO2)
+@router.message(EditApartmentState.PHOTO2)
 async def handle_update_second_photo(message: types.Message, state: FSMContext):
     # Checking if this is really a photo
     if message.content_type == ContentType.PHOTO:
@@ -284,7 +249,7 @@ async def handle_update_second_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.callback_query(F.data.startswith("update_photo3_"))
+@router.callback_query(F.data.startswith("update_photo3_"))
 async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -292,7 +257,7 @@ async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(text="Загрузите новое третье фото квартиры:")
 
 
-@dp.message(EditApartmentState.PHOTO3)
+@router.message(EditApartmentState.PHOTO3)
 async def handle_update_third_photo(message: types.Message, state: FSMContext):
     # Checking if this is really a photo
     if message.content_type == ContentType.PHOTO:
@@ -320,7 +285,7 @@ async def handle_update_third_photo(message: types.Message, state: FSMContext):
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
 
 
-@dp.callback_query(F.data.startswith("update_description_"))
+@router.callback_query(F.data.startswith("update_description_"))
 async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -328,7 +293,7 @@ async def update_description(callback_query: types.CallbackQuery, state: FSMCont
     await callback_query.message.edit_text(text="Введите новое описание квартиры:")
 
 
-@dp.message(EditApartmentState.DESCRIPTION)
+@router.message(EditApartmentState.DESCRIPTION)
 async def handle_update_description(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         index = USER_DATA['apartment_index']
@@ -357,7 +322,7 @@ async def handle_update_description(message: types.Message, state: FSMContext):
         await message.answer("Введите текст")
 
 
-@dp.callback_query(F.data.startswith("update_address_"))
+@router.callback_query(F.data.startswith("update_address_"))
 async def update_address(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -365,7 +330,7 @@ async def update_address(callback_query: types.CallbackQuery, state: FSMContext)
     await callback_query.message.edit_text(text="Введите новый адрес квартиры:")
 
 
-@dp.message(EditApartmentState.ADDRESS)
+@router.message(EditApartmentState.ADDRESS)
 async def handle_update_address(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         index = USER_DATA['apartment_index']
@@ -390,7 +355,7 @@ async def handle_update_address(message: types.Message, state: FSMContext):
         await message.answer("Введите текст для адреса.")
 
 
-@dp.callback_query(F.data.startswith("update_price_"))
+@router.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
     index = int(callback_query.data.split("_")[2])
     USER_DATA['apartment_index'] = index
@@ -398,7 +363,7 @@ async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(text="Введите новую цену квартиры:")
 
 
-@dp.message(EditApartmentState.PRICE)
+@router.message(EditApartmentState.PRICE)
 async def handle_update_price(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         index = USER_DATA['apartment_index']
@@ -437,14 +402,14 @@ async def handle_update_price(message: types.Message, state: FSMContext):
 
 
 # The button to exit the administrator mode
-@dp.message(F.text == "⤴️Назад")
+@router.message(F.text == "⤴️Назад")
 async def back_to_main_menu(message: types.Message):
     keyboard = start_keyboard(message.from_user.id)
     await message.answer("Вы вернулись в основное меню.", reply_markup=keyboard)
 
 
 # Fetch and display apartment listings
-@dp.message(F.text == "🛍Каталог")
+@router.message(F.text == "🛍Каталог")
 async def show_catalog_categories(message: types.Message):
     USER_DATA.clear()
     # Set edit mode flag to False for viewing
@@ -454,7 +419,7 @@ async def show_catalog_categories(message: types.Message):
     await message.answer("Выберите тип квартиры:", reply_markup=keyboard)
 
 
-@dp.callback_query(F.data.in_(["one-room_apartment", "two-room_apartment", "three-room_apartment", "studio"]))
+@router.callback_query(F.data.in_(["one-room_apartment", "two-room_apartment", "three-room_apartment", "studio"]))
 async def show_apartments_by_category(callback_query: types.CallbackQuery):
     category = callback_query.data
     apartments = get_catalog_by_category(category)
@@ -504,7 +469,7 @@ async def show_apartment_data(message: types.Message, edit_mode=False, apartment
 
 
 # Handler for the previous record
-@dp.callback_query(F.data.in_(["prev_view", "prev_edit"]))
+@router.callback_query(F.data.in_(["prev_view", "prev_edit"]))
 async def prev_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -516,7 +481,7 @@ async def prev_apartment(callback_query: types.CallbackQuery):
 
 
 # Handler for the next record
-@dp.callback_query(F.data.in_(["next_view", "next_edit"]))
+@router.callback_query(F.data.in_(["next_view", "next_edit"]))
 async def next_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -528,19 +493,19 @@ async def next_apartment(callback_query: types.CallbackQuery):
 
 
 #  Inform user about website availability
-@dp.message(F.text == '🌐 Наш сайт')
+@router.message(F.text == '🌐 Наш сайт')
 async def website(message: types.Message):
     await message.answer('Сожалею, но у нас пока нет сайта')
 
 
 # Provide contact information
-@dp.message(F.text == '☎️ Контакты')
+@router.message(F.text == '☎️ Контакты')
 async def contact(message: types.Message):
     await message.answer('Наш телефон: 8-901-133-00-00')
 
 
 # Handler for editing the catalog
-@dp.message(F.text == "✏️Редактировать каталог")
+@router.message(F.text == "✏️Редактировать каталог")
 async def get_apartment_data_edit_handler(message: types.Message, state: FSMContext):
     keyboard = admin_category_keyboard()
     # Set edit mode flag
@@ -551,7 +516,7 @@ async def get_apartment_data_edit_handler(message: types.Message, state: FSMCont
 
 
 # Fetch and display list of bookings
-@dp.message(F.text == "📜Список бронирований")
+@router.message(F.text == "📜Список бронирований")
 async def show_bookings(message: types.Message):
     bookings = get_bookings()
     if not bookings:
@@ -573,7 +538,7 @@ async def show_bookings(message: types.Message):
 
 
 # Navigate to the next or previous apartment details
-@dp.callback_query(F.data == "add")
+@router.callback_query(F.data == "add")
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
@@ -603,7 +568,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.answer("Ошибка: данные о квартире не найдены.")
 
 
-@dp.message(BookingState.FIRST_NAME)
+@router.message(BookingState.FIRST_NAME)
 async def process_first_name(message: types.Message, state: FSMContext):
     await state.update_data(first_name=message.text)
     await state.set_state(BookingState.LAST_NAME)
@@ -611,7 +576,7 @@ async def process_first_name(message: types.Message, state: FSMContext):
     await message.answer("Введите вашу фамилию:")
 
 
-@dp.message(BookingState.LAST_NAME)
+@router.message(BookingState.LAST_NAME)
 async def process_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
     await state.set_state(BookingState.PHONE)
@@ -619,7 +584,7 @@ async def process_last_name(message: types.Message, state: FSMContext):
     await message.answer("Введите ваш номер телефона:")
 
 
-@dp.message(BookingState.PHONE)
+@router.message(BookingState.PHONE)
 async def process_phone(message: types.Message, state: FSMContext):
     await state.update_data(phone=message.text)
     user_data = await state.get_data()
@@ -647,7 +612,7 @@ async def process_phone(message: types.Message, state: FSMContext):
 
 
 # Increase the rental period and calculate the total price
-@dp.callback_query(F.data == "add_days")
+@router.callback_query(F.data == "add_days")
 async def add_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -661,7 +626,7 @@ async def add_days(callback_query: types.CallbackQuery):
         await callback_query.message.edit_text(text=text, reply_markup=keyboard)
 
 
-@dp.callback_query(F.data == "subtract_days")
+@router.callback_query(F.data == "subtract_days")
 async def subtract_days(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
         index = USER_DATA['apartment_index']
@@ -676,7 +641,7 @@ async def subtract_days(callback_query: types.CallbackQuery):
 
 
 # Update the payment handler to use the filtered apartments list
-@dp.callback_query(F.data == "pay")
+@router.callback_query(F.data == "pay")
 async def pay_for_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
         USER_DATA['current_apartment'] = USER_DATA['apartments'][USER_DATA['apartment_index']]
@@ -684,13 +649,13 @@ async def pay_for_apartment(callback_query: types.CallbackQuery):
 
 
 # Confirm pre-checkout queries
-@dp.pre_checkout_query()
+@router.pre_checkout_query()
 async def pre_checkout_query(pre_checkout_q: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_q.id, ok=True)
 
 
 # Handle successful payment confirmation
-@dp.message(F.content_type == ContentType.SUCCESSFUL_PAYMENT)
+@router.message(F.content_type == ContentType.SUCCESSFUL_PAYMENT)
 async def successful_payment(message: types.Message):
     await handle_successful_payment(bot, message)
 
@@ -708,7 +673,7 @@ async def handle_successful_payment(bot, message):
 
 
 # Add a new handler for deleting an apartment
-@dp.callback_query(F.data.startswith("delete_"))
+@router.callback_query(F.data.startswith("delete_"))
 async def delete_apartment(callback_query: types.CallbackQuery):
     # Get the index of the apartment
     index = int(callback_query.data.split("_")[1])
@@ -722,7 +687,7 @@ async def delete_apartment(callback_query: types.CallbackQuery):
         await callback_query.answer("Квартира удалена!")
 
 
-@dp.callback_query(F.data.startswith("edit_"))
+@router.callback_query(F.data.startswith("edit_"))
 async def edit_apartment(callback_query: types.CallbackQuery):
     index = int(callback_query.data.split("_")[1])
     # Display the keyboard for editing specific fields
@@ -731,13 +696,13 @@ async def edit_apartment(callback_query: types.CallbackQuery):
 
 
 # Add apartment review
-@dp.callback_query(F.data == "add_review")
+@router.callback_query(F.data == "add_review")
 async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(ReviewState.TEXT)
     await callback_query.message.answer("Пожалуйста, введите ваш отзыв:")
 
 
-@dp.message(ReviewState.TEXT)
+@router.message(ReviewState.TEXT)
 async def save_review(message: types.Message, state: FSMContext):
     review_text = message.text
     if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
@@ -751,7 +716,7 @@ async def save_review(message: types.Message, state: FSMContext):
 
 
 # View all reviews
-@dp.message(F.text == "📝Просмотр отзывов")
+@router.message(F.text == "📝Просмотр отзывов")
 async def show_reviews(message: types.Message):
     reviews = get_reviews()
     if not reviews:
@@ -772,14 +737,14 @@ async def show_reviews(message: types.Message):
 
 
 # User support: question input handler
-@dp.message(F.text == "🎧 Задать вопрос")
+@router.message(F.text == "🎧 Задать вопрос")
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
     await message.answer("Пожалуйста, задайте ваш вопрос по аренде жилья. Я постараюсь помочь!")
 
 
 # Handles user's question, saves message history, and returns GPT's response
-@dp.message(QuestionState.WAITING_QUESTION)
+@router.message(QuestionState.WAITING_QUESTION)
 async def handle_question(message: types.Message):
     user_id = message.from_user.id
     # Initialize message history if the user is new
@@ -797,5 +762,6 @@ async def handle_question(message: types.Message):
         print(f"Error (User {user_id}): {e}")
         await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
 if __name__ == '__main__':
+    dp.include_router(router)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(dp.start_polling(bot))
