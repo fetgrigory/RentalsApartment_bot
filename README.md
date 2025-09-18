@@ -173,9 +173,9 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-3. Сборка образа в Docker с очисткой кэша:
+3. Сборка образа в Docker:
    ```bash
-     docker-compose build --no-cache
+     docker build -t my-python-bot .
      ```
 4. Запуск контейнера:
    ```bash
