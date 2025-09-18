@@ -2,7 +2,7 @@
 This bot make
 
 Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 28/05/2024
+Starting 18/09/2025
 Ending //
 '''
 
