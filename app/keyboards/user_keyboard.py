@@ -16,8 +16,7 @@ def start_keyboard(user_id):
     keyboard = ReplyKeyboardBuilder()
     if user_id == int(os.getenv('ADMIN_ID')):
         # For admins, provide buttons for admin panel and catalog
-        keyboard.add(types.KeyboardButton(text="🛠️Админ-панель"),
-                     types.KeyboardButton(text="🛍Каталог"),)
+        keyboard.add(types.KeyboardButton(text="🛠️Админ-панель"))
         keyboard.row(
             types.KeyboardButton(text="🌐 Наш сайт")
         )
