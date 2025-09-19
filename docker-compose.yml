@@ -3,6 +3,8 @@ version: '3.12'
 services:
   bot:
     build: .
+    env_file:
+      - .env
     environment:
       - TOKEN=${TOKEN}
       - ADMIN_ID=${ADMIN_ID}

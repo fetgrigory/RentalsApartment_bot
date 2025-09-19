@@ -1,7 +1,10 @@
 /venv
-app/database/__pycache__/sqlite3_db.cpython-311.pyc
-app/__pycache__/payment.cpython-311.pyc
-app/__pycache__/keyboards.cpython-311.pyc
-app/database/__pycache__/PostgreSQL_db.cpython-311.pyc
-app/__pycache__/sentiment_analysis.cpython-311.pyc
-app/__pycache__/nlp_processor.cpython-311.pyc
+app/__pycache__/admin_handlers.cpython-312.pyc
+app/__pycache__/nlp_processor.cpython-312.pyc
+app/__pycache__/payment.cpython-312.pyc
+app/__pycache__/states.cpython-312.pyc
+app/__pycache__/user_handlers.cpython-312.pyc
+app/keyboards/__pycache__/user_keyboard.cpython-312.pyc
+app/keyboards/__pycache__/admin_keyboard.cpython-312.pyc
+app/keyboards/__pycache__/__init__.cpython-312.pyc
+app/database/__pycache__/PostgreSQL_db.cpython-312.pyc
