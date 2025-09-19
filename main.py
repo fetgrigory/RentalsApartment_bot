@@ -37,6 +37,7 @@ dp = Dispatcher(storage=storage)
 # Connecting routers
 dp.include_router(admin_router)
 dp.include_router(user_router)
+dp.include_router(router)
 
 
 @router.message(Command("start"))
