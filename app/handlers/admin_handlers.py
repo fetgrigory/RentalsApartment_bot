@@ -11,9 +11,10 @@ import os
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from app.keyboards.admin_keyboard import admin_keyboard, catalog_navigation_edit_keyboard, admin_category_keyboard, edit_apartment_keyboard
+from app.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings
 from app.states import AddApartmentState, EditApartmentState
+from app.utils import show_apartment_data
 router = Router()
 
 # Dictionary to store user data temporarily
@@ -393,40 +394,6 @@ async def show_apartments_by_category(callback_query: types.CallbackQuery):
     is_edit_mode = USER_DATA.get('edit_mode', False)
     await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
-
-# Apartment data display function
-async def show_apartment_data(message: types.Message, edit_mode=False, apartments=None):
-    if apartments is None:
-        apartments = USER_DATA.get('apartments', get_catalog_data())
-    if not apartments:
-        await message.answer("Каталог пуст!")
-        return
-
-    index = USER_DATA.get('apartment_index', 0)
-    if index < len(apartments):
-        record = apartments[index]
-
-        photos_info = [
-            types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
-            for i in range(2, 5)  # Photos from index 2 to 4
-        ]
-
-        description = record[5]
-        address = record[6]
-        price = record[7]
-
-        message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
-
-        # Keyboard selection depending on the mode
-        if edit_mode:
-            keyboard = catalog_navigation_edit_keyboard(index, len(apartments))
-        else:
-            keyboard = admin_catalog_navigation_keyboard(index, len(apartments))
-
-        await message.bot.send_media_group(message.chat.id, media=photos_info)
-        await message.answer(message_text, reply_markup=keyboard)
-        USER_DATA['apartment_index'] = index
-        USER_DATA['apartments'] = apartments
 
 
 # Handler for editing the catalog
