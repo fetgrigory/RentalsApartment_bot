@@ -99,8 +99,8 @@ RentalsApartment_bot/
 │   └── payment.py                 # Логика платежей
 ├── handlers/
 │   ├── __init__.py
-│   ├── admin_handlers.py
-│   └── user_handlers.py
+│   ├── admin_handlers.py          # Хендлеры для админа
+│   └── user_handlers.py           # Хендлеры для пользователя
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
 ├── Dockerfile                     # Контейнеризация
