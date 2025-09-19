@@ -97,6 +97,10 @@ RentalsApartment_bot/
 │       └── user_keyboard.py       # Клавиатура для пользователя
 │   ├── nlp_processor.py           # NLP и обработка текста
 │   └── payment.py                 # Логика платежей
+├── handlers/
+│   ├── __init__.py
+│   ├── admin_handlers.py
+│   └── user_handlers.py
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
 ├── Dockerfile                     # Контейнеризация
