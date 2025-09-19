@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
-from app.admin_handlers import router as admin_router
-from app.user_handlers import router as user_router
+from app.handlers.admin_handlers import router as admin_router
+from app.handlers.user_handlers import router as user_router
 from app.database.PostgreSQL_db import create_database
 from app.keyboards.user_keyboard import start_keyboard
 # Initialize bot and dispatcher in combination with state storage
