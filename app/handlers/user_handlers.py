@@ -15,7 +15,7 @@ from app.database.PostgreSQL_db import is_apartment_available, check_user_exists
 from app.keyboards.user_keyboard import start_keyboard, booking_keyboard
 from app.payment import send_invoice
 from app.nlp_processor import ask_gpt
-from app.utils import USER_DATA
+from app.utils.catalog_utils import USER_DATA
 
 router = Router()
 
