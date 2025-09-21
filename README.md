@@ -102,6 +102,8 @@ RentalsApartment_bot/
 │   ├── __init__.py
 │   ├── admin_handlers.py          # Хендлеры для админа
 │   └── user_handlers.py           # Хендлеры для пользователя
+├── utils/
+│   └── catalog_utils.py           # Функции для работы с каталогом квартир
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
 ├── Dockerfile                     # Контейнеризация
