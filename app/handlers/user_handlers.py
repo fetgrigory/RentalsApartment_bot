@@ -30,8 +30,6 @@ async def start(message: types.Message):
                          parse_mode='html', reply_markup=keyboard)
 
 
-
-
 #  Inform user about website availability
 @router.message(F.text == '🌐 Наш сайт')
 async def website(message: types.Message):
