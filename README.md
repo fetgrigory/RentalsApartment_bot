@@ -90,6 +90,7 @@ RentalsApartment_bot/
 │
 ├── app/
 │   ├── database/
+│   │   └── __init__.py            # Инициализация пакета
 │   │   └── PostgreSQL_db.py       # Работа с PostgreSQL
 │   ├── keyboards/
 │       └── __init__.py            # Инициализация пакета
