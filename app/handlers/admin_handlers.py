@@ -12,7 +12,7 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from app.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
-from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings
+from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings, get_reviews
 from app.states import AddApartmentState, EditApartmentState
 from app.utils import show_apartment_data, USER_DATA
 router = Router()
@@ -449,6 +449,27 @@ async def edit_apartment(callback_query: types.CallbackQuery):
     # Display the keyboard for editing specific fields
     keyboard = edit_apartment_keyboard(index)
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+
+
+# View all reviews
+@router.message(F.text == "📝Просмотр отзывов")
+async def show_reviews(message: types.Message):
+    reviews = get_reviews()
+    if not reviews:
+        await message.answer("Отзывы не найдены.")
+        return
+
+    reviews_text = "Список отзывов:\n\n"
+    for review in reviews:
+        reviews_text += (
+            f"ID отзыва: {review[0]}\n"
+            f"ID квартиры: {review[2]}\n"
+            f"Текст отзыва: {review[3]}\n"
+            f"Оценка: {review[4]} ({review[5]})\n"
+            f"Дата: {review[6]}\n\n"
+        )
+
+    await message.answer(reviews_text)
 
 
 # Fetch and display list of bookings
