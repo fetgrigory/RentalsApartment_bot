@@ -30,11 +30,6 @@ async def start(message: types.Message):
                          parse_mode='html', reply_markup=keyboard)
 
 
-# The button to exit the administrator mode
-@router.message(F.text == "⤴️Назад")
-async def back_to_main_menu(message: types.Message):
-    keyboard = start_keyboard(message.from_user.id)
-    await message.answer("Вы вернулись в основное меню.", reply_markup=keyboard)
 
 
 #  Inform user about website availability

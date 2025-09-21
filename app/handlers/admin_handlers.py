@@ -393,7 +393,6 @@ async def show_apartments_by_category(callback_query: types.CallbackQuery):
     await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
 
-
 # Handler for editing the catalog
 @router.message(F.text == "✏️Редактировать каталог")
 async def get_apartment_data_edit_handler(message: types.Message, state: FSMContext):
