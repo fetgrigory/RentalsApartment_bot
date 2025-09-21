@@ -14,11 +14,9 @@ from aiogram.types import ContentType
 from app.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings
 from app.states import AddApartmentState, EditApartmentState
-from app.utils import show_apartment_data
+from app.utils import show_apartment_data, USER_DATA
 router = Router()
 
-# Dictionary to store user data temporarily
-USER_DATA = {}
 questions = [
     "Загрузите первое фото квартиры:",
     "Загрузите второе фото квартиры:",
