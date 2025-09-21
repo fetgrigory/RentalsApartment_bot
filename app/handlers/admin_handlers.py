@@ -14,7 +14,7 @@ from aiogram.types import ContentType
 from app.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
 from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings, get_reviews
 from app.states import AddApartmentState, EditApartmentState
-from app.utils import show_apartment_data, USER_DATA
+from app.utils.catalog_utils import show_apartment_data, USER_DATA
 router = Router()
 
 questions = [
