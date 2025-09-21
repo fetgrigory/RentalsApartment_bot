@@ -11,7 +11,7 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from app.states import BookingState, ReviewState, QuestionState
-from app.database.PostgreSQL_db import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_reviews
+from app.database.PostgreSQL_db import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
 from app.keyboards.user_keyboard import start_keyboard, booking_keyboard
 from app.payment import send_invoice
 from app.nlp_processor import ask_gpt
@@ -195,27 +195,6 @@ async def save_review(message: types.Message, state: FSMContext):
     else:
         await message.answer("Ошибка: не удалось сохранить отзыв.")
     await state.clear()
-
-
-# View all reviews
-@router.message(F.text == "📝Просмотр отзывов")
-async def show_reviews(message: types.Message):
-    reviews = get_reviews()
-    if not reviews:
-        await message.answer("Отзывы не найдены.")
-        return
-
-    reviews_text = "Список отзывов:\n\n"
-    for review in reviews:
-        reviews_text += (
-            f"ID отзыва: {review[0]}\n"
-            f"ID квартиры: {review[2]}\n"
-            f"Текст отзыва: {review[3]}\n"
-            f"Оценка: {review[4]} ({review[5]})\n"
-            f"Дата: {review[6]}\n\n"
-        )
-
-    await message.answer(reviews_text)
 
 
 # User support: question input handler
