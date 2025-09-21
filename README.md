@@ -182,7 +182,7 @@ PORT="5432"
      ```
 3. Сборка образа в Docker:
    ```bash
-     docker build -t my-python-bot .
+    docker build -t rentalsapartment-bot .
      ```
 4. Запуск контейнера:
    ```bash
