@@ -23,6 +23,30 @@ system_prompt = """
 """
 
 
+# Get response from GPT model
+def ask_gpt(messages: list) -> str:
+    """AI is creating summary for ask_gpt
+
+    Args:
+        messages (list): [description]
+
+    Returns:
+        str: [description]
+    """
+    try:
+        # Add system prompt to the beginning of messages
+        messages_with_system = [{"role": "system", "content": system_prompt}] + messages
+        response = g4f.ChatCompletion.create(
+            model=g4f.models.gpt_4,
+            messages=messages_with_system,
+            timeout=60
+        )
+        return response
+    except Exception as e:
+        print(f"Error getting GPT response: {e}")
+        return "Извините, в данный момент я не могу ответить на ваш вопрос. Пожалуйста, попробуйте позже."
+
+
 # Loads and returns the sentiment analysis model
 def load_sentiment_model():
     """AI is creating summary for load_sentiment_model
@@ -55,27 +79,3 @@ def analyze_review(text: str) -> dict:
         "label": result["label"],
         "score": result["score"]
     }
-
-
-# Get response from GPT model
-def ask_gpt(messages: list) -> str:
-    """AI is creating summary for ask_gpt
-
-    Args:
-        messages (list): [description]
-
-    Returns:
-        str: [description]
-    """
-    try:
-        # Add system prompt to the beginning of messages
-        messages_with_system = [{"role": "system", "content": system_prompt}] + messages
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.gpt_4,
-            messages=messages_with_system,
-            timeout=60
-        )
-        return response
-    except Exception as e:
-        print(f"Error getting GPT response: {e}")
-        return "Извините, в данный момент я не могу ответить на ваш вопрос. Пожалуйста, попробуйте позже."
