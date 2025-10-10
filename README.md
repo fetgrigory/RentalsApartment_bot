@@ -180,11 +180,23 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-3. Сборка образа в Docker:
+3. Запуск Ollama (скачивается образ, если нет):
+   ```bash
+    docker-compose up -d ollama
+     ```
+4. Загрузка нужной модели внутрь Ollama:
+   ```bash
+    docker exec -it ollama /bin/ollama pull yandex/YandexGPT-5-Lite-8B-instruct-GGUF:latest
+     ```
+5. Проверка, что модель есть:
+   ```bash
+   docker exec -it ollama /bin/ollama list
+     ```
+6. Сборка образа в Docker:
    ```bash
     docker build -t rentalsapartment-bot .
      ```
-4. Запуск контейнера:
+7. Запуск контейнера:
    ```bash
    docker-compose up
    ```
