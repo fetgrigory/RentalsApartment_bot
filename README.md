@@ -122,7 +122,7 @@ RentalsApartment_bot/
 | `transformers` | Библиотека для NLP и работы с трансформерами от Hugging Face|
 | `torch` |Фреймворк PyTorch для запуска и обработки готовых нейросетевых моделей|
 | `evaluate` |Библиотека для стандартизированной оценки результатов работы модели|
-| `g4f`           | Бесплатный аналог ChatGPT         |
+| `ollama`           |Локальный клиент для работы с GPT-моделями через Ollama|
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
 ---
