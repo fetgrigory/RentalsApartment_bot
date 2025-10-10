@@ -194,7 +194,7 @@ PORT="5432"
      ```
 6. Сборка образа в Docker:
    ```bash
-    docker build -t rentalsapartment-bot .
+    docker-compose up -d --build
      ```
 7. Запуск контейнера:
    ```bash
