@@ -36,7 +36,7 @@ def ask_gpt(messages: list) -> str:
     """
     try:
 
-        api_url = os.getenv("OLLAMA_API_URL", "http://localhost:11434")
+        api_url = os.getenv("OLLAMA_API_URL")
         client = Client(host=api_url)
         # Add system prompt to the beginning of messages
         messages_with_system = [{"role": "system", "content": system_prompt}] + messages
@@ -44,7 +44,7 @@ def ask_gpt(messages: list) -> str:
             model='yandex/YandexGPT-5-Lite-8B-instruct-GGUF:latest',
             messages=messages_with_system,
         )
-        return response.message.content
+        return response['message']['content']
 
     except Exception as e:
         print(f"Error getting GPT response: {e}")
