@@ -1,6 +1,15 @@
 version: '3.12'
 
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
   bot:
     build: .
     env_file:
@@ -9,11 +18,14 @@ services:
       - TOKEN=${TOKEN}
       - ADMIN_ID=${ADMIN_ID}
       - PAYMENTS_TOKEN=${PAYMENTS_TOKEN}
-      - HOST=host.docker.internal
       - DBNAME=${DBNAME}
       - USER=${USER}
       - PASSWORD=${PASSWORD}
       - PORT=${PORT}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - OLLAMA_API_URL=http://ollama:11434
+    depends_on:
+      - ollama
     restart: unless-stopped
+
+volumes:
+  ollama:

@@ -1,13 +1,14 @@
 '''
 This module make
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
+Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
 Starting 17/05/2025
 Ending //
 
 '''
 # Installing the necessary libraries
+import os
 from transformers import pipeline
-import g4f
+from ollama import Client, ChatResponse
 
 # System prompt for GPT to define its behavior
 system_prompt = """
@@ -34,14 +35,17 @@ def ask_gpt(messages: list) -> str:
         str: [description]
     """
     try:
+
+        api_url = os.getenv("OLLAMA_API_URL", "http://localhost:11434")
+        client = Client(host=api_url)
         # Add system prompt to the beginning of messages
         messages_with_system = [{"role": "system", "content": system_prompt}] + messages
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.gpt_4,
+        response: ChatResponse = client.chat(
+            model='yandex/YandexGPT-5-Lite-8B-instruct-GGUF:latest',
             messages=messages_with_system,
-            timeout=60
         )
-        return response
+        return response.message.content
+
     except Exception as e:
         print(f"Error getting GPT response: {e}")
         return "Извините, в данный момент я не могу ответить на ваш вопрос. Пожалуйста, попробуйте позже."
@@ -66,13 +70,11 @@ sentiment_analyzer = load_sentiment_model()
 
 # Analyzes the review text and returns the result
 def analyze_review(text: str) -> dict:
-    """AI is creating summary for analyze_review
 
-    Args:
-        text (str): [description]
+    """AI is creating summary for
 
     Returns:
-        dict: [description]
+        [type]: [description]
     """
     result = sentiment_analyzer(text)[0]
     return {
