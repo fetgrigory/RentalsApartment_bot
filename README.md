@@ -186,7 +186,7 @@ PORT="5432"
      ```
 4. Загрузка нужной модели внутрь Ollama:
    ```bash
-    docker exec -it ollama /bin/ollama pull yandex/YandexGPT-5-Lite-8B-instruct-GGUF:latest
+    docker exec -it ollama /bin/ollama pull infidelis/GigaChat-20B-A3B-instruct:q4_0
      ```
 5. Проверка, что модель есть:
    ```bash
