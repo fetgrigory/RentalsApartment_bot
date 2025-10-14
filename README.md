@@ -146,7 +146,7 @@ RentalsApartment_bot/
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
 ---
-## 🛠 Установка
+## 📦 Установка
 
 ## Инструкция по использованию бота:<br />
 
