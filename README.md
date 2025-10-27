@@ -132,7 +132,6 @@ RentalsApartment_bot/
 | `python-dotenv` | Работа с переменными окружения|
 | `transformers` | Библиотека для NLP и работы с трансформерами от Hugging Face|
 | `torch` |Фреймворк PyTorch для запуска и обработки готовых нейросетевых моделей|
-| `evaluate` |Библиотека для стандартизированной оценки результатов работы модели|
 | `ollama`           |Локальный клиент для работы с GPT-моделями через Ollama|
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
@@ -191,23 +190,27 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-3. Запуск Ollama (скачивается образ, если нет):
+3.Установка зависимостей:
+      ```bash
+      pip install -r requirements.txt
+      ```
+4. Запуск Ollama (скачивается образ, если нет):
    ```bash
     docker-compose up -d ollama
      ```
-4. Загрузка нужной модели внутрь Ollama:
+5. Загрузка нужной модели внутрь Ollama:
    ```bash
     docker exec -it ollama /bin/ollama pull infidelis/GigaChat-20B-A3B-instruct:q4_0
      ```
-5. Проверка, что модель есть:
+6. Проверка, что модель есть:
    ```bash
    docker exec -it ollama /bin/ollama list
      ```
-6. Сборка образа в Docker:
+7. Сборка образа в Docker:
    ```bash
     docker-compose up -d --build
      ```
-7. Запуск контейнера:
+8. Запуск контейнера:
    ```bash
    docker-compose up
    ```
