@@ -190,7 +190,7 @@ PORT="5432"
      ```bash
      source venv/bin/activate
      ```
-3.Установка зависимостей:
+3. Установка зависимостей:
       ```bash
       pip install -r requirements.txt
       ```
