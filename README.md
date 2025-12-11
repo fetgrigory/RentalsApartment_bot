@@ -37,7 +37,7 @@ graph TD
         E --> PostgreSQL
         F --> Payment[Платежная система]
         G --> PostgreSQL
-        H --> NLP[NLP: RuBERT + GPT-4]
+        H --> NLP[NLP: RuBERT + GigaChat]
     end
 ```
 ## 🧪 Тестирование работы бота
