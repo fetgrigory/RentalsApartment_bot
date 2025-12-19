@@ -8,7 +8,7 @@ Ending //
 import datetime
 import os
 import psycopg2
-from src.nlp_processor import analyze_review
+from src.nlp.sentiment_analyzer import analyze_review
 
 
 def db_connect():
