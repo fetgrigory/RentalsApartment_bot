@@ -7,9 +7,9 @@ Ending //
 '''
 # Installing the necessary libraries
 from aiogram import types
-from app.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
-from app.keyboards.user_keyboard import catalog_navigation_keyboard
-from app.database.PostgreSQL_db import get_catalog_data
+from src.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
+from src.keyboards.user_keyboard import catalog_navigation_keyboard
+from src.database.PostgreSQL_db import get_catalog_data
 
 
 # Global dictionary for storing user data

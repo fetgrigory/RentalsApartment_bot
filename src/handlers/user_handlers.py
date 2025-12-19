@@ -10,12 +10,12 @@ import datetime
 from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from app.states import BookingState, ReviewState, QuestionState
-from app.database.PostgreSQL_db import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
-from app.keyboards.user_keyboard import start_keyboard, booking_keyboard
-from app.payment import send_invoice
-from app.nlp_processor import ask_gpt
-from app.utils.catalog_utils import USER_DATA
+from src.states import BookingState, ReviewState, QuestionState
+from src.database.PostgreSQL_db import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
+from src.keyboards.user_keyboard import start_keyboard, booking_keyboard
+from src.payment import send_invoice
+from src.nlp_processor import ask_gpt
+from src.utils.catalog_utils import USER_DATA
 
 router = Router()
 

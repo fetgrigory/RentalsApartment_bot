@@ -11,10 +11,10 @@ import os
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from app.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
-from app.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings, get_reviews
-from app.states import AddApartmentState, EditApartmentState
-from app.utils.catalog_utils import show_apartment_data, USER_DATA
+from src.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard, edit_apartment_keyboard
+from src.database.PostgreSQL_db import get_catalog_by_category, get_catalog_data, insert_apartment_data, delete_apartment_data, update_apartment_data, get_bookings, get_reviews
+from src.states import AddApartmentState, EditApartmentState
+from src.utils.catalog_utils import show_apartment_data, USER_DATA
 router = Router()
 
 questions = [

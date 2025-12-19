@@ -100,7 +100,7 @@ CVC/CVV: 111<br />
 ```text
 RentalsApartment_bot/
 │
-├── app/
+├── src/
 │   ├── database/
 │   │   └── __init__.py            # Инициализация пакета
 │   │   └── PostgreSQL_db.py       # Работа с PostgreSQL
