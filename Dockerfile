@@ -1,5 +1,5 @@
 FROM python:3.12
-WORKDIR /app
+WORKDIR /src
 
 # Installing system dependencies
 RUN apt-get update && apt-get install -y \
