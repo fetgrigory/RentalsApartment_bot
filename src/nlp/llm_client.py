@@ -7,7 +7,6 @@ Ending //
 '''
 # Installing the necessary libraries
 import os
-from transformers import pipeline
 from ollama import Client, ChatResponse
 
 # System prompt for GPT to define its behavior
@@ -72,33 +71,3 @@ def ask_gpt(messages: list) -> str:
         return "Извините, в данный момент я не могу ответить на ваш вопрос. Пожалуйста, попробуйте позже."
 
 
-# Loads and returns the sentiment analysis model
-def load_sentiment_model():
-    """AI is creating summary for load_sentiment_model
-
-    Returns:
-        [type]: [description]
-    """
-    return pipeline(
-        task='sentiment-analysis',
-        model='blanchefort/rubert-base-cased-sentiment'
-    )
-
-
-# Loading the model when importing the module
-sentiment_analyzer = load_sentiment_model()
-
-
-# Analyzes the review text and returns the result
-def analyze_review(text: str) -> dict:
-
-    """AI is creating summary for
-
-    Returns:
-        [type]: [description]
-    """
-    result = sentiment_analyzer(text)[0]
-    return {
-        "label": result["label"],
-        "score": result["score"]
-    }

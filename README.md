@@ -108,14 +108,17 @@ RentalsApartment_bot/
 │   │    └── __init__.py            # Инициализация пакета
 │   │    └── admin_keyboard.py      # Клавиатура для админа
 │   │    └── user_keyboard.py       # Клавиатура для пользователя
-│   ├── nlp_processor.py           # NLP и обработка текста
-│   └── payment.py                 # Логика платежей
+│   ├── nlp/
+│   │    └── __init__.py            # Инициализация пакета
+│   │    └── llm_client.py          # Виртуальный помощник для вопросов пользователя
+│   │    └── sentiment_analyzer.py  # Анализ тональности и классификация отзывов
 ├── handlers/
 │   ├── __init__.py
 │   ├── admin_handlers.py          # Хендлеры для админа
 │   └── user_handlers.py           # Хендлеры для пользователя
 ├── utils/
 │   └── catalog_utils.py           # Функции для работы с каталогом квартир
+├── payment.py                     # Логика платежей
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
 ├── Dockerfile                     # Контейнеризация
