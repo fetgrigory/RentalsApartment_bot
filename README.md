@@ -99,25 +99,24 @@ CVC/CVV: 111<br />
 
 ```text
 RentalsApartment_bot/
-│
-├── src/
-│   ├── database/
-│   │   └── __init__.py            # Инициализация пакета
-│   │   └── PostgreSQL_db.py       # Работа с PostgreSQL
-│   ├── keyboards/
-│   │    └── __init__.py            # Инициализация пакета
-│   │    └── admin_keyboard.py      # Клавиатура для админа
-│   │    └── user_keyboard.py       # Клавиатура для пользователя
-│   ├── nlp/
-│   │    └── __init__.py            # Инициализация пакета
-│   │    └── llm_client.py          # Виртуальный помощник для вопросов пользователя
-│   │    └── sentiment_analyzer.py  # Анализ тональности и классификация отзывов
-├── handlers/
+├── src/                          # Основной код приложения
+│   ├── database/                 # Работа с базой данных
+│   │   ├── __init__.py
+│   │   └── PostgreSQL_db.py
+│   ├── keyboards/                # Клавиатуры для пользователей и админов
+│   │   ├── __init__.py
+│   │   ├── admin_keyboard.py
+│   │   └── user_keyboard.py
+│   ├── nlp/                      # NLP и обработка текстов
+│   │   ├── __init__.py
+│   │   ├── llm_client.py
+│   │   └── sentiment_analyzer.py
+├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
-│   ├── admin_handlers.py          # Хендлеры для админа
-│   └── user_handlers.py           # Хендлеры для пользователя
-├── utils/
-│   └── catalog_utils.py           # Функции для работы с каталогом квартир
+│   ├── admin_handlers.py
+│   └── user_handlers.py
+├── utils/                        # Утилиты
+│   └── catalog_utils.py
 ├── payment.py                     # Логика платежей
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
