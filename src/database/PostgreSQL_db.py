@@ -7,7 +7,7 @@ Ending //
 '''
 import datetime
 import os
-import psycopg2
+import psycopg
 from src.nlp.sentiment_analyzer import analyze_review
 
 
@@ -18,7 +18,7 @@ def db_connect():
         [type]: [description]
     """
     # Establish a connection to the PostgreSQL database using environment variables
-    return psycopg2.connect(
+    return psycopg.connect(
         # Database host
         host=os.getenv('HOST'),
         # Name of the database
