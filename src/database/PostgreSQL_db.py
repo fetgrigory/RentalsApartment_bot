@@ -44,6 +44,9 @@ def create_database():
                           photo1 TEXT,
                           photo2 TEXT,
                           photo3 TEXT,
+                          total_area NUMERIC,
+                          living_area NUMERIC,
+                          kitchen_area NUMERIC,
                           description TEXT,
                           address TEXT,
                           price TEXT,
@@ -223,7 +226,7 @@ def insert_apartment_data(data):
     with db_connect() as conn:
         cursor = conn.cursor()
         # Insert a new record into the 'catalog' table using the provided data.
-        cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, description, address, price, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", data)
+        cursor.execute("INSERT INTO catalog (date, photo1, photo2, photo3, total_area, living_area, kitchen_area, description, address, price, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", data)
         conn.commit()
 
 

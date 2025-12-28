@@ -73,10 +73,40 @@ async def handle_second_photo(message: types.Message, state: FSMContext):
 async def handle_third_photo(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.PHOTO:
         await state.update_data(photo3=message.photo[-1].file_id)
-        await state.set_state(AddApartmentState.DESCRIPTION)
+        await state.set_state(AddApartmentState.TOTAL_AREA)
         await message.answer("Введите описание квартиры:")
     else:
         await message.answer("Пожалуйста, загрузите именно фото квартиры!")
+
+
+@router.message(AddApartmentState.TOTAL_AREA)
+async def handle_total_area(message: types.Message, state: FSMContext):
+    if message.content_type == ContentType.TEXT:
+        await state.update_data(total_area=message.text)
+        await state.set_state(AddApartmentState.LIVING_AREA)
+        await message.answer("Введите общую площадь квартиры (м²):")
+    else:
+        await message.answer("Пожалуйста, введите числовое значение для общей площади!")
+
+
+@router.message(AddApartmentState.LIVING_AREA)
+async def handle_Living_area(message: types.Message, state: FSMContext):
+    if message.content_type == ContentType.TEXT:
+        await state.update_data(Living_area=message.text)
+        await state.set_state(AddApartmentState.KITCHEN_AREA)
+        await message.answer("Введите жилую площадь квартиры (м²):")
+    else:
+        await message.answer("Пожалуйста, введите числовое значение для жилой площади!")
+
+
+@router.message(AddApartmentState.KITCHEN_AREA)
+async def handle_kitchen_area(message: types.Message, state: FSMContext):
+    if message.content_type == ContentType.TEXT:
+        await state.update_data(kitchen_area=message.text)
+        await state.set_state(AddApartmentState.DESCRIPTION)
+        await message.answer("Введите площадь кухни (м²):")
+    else:
+        await message.answer("Пожалуйста, введите числовое значение для площади кухни!")
 
 
 @router.message(AddApartmentState.DESCRIPTION)
@@ -125,6 +155,9 @@ async def handle_price(message: types.Message, state: FSMContext):
                 data['photo1'],
                 data['photo2'],
                 data['photo3'],
+                data['total_area'],
+                data['living_area'],
+                data['kitchen_area'],
                 data['description'],
                 data["address"],
                 data['price'],
