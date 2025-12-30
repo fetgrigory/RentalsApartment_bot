@@ -17,15 +17,6 @@ from src.states import AddApartmentState, EditApartmentState
 from src.utils.catalog_utils import show_apartment_data, USER_DATA
 router = Router()
 
-questions = [
-    "Загрузите первое фото квартиры:",
-    "Загрузите второе фото квартиры:",
-    "Загрузите третье фото квартиры:",
-    "Введите описание квартиры:",
-    "Введите адрес квартиры",
-    "Введите цену:",
-]
-
 
 # Admin Panel
 @router.message(F.text == "🛠️Админ-панель")
@@ -73,7 +64,7 @@ async def handler_second_photo(message: types.Message, state: FSMContext):
 
 @router.message(AddApartmentState.PHOTO3)
 async def handler_third_photo(message: types.Message, state: FSMContext):
-    await handler_add_photo(message, state, AddApartmentState.TOTAL_AREA, "Введите описание квартиры:")
+    await handler_add_photo(message, state, AddApartmentState.TOTAL_AREA, "Введите общую площадь квартиры (м²):")
 
 
 @router.message(AddApartmentState.TOTAL_AREA)
