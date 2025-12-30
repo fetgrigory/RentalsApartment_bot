@@ -243,7 +243,7 @@ def delete_apartment_data(apartment_id):
 
 
 # Updates apartment data in the 'catalog' table by the specified ID
-def update_apartment_data(apartment_id, photo1, photo2, photo3, description, address, price, category):
+def update_apartment_data(apartment_id, photo1, photo2, photo3, total_area, living_area, kitchen_area, description, address, price, category):
     """AI is creating summary for update_apartment_data
 
     Args:
@@ -259,8 +259,8 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, description, add
     with db_connect() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, description=%s, address=%s, price=%s, category=%s WHERE id=%s",
-            (photo1, photo2, photo3, description, address, price, category, apartment_id)
+            "UPDATE catalog SET photo1=%s, photo2=%s, photo3=%s, total_area=%s, living_area=%s, kitchen_area=%s, description=%s, address=%s, price=%s, category=%s WHERE id=%s",
+            (photo1, photo2, photo3, total_area, living_area, kitchen_area, description, address, price, category, apartment_id)
         )
         conn.commit()
 
