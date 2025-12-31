@@ -78,7 +78,7 @@ async def handler_total_area(message: types.Message, state: FSMContext):
 
 
 @router.message(AddApartmentState.LIVING_AREA)
-async def handler_Living_area(message: types.Message, state: FSMContext):
+async def handler_living_area(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:
         await state.update_data(living_area=message.text)
         await state.set_state(AddApartmentState.KITCHEN_AREA)
