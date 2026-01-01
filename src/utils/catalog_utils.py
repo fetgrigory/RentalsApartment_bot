@@ -34,8 +34,19 @@ async def show_apartment_data(message: types.Message, apartments=None, index=0, 
     description = record[5]
     address = record[6]
     price = record[7]
-
-    message_text = f"Описание квартиры: {description}\nАдрес: {address}\nЦена (в сутки): {price}"
+    total_area = record[9]
+    living_area = record[10]
+    kitchen_area = record[11]
+    # Creating an apartment card for display in the catalog
+    message_text = (
+        f"🏠 Описание:\n{description}\n\n"
+        f"📍 Адрес:\n{address}\n\n"
+        f"📐 Площадь:\n"
+        f"  • Общая: {total_area} м²\n"
+        f"  • Жилая: {living_area} м²\n"
+        f"  • Кухня: {kitchen_area} м²\n\n"
+        f"💰 Цена (в сутки): {price} ₽"
+    )
 
     # Choose the keyboard depending on the mode
     keyboard = catalog_navigation_edit_keyboard(index, len(apartments)) if edit_mode else catalog_navigation_keyboard(index, len(apartments))
