@@ -15,6 +15,7 @@ from src.utils.catalog_utils import USER_DATA, show_apartment_data
 router = Router()
 
 
+# Showing apartment categories
 @router.message(F.text == "🛍Каталог")
 async def show_catalog_categories(message: types.Message):
     USER_DATA.clear()
@@ -24,6 +25,7 @@ async def show_catalog_categories(message: types.Message):
     await message.answer("Выберите тип квартиры:", reply_markup=keyboard)
 
 
+# Showing apartments by selected category
 @router.callback_query(F.data.in_(["one-room_apartment", "two-room_apartment", "three-room_apartment", "studio"]))
 async def show_apartments_by_category(callback_query: types.CallbackQuery):
     category = callback_query.data
@@ -36,6 +38,7 @@ async def show_apartments_by_category(callback_query: types.CallbackQuery):
     await show_apartment_data(callback_query.message, edit_mode=USER_DATA.get('edit_mode', False), apartments=apartments)
 
 
+# Navigation: previous apartment
 @router.callback_query(F.data.in_(["prev_view", "prev_edit"]))
 async def prev_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
@@ -46,7 +49,7 @@ async def prev_apartment(callback_query: types.CallbackQuery):
             is_edit_mode = callback_query.data == "prev_edit"
             await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
-
+# Navigation: next apartment
 @router.callback_query(F.data.in_(["next_view", "next_edit"]))
 async def next_apartment(callback_query: types.CallbackQuery):
     if 'apartment_index' in USER_DATA:
@@ -58,6 +61,7 @@ async def next_apartment(callback_query: types.CallbackQuery):
             await show_apartment_data(callback_query.message, edit_mode=is_edit_mode, apartments=apartments)
 
 
+# Catalog editing mode
 @router.message(F.text == "✏️Редактировать каталог")
 async def get_apartment_data_edit_handler(message: types.Message):
     USER_DATA['edit_mode'] = True
