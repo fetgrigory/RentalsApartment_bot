@@ -12,8 +12,11 @@ from dotenv import load_dotenv
 from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
-from src.handlers.admin_handlers import router as admin_router
-from src.handlers.user_handlers import router as user_router
+from src.handlers.admin_panel.add_apartment_handlers import router as add_router
+from src.handlers.admin_panel.edit_apartment_handlers import router as edit_router
+from src.handlers.admin_panel.catalog_handlers import router as catalog_router
+from src.handlers.admin_panel.reviews_handlers import router as reviews_router
+from src.handlers.admin_panel.bookings_handlers import router as bookings_router
 from src.database.PostgreSQL_db import create_database
 from src.keyboards.user_keyboard import start_keyboard
 # Initialize bot and dispatcher in combination with state storage
@@ -35,9 +38,12 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(storage=storage)
 
 # Connecting routers
-dp.include_router(admin_router)
-dp.include_router(user_router)
 dp.include_router(router)
+dp.include_router(add_router)
+dp.include_router(edit_router)
+dp.include_router(catalog_router)
+dp.include_router(reviews_router)
+dp.include_router(bookings_router)
 
 
 @router.message(Command("start"))
