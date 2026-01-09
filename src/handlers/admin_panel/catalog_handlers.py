@@ -59,7 +59,7 @@ async def next_apartment(callback_query: types.CallbackQuery):
 
 
 @router.message(F.text == "✏️Редактировать каталог")
-async def get_apartment_data_edit_handlerr(message: types.Message):
+async def get_apartment_data_edit_handler(message: types.Message):
     USER_DATA['edit_mode'] = True
     keyboard = admin_category_keyboard()
     await message.answer("Выберите категорию квартиры для редактирования:", reply_markup=keyboard)
