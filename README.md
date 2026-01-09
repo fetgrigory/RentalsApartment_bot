@@ -122,19 +122,6 @@ RentalsApartment_bot/
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
-RentalsApartment_bot/
-├── src/                          # Основной код приложения
-│   ├── database/                 # Работа с базой данных
-│   │   ├── __init__.py
-│   │   └── PostgreSQL_db.py
-│   ├── keyboards/                # Клавиатуры для пользователей и админов
-│   │   ├── __init__.py
-│   │   ├── admin_keyboard.py
-│   │   └── user_keyboard.py
-│   ├── nlp/                      # NLP и обработка текстов
-│   │   ├── __init__.py
-│   │   ├── llm_client.py
-│   │   └── sentiment_analyzer.py
 ├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
 │   ├── admin_panel/              # Админские хендлеры
