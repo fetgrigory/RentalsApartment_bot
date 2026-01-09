@@ -122,10 +122,38 @@ RentalsApartment_bot/
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
+RentalsApartment_bot/
+├── src/                          # Основной код приложения
+│   ├── database/                 # Работа с базой данных
+│   │   ├── __init__.py
+│   │   └── PostgreSQL_db.py
+│   ├── keyboards/                # Клавиатуры для пользователей и админов
+│   │   ├── __init__.py
+│   │   ├── admin_keyboard.py
+│   │   └── user_keyboard.py
+│   ├── nlp/                      # NLP и обработка текстов
+│   │   ├── __init__.py
+│   │   ├── llm_client.py
+│   │   └── sentiment_analyzer.py
 ├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
-│   ├── admin_handlers.py
-│   └── user_handlers.py
+│   ├── admin_panel/              # Админские хендлеры
+│   │   ├── __init__.py
+│   │   ├── add_apartment_handlers.py
+│   │   ├── edit_apartment_handlers.py
+│   │   ├── catalog_handlers.py
+│   │   ├── reviews_handlers.py
+│   │   └── bookings_handlers.py
+│   └── user_handlers.py          # Хендлеры для обычных пользователей
+├── utils/                        # Утилиты
+│   └── catalog_utils.py
+├── payment.py                     # Логика платежей
+├── states.py                      # Состояния FSM
+├── main.py                        # Точка входа бота
+├── Dockerfile                     # Контейнеризация
+├── docker-compose.yml             # Сборка и запуск контейнеров
+├── .env                           # Переменные окружения
+└── requirements.txt               # Зависимости проекта
 ├── utils/                        # Утилиты
 │   └── catalog_utils.py
 ├── payment.py                     # Логика платежей
