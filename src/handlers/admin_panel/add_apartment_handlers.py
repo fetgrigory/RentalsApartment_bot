@@ -68,6 +68,7 @@ async def handler_third_photo(message: types.Message, state: FSMContext):
     await handler_add_photo(message, state, AddApartmentState.TOTAL_AREA, "Введите общую площадь квартиры (м²):")
 
 
+# Apartment data
 @router.message(AddApartmentState.TOTAL_AREA)
 async def handler_total_area(message: types.Message, state: FSMContext):
     if message.content_type == ContentType.TEXT:

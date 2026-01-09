@@ -13,6 +13,7 @@ from src.database.PostgreSQL_db import get_bookings
 router = Router()
 
 
+# List of bookings
 @router.message(F.text == "📜Список бронирований")
 async def show_bookings(message: types.Message):
     bookings = get_bookings()
