@@ -9,7 +9,7 @@ Ending //
 # Installing the necessary libraries
 from aiogram import F, Router, types
 from src.keyboards.admin_keyboard import admin_category_keyboard
-from src.database.PostgreSQL_db import get_catalog_data, get_catalog_by_category
+from src.db.crud import get_catalog_data, get_catalog_by_category
 from src.utils.catalog_utils import USER_DATA, show_apartment_data
 
 router = Router()
