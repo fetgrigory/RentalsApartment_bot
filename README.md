@@ -111,9 +111,11 @@ CVC/CVV: 111<br />
 ```text
 RentalsApartment_bot/
 ├── src/                          # Основной код приложения
-│   ├── database/                 # Работа с базой данных
+│   ├── db/                       # Работа с базой данных
 │   │   ├── __init__.py
-│   │   └── PostgreSQL_db.py
+│   │   ├── crud.py
+│   │   ├── database.py
+│   │   └── models.py
 │   ├── keyboards/                # Клавиатуры для пользователей и админов
 │   │   ├── __init__.py
 │   │   ├── admin_keyboard.py
