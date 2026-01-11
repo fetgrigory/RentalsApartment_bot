@@ -8,7 +8,7 @@ Ending //
 '''
 # Installing the necessary libraries
 from aiogram import F, Router, types
-from src.database.PostgreSQL_db import get_reviews
+from src.db.crud import get_reviews
 
 router = Router()
 
@@ -16,17 +16,18 @@ router = Router()
 # Viewing reviews
 @router.message(F.text == "📝Просмотр отзывов")
 async def show_reviews(message: types.Message):
-    reviews = get_reviews()
+    reviews = await get_reviews()
     if not reviews:
         await message.answer("Отзывы не найдены.")
         return
     reviews_text = "Список отзывов:\n\n"
     for review in reviews:
         reviews_text += (
-            f"ID отзыва: {review[0]}\n"
-            f"ID квартиры: {review[2]}\n"
-            f"Текст отзыва: {review[3]}\n"
-            f"Оценка: {review[4]} ({review[5]})\n"
-            f"Дата: {review[6]}\n\n"
+            f"ID отзыва: {review.id}\n"
+            f"ID квартиры: {review.apartment_id}\n"
+            f"Текст отзыва: {review.review_text}\n"
+            f"Оценка: {review.sentiment_label} ({review.sentiment_score})\n"
+            f"Дата: {review.date}\n\n"
         )
+
     await message.answer(reviews_text)

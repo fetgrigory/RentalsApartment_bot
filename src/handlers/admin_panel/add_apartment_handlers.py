@@ -13,7 +13,7 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from src.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard
-from src.database.PostgreSQL_db import insert_apartment_data
+from src.db.crud import insert_apartment_data
 from src.states import AddApartmentState
 
 router = Router()
@@ -122,30 +122,30 @@ async def handler_address(message: types.Message, state: FSMContext):
 @router.message(AddApartmentState.PRICE)
 async def handler_price(message: types.Message, state: FSMContext):
     if message.content_type != ContentType.TEXT:
-        await message.answer("Пожалуйста, введите текстовое значение для цены!")
+        await message.answer("Пожалуйста, введите числовое значение для цены!")
         return
     try:
         price = float(message.text)
         if price <= 0:
-            await message.answer("Цена не может быть равна 0 или быть отрицательной. Пожалуйста, введите корректную цену.")
+            await message.answer("Цена не может быть равна 0 или отрицательной. Пожалуйста, введите корректную цену.")
             return
-        await state.update_data(price=message.text)
+        await state.update_data(price=price)
         data = await state.get_data()
         current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        apartment_data = [
-            current_date,
-            data['photo1'],
-            data['photo2'],
-            data['photo3'],
-            data['total_area'],
-            data['living_area'],
-            data['kitchen_area'],
-            data['description'],
-            data["address"],
-            data['price'],
-            data['category']
-        ]
-        insert_apartment_data(apartment_data)
+        await insert_apartment_data({
+            "date": current_date,
+            "photo1": data['photo1'],
+            "photo2": data['photo2'],
+            "photo3": data['photo3'],
+            "total_area": float(data['total_area']),
+            "living_area": float(data['living_area']),
+            "kitchen_area": float(data['kitchen_area']),
+            "description": data['description'],
+            "address": data['address'],
+            "price": str(data['price']),
+            "category": data['category']
+        })
+
         await state.clear()
         await message.answer("Данные о квартире успешно сохранены!")
     except ValueError:

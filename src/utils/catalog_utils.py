@@ -9,7 +9,7 @@ Ending //
 from aiogram import types
 from src.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
 from src.keyboards.user_keyboard import catalog_navigation_keyboard
-from src.database.PostgreSQL_db import get_catalog_data
+from src.db.crud import get_catalog_data
 
 
 # Global dictionary for storing user data
@@ -24,28 +24,21 @@ async def show_apartment_data(message: types.Message, apartments=None, index=0, 
         await message.answer("Каталог пуст!")
         return
 
-    record = apartments[index]
+    record = apartments[0]
 
     photos_info = [
-        types.InputMediaPhoto(media=record[i], caption=f"Фото квартиры")
-        for i in range(2, 5)  # Photos from index 2 to 4
+        types.InputMediaPhoto(media=getattr(record, f'photo{i}'), caption=f"Фото квартиры")
+        for i in range(1, 4)
     ]
-
-    description = record[5]
-    address = record[6]
-    price = record[7]
-    total_area = record[9]
-    living_area = record[10]
-    kitchen_area = record[11]
     # Creating an apartment card for display in the catalog
     message_text = (
-        f"🏠 Описание:\n{description}\n\n"
-        f"📍 Адрес:\n{address}\n\n"
+        f"🏠 Описание:\n{record.description}\n\n"
+        f"📍 Адрес:\n{record.address}\n\n"
         f"📐 Площадь:\n"
-        f"  • Общая: {total_area} м²\n"
-        f"  • Жилая: {living_area} м²\n"
-        f"  • Кухня: {kitchen_area} м²\n\n"
-        f"💰 Цена (в сутки): {price} ₽"
+        f"  • Общая: {record.total_area} м²\n"
+        f"  • Жилая: {record.living_area} м²\n"
+        f"  • Кухня: {record.kitchen_area} м²\n\n"
+        f"💰 Цена (в сутки): {record.price} ₽"
     )
 
     # Choose the keyboard depending on the mode

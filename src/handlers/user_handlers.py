@@ -11,7 +11,7 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from src.states import BookingState, ReviewState, QuestionState
-from src.database.PostgreSQL_db import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
+from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard
 from src.payment import send_invoice
 from src.nlp.llm_client import ask_gpt
@@ -45,16 +45,16 @@ async def contact(message: types.Message):
 # Navigate to the next or previous apartment details
 @router.callback_query(F.data == "add")
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
-    user_id = callback_query.from_user.id
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartment = USER_DATA['apartments'][index]
-        apartment_id = apartment[0]
+    apartments = USER_DATA.get('apartments')
+    if apartments:
+        apartment = apartments[0]
+        USER_DATA['current_apartment'] = apartment
+        user_id = callback_query.from_user.id
         start_date = datetime.datetime.now().date()
         rent_days = USER_DATA.get('rent_days', 1)
         end_date = start_date + datetime.timedelta(days=rent_days)
         # Check if the apartment is available
-        if is_apartment_available(apartment_id, start_date, end_date):
+        if is_apartment_available(apartment.id, start_date, end_date):
             # Check if there is a user in the database
             if check_user_exists(user_id):
                 # If the user is already registered, proceed to booking
@@ -73,6 +73,7 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.answer("Ошибка: данные о квартире не найдены.")
 
 
+# FSM: process first name input
 @router.message(BookingState.FIRST_NAME)
 async def process_first_name(message: types.Message, state: FSMContext):
     await state.update_data(first_name=message.text)
@@ -81,6 +82,7 @@ async def process_first_name(message: types.Message, state: FSMContext):
     await message.answer("Введите вашу фамилию:")
 
 
+# FSM: process last name input
 @router.message(BookingState.LAST_NAME)
 async def process_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
@@ -89,68 +91,51 @@ async def process_last_name(message: types.Message, state: FSMContext):
     await message.answer("Введите ваш номер телефона:")
 
 
+# FSM: process phone number input
 @router.message(BookingState.PHONE)
 async def process_phone(message: types.Message, state: FSMContext):
-    await state.update_data(phone=message.text)
     user_data = await state.get_data()
     user_id = message.from_user.id
-    first_name = user_data['first_name']
-    last_name = user_data['last_name']
-    phone = user_data['phone']
 
     # Adding the user to the database
-    insert_user_data(user_id, first_name, last_name, phone)
+    insert_user_data(user_id, user_data['first_name'], user_data['last_name'], user_data['phone'])
     await state.clear()
     await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
-    # Getting information about the current apartment
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartments = USER_DATA['apartments']
-        price = apartments[index][7]
-        rent_days = USER_DATA.get('rent_days', 1)
-        total_price = int(price) * rent_days
-        text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
-        keyboard = booking_keyboard()
-        await message.answer(text, reply_markup=keyboard)
-    else:
-        await message.answer("Ошибка: данные о квартире не найдены.")
+    # Getting information about the current apartment and calculating total price
+    apartment = USER_DATA['current_apartment']
+    rent_days = USER_DATA.get('rent_days', 1)
+    total_price = apartment.price * rent_days
+    text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
+    keyboard = booking_keyboard()
+    await message.answer(text, reply_markup=keyboard)
 
 
 # Increase the rental period and calculate the total price
 @router.callback_query(F.data == "add_days")
 async def add_days(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartments = USER_DATA['apartments']
-        price = apartments[index][7]
-        USER_DATA['rent_days'] = USER_DATA.get('rent_days', 1) + 1
-        new_price = int(price) * USER_DATA['rent_days']
-
-        text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
-        keyboard = booking_keyboard()
-        await callback_query.message.edit_text(text=text, reply_markup=keyboard)
+    apartment = USER_DATA['current_apartment']
+    USER_DATA['rent_days'] = USER_DATA.get('rent_days', 1) + 1
+    new_price = apartment.price * USER_DATA['rent_days']
+    text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
+    keyboard = booking_keyboard()
+    await callback_query.message.edit_text(text=text, reply_markup=keyboard)
 
 
+# Decrease the rental period and calculate the total price
 @router.callback_query(F.data == "subtract_days")
 async def subtract_days(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        index = USER_DATA['apartment_index']
-        apartments = USER_DATA['apartments']
-        price = apartments[index][7]
-        USER_DATA['rent_days'] = max(USER_DATA.get('rent_days', 1) - 1, 1)
-        new_price = int(price) * USER_DATA['rent_days']
-
-        text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
-        keyboard = booking_keyboard()
-        await callback_query.message.edit_text(text=text, reply_markup=keyboard)
+    apartment = USER_DATA['current_apartment']
+    USER_DATA['rent_days'] = max(USER_DATA.get('rent_days', 1) - 1, 1)
+    new_price = apartment.price * USER_DATA['rent_days']
+    text = f"Количество дней аренды: {USER_DATA['rent_days']}\nОбщая сумма к оплате: {new_price} RUB"
+    keyboard = booking_keyboard()
+    await callback_query.message.edit_text(text=text, reply_markup=keyboard)
 
 
-# Update the payment handler to use the filtered apartments list
+# Update the payment handler to use the current apartment
 @router.callback_query(F.data == "pay")
 async def pay_for_apartment(callback_query: types.CallbackQuery):
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        USER_DATA['current_apartment'] = USER_DATA['apartments'][USER_DATA['apartment_index']]
-        await send_invoice(callback_query.bot, callback_query, USER_DATA)
+    await send_invoice(callback_query.bot, callback_query, USER_DATA)
 
 
 # Confirm pre-checkout queries
@@ -168,12 +153,11 @@ async def successful_payment(message: types.Message):
 # Handle successful payment
 async def handle_successful_payment(bot, message):
     user_id = message.from_user.id
-    apartment_id = USER_DATA.get('current_apartment')[0]
+    apartment = USER_DATA['current_apartment']
     start_date = datetime.datetime.now().date()
     rent_days = USER_DATA.get('rent_days', 1)
-    total_price = int(USER_DATA.get('current_apartment')[7]) * rent_days
-    insert_booking_data(user_id, apartment_id, start_date, rent_days, total_price)
-
+    total_price = apartment.price * rent_days
+    insert_booking_data(user_id, apartment.id, start_date, rent_days, total_price)
     await bot.send_message(user_id, "Оплата прошла успешно! Ваше бронирование подтверждено.")
 
 
@@ -184,16 +168,13 @@ async def request_review(callback_query: types.CallbackQuery, state: FSMContext)
     await callback_query.message.answer("Пожалуйста, введите ваш отзыв:")
 
 
+# Save review and analyze sentiment
 @router.message(ReviewState.TEXT)
 async def save_review(message: types.Message, state: FSMContext):
-    review_text = message.text
-    if 'apartment_index' in USER_DATA and 'apartments' in USER_DATA:
-        apartment_id = USER_DATA['apartments'][USER_DATA['apartment_index']][0]
-        user_id = message.from_user.id
-        insert_review(user_id, apartment_id, review_text)
-        await message.answer("Спасибо за ваш отзыв!")
-    else:
-        await message.answer("Ошибка: не удалось сохранить отзыв.")
+    apartment = USER_DATA['current_apartment']
+    user_id = message.from_user.id
+    insert_review(user_id, apartment.id, message.text)
+    await message.answer("Спасибо за ваш отзыв!")
     await state.clear()
 
 

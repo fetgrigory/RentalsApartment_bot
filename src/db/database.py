@@ -21,7 +21,7 @@ USER = os.getenv("USER")
 PASSWORD = os.getenv("PASSWORD")
 PORT = os.getenv("PORT")
 # Creating a connection string
-DATABASE_URL = f"asyncpg+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 # Creating an engine
 async_engine = create_engine(
     DATABASE_URL,

@@ -17,7 +17,7 @@ from src.handlers.admin_panel.edit_apartment_handlers import router as edit_rout
 from src.handlers.admin_panel.catalog_handlers import router as catalog_router
 from src.handlers.admin_panel.reviews_handlers import router as reviews_router
 from src.handlers.admin_panel.bookings_handlers import router as bookings_router
-from src.database.PostgreSQL_db import create_database
+from src.db.database import init_db
 from src.keyboards.user_keyboard import start_keyboard
 # Initialize bot and dispatcher in combination with state storage
 load_dotenv()
@@ -60,7 +60,7 @@ async def start(message: types.Message):
 
 # Creating a database at startup
 try:
-    create_database()
+    init_db()
     print('Бот успешно запущен!')
 except Exception as e:
     print("Ошибка при создании базы:", e)
