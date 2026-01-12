@@ -32,7 +32,7 @@ async def send_invoice(bot: Bot, callback_query: types.CallbackQuery, user_data:
         return
 
     # Price is located at the 8th position (index 7) in the data list
-    price = int(current_apartment[7])
+    price = current_apartment.price
     # Set the currency for the invoice
     currency = "RUB"
     # Calculate the total price based on the number of days the apartment is rented
