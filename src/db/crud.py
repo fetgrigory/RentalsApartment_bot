@@ -8,6 +8,7 @@ Ending //
 '''
 # Installing the necessary libraries
 import datetime
+from sqlalchemy.orm import contains_eager
 from src.db.database import session_factory
 from src.db.models import User, Catalog, Booking, Review
 from src.nlp.sentiment_analyzer import analyze_review
@@ -73,7 +74,14 @@ def insert_booking_data(user_id, apartment_id, start_date, rent_days, total_pric
 # Retrieves all booking records along with user and apartment details
 def get_bookings():
     with session_factory() as session:
-        return session.query(Booking).join(User).join(Catalog).all()
+        return session.query(Booking)\
+            .join(Booking.user)\
+            .join(Booking.apartment)\
+            .options(
+                contains_eager(Booking.user),
+                contains_eager(Booking.apartment)
+            )\
+            .all()
 
 
 # Insert a new record into the 'catalog' table using the provided data
