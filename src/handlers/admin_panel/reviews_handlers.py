@@ -16,7 +16,7 @@ router = Router()
 # Viewing reviews
 @router.message(F.text == "📝Просмотр отзывов")
 async def show_reviews(message: types.Message):
-    reviews = await get_reviews()
+    reviews = get_reviews()
     if not reviews:
         await message.answer("Отзывы не найдены.")
         return
