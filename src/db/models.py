@@ -31,7 +31,7 @@ class Catalog(Base):
     kitchen_area: Mapped[float]
     description: Mapped[str]
     address: Mapped[str]
-    price: Mapped[str]
+    price: Mapped[float]
     category: Mapped[str]
     bookings: Mapped[list["Booking"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
