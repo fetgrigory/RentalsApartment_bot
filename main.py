@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
+from src.handlers.user_handlers import router as user_router
 from src.handlers.admin_panel.add_apartment_handlers import router as add_router
 from src.handlers.admin_panel.edit_apartment_handlers import router as edit_router
 from src.handlers.admin_panel.catalog_handlers import router as catalog_router
@@ -39,6 +40,7 @@ dp = Dispatcher(storage=storage)
 
 # Connecting routers
 dp.include_router(router)
+dp.include_router(user_router)
 dp.include_router(add_router)
 dp.include_router(edit_router)
 dp.include_router(catalog_router)
