@@ -94,6 +94,7 @@ async def process_last_name(message: types.Message, state: FSMContext):
 # FSM: process phone number input
 @router.message(BookingState.PHONE)
 async def process_phone(message: types.Message, state: FSMContext):
+    await state.update_data(phone=message.text)
     user_data = await state.get_data()
     user_id = message.from_user.id
 

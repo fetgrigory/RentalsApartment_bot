@@ -28,8 +28,9 @@ def insert_user_data(user_id, first_name, last_name, phone):
 
 
 # Check if there is a user in the database
-def check_user_exists(session, user_id):
-    return session.query(User).filter_by(user_id=user_id).first() is not None
+def check_user_exists(user_id):
+    with session_factory() as session:
+        return session.query(User).filter_by(user_id=user_id).first() is not None
 
 
 def get_catalog_data():
@@ -79,17 +80,17 @@ def get_bookings():
 def insert_apartment_data(data):
     with session_factory() as session:
         apartment = Catalog(
-            date=data[0],
-            photo1=data[1],
-            photo2=data[2],
-            photo3=data[3],
-            total_area=data[4],
-            living_area=data[5],
-            kitchen_area=data[6],
-            description=data[7],
-            address=data[8],
-            price=data[9],
-            category=data[10]
+            date=data['date'],
+            photo1=data['photo1'],
+            photo2=data['photo2'],
+            photo3=data['photo3'],
+            total_area=data['total_area'],
+            living_area=data['living_area'],
+            kitchen_area=data['kitchen_area'],
+            description=data['description'],
+            address=data['address'],
+            price=data['price'],
+            category=data['category']
         )
         session.add(apartment)
         session.commit()
