@@ -16,7 +16,7 @@ router = Router()
 # List of bookings
 @router.message(F.text == "📜Список бронирований")
 async def show_bookings(message: types.Message):
-    bookings = await get_bookings()
+    bookings = get_bookings()
     if not bookings:
         await message.answer("Бронирования не найдены.")
         return

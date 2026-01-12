@@ -55,7 +55,7 @@ class Booking(Base):
     __tablename__ = 'bookings'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE"))
     apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"))
     start_date: Mapped[datetime.date]
     end_date: Mapped[datetime.date]
@@ -70,7 +70,7 @@ class Review(Base):
     __tablename__ = 'reviews'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE"))
     apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"))
     review_text: Mapped[str]
     sentiment_label: Mapped[str]
