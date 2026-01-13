@@ -131,6 +131,7 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, total_area, livi
             session.commit()
 
 
+# Inserts a new review for an apartment and analyzes its sentiment
 def insert_review(user_id, apartment_id, review_text):
     analysis = analyze_review(review_text)
     with session_factory() as session:
