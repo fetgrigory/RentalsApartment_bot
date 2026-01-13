@@ -34,11 +34,13 @@ def check_user_exists(user_id):
         return session.query(User).filter_by(user_id=user_id).first() is not None
 
 
+# Retrieves all apartments from the catalog
 def get_catalog_data():
     with session_factory() as session:
         return session.query(Catalog).all()
 
 
+# Retrieves apartments from the catalog filtered by category
 def get_catalog_by_category(category):
     with session_factory() as session:
         return session.query(Catalog).filter_by(category=category).all()
