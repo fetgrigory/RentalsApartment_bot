@@ -22,7 +22,7 @@ async def delete_apartment(callback_query: types.CallbackQuery):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
         delete_apartment_data(apartment.id)
-        await callback_query.answer("Квартира удалена!")
+    await callback_query.answer("Квартира удалена!")
 
 
 # Edit apartment menu
