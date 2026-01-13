@@ -28,10 +28,10 @@ async def delete_apartment(callback_query: types.CallbackQuery):
 # Edit apartment menu
 @router.callback_query(F.data.startswith("edit_"))
 async def edit_apartment(callback_query: types.CallbackQuery):
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        keyboard = edit_apartment_keyboard(apartment.id)
-        await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+    apartment_id = int(callback_query.data.split("_")[1])
+    keyboard = edit_apartment_keyboard(apartment_id)
+    await callback_query.message.edit_reply_markup(reply_markup=keyboard)
+    await callback_query.answer()
 
 
 # Update description
