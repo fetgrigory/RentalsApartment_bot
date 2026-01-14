@@ -38,6 +38,9 @@ async def edit_apartment(callback_query: types.CallbackQuery):
 @router.callback_query(F.data.startswith("update_description_"))
 async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.DESCRIPTION)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
     await callback_query.message.edit_text("Введите новое описание квартиры:")
 
 
