@@ -72,6 +72,10 @@ async def handler_update_description(message: types.Message, state: FSMContext):
 @router.callback_query(F.data.startswith("update_address_"))
 async def update_address(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.ADDRESS)
+    await callback_query.answer()
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
     await callback_query.message.edit_text("Введите новый адрес квартиры:")
 
 
@@ -105,11 +109,11 @@ async def handler_update_address(message: types.Message, state: FSMContext):
 # Update price
 @router.callback_query(F.data.startswith("update_price_"))
 async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.PRICE)
     await callback_query.answer()
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
     USER_DATA["current_apartment"] = apartment
-    await state.set_state(EditApartmentState.PRICE)
     await callback_query.message.edit_text("Введите новую цену квартиры:")
 
 
