@@ -16,6 +16,27 @@ from src.utils.catalog_utils import USER_DATA, show_apartment_data
 router = Router()
 
 
+# Updates apartment fields
+def save_apartment(apartment, **fields):
+    for key, value in fields.items():
+        setattr(apartment, key, value)
+    update_apartment_data(
+        apartment.id,
+        apartment.photo1,
+        apartment.photo2,
+        apartment.photo3,
+        apartment.total_area,
+        apartment.living_area,
+        apartment.kitchen_area,
+        apartment.description,
+        apartment.address,
+        apartment.price,
+        apartment.category
+    )
+
+    USER_DATA['apartments'] = get_catalog_data()
+
+
 # Delete apartment
 @router.callback_query(F.data.startswith("delete_"))
 async def delete_apartment(callback_query: types.CallbackQuery):
@@ -50,21 +71,7 @@ async def handler_update_photo1(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
         file_id = message.photo[-1].file_id
-        apartment.photo1 = file_id
-        update_apartment_data(
-            apartment.id,
-            apartment.photo1,
-            apartment.photo2,
-            apartment.photo3,
-            apartment.total_area,
-            apartment.living_area,
-            apartment.kitchen_area,
-            apartment.description,
-            apartment.address,
-            apartment.price,
-            apartment.category
-        )
-        USER_DATA['apartments'] = get_catalog_data()
+        save_apartment(apartment, photo1=file_id)
         await state.clear()
         await message.answer("Первое фото успешно обновлено!")
         await show_apartment_data(message, edit_mode=True)
@@ -86,23 +93,9 @@ async def handler_update_photo2(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
         file_id = message.photo[-1].file_id
-        apartment.photo2 = file_id
-        update_apartment_data(
-            apartment.id,
-            apartment.photo1,
-            apartment.photo2,
-            apartment.photo3,
-            apartment.total_area,
-            apartment.living_area,
-            apartment.kitchen_area,
-            apartment.description,
-            apartment.address,
-            apartment.price,
-            apartment.category
-        )
-        USER_DATA['apartments'] = get_catalog_data()
+        save_apartment(apartment, photo2=file_id)
         await state.clear()
-        await message.answer("Первое фото успешно обновлено!")
+        await message.answer("Второе фото успешно обновлено!")
         await show_apartment_data(message, edit_mode=True)
 
 
@@ -122,23 +115,9 @@ async def handler_update_photo3(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
         file_id = message.photo[-1].file_id
-        apartment.photo3 = file_id
-        update_apartment_data(
-            apartment.id,
-            apartment.photo1,
-            apartment.photo2,
-            apartment.photo3,
-            apartment.total_area,
-            apartment.living_area,
-            apartment.kitchen_area,
-            apartment.description,
-            apartment.address,
-            apartment.price,
-            apartment.category
-        )
-        USER_DATA['apartments'] = get_catalog_data()
+        save_apartment(apartment, photo3=file_id)
         await state.clear()
-        await message.answer("Первое фото успешно обновлено!")
+        await message.answer("Третье фото успешно обновлено!")
         await show_apartment_data(message, edit_mode=True)
 
 
@@ -159,21 +138,7 @@ async def handler_update_description(message: types.Message, state: FSMContext):
         return
     apartment = USER_DATA.get('current_apartment')
     if apartment:
-        apartment.description = message.text
-        update_apartment_data(
-            apartment.id,
-            apartment.photo1,
-            apartment.photo2,
-            apartment.photo3,
-            apartment.total_area,
-            apartment.living_area,
-            apartment.kitchen_area,
-            apartment.description,
-            apartment.address,
-            apartment.price,
-            apartment.category
-        )
-        USER_DATA['apartments'] = get_catalog_data()
+        save_apartment(apartment, description=message.text)
         await state.clear()
         await message.answer("Описание успешно обновлено!")
         await show_apartment_data(message, edit_mode=True)
@@ -197,21 +162,7 @@ async def handler_update_address(message: types.Message, state: FSMContext):
         return
     apartment = USER_DATA.get('current_apartment')
     if apartment:
-        apartment.address = message.text
-        update_apartment_data(
-            apartment.id,
-            apartment.photo1,
-            apartment.photo2,
-            apartment.photo3,
-            apartment.total_area,
-            apartment.living_area,
-            apartment.kitchen_area,
-            apartment.description,
-            apartment.address,
-            apartment.price,
-            apartment.category
-        )
-        USER_DATA['apartments'] = get_catalog_data()
+        save_apartment(apartment, address=message.text)
         await state.clear()
         await message.answer("Адрес успешно обновлен!")
         await show_apartment_data(message, edit_mode=True)
@@ -240,21 +191,7 @@ async def handler_update_price(message: types.Message, state: FSMContext):
             if price <= 0:
                 await message.answer("Цена не может быть равна 0 или быть отрицательной.")
                 return
-            apartment.price = price
-            update_apartment_data(
-                apartment.id,
-                apartment.photo1,
-                apartment.photo2,
-                apartment.photo3,
-                apartment.total_area,
-                apartment.living_area,
-                apartment.kitchen_area,
-                apartment.description,
-                apartment.address,
-                apartment.price,
-                apartment.category
-            )
-            USER_DATA['apartments'] = get_catalog_data()
+            save_apartment(apartment, price=price)
             await state.clear()
             await message.answer("Цена успешно обновлена!")
             await show_apartment_data(message, edit_mode=True)
