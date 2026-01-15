@@ -34,6 +34,114 @@ async def edit_apartment(callback_query: types.CallbackQuery):
     await callback_query.answer()
 
 
+# Update photo1
+@router.callback_query(F.data.startswith("update_photo1_"))
+async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.PHOTO1)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Отправьте новое первое фото квартиры:")
+    await callback_query.answer()
+
+
+@router.message(F.photo, EditApartmentState.PHOTO1)
+async def handler_update_photo1(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        file_id = message.photo[-1].file_id
+        apartment.photo1 = file_id
+        update_apartment_data(
+            apartment.id,
+            apartment.photo1,
+            apartment.photo2,
+            apartment.photo3,
+            apartment.total_area,
+            apartment.living_area,
+            apartment.kitchen_area,
+            apartment.description,
+            apartment.address,
+            apartment.price,
+            apartment.category
+        )
+        USER_DATA['apartments'] = get_catalog_data()
+        await state.clear()
+        await message.answer("Первое фото успешно обновлено!")
+        await show_apartment_data(message, edit_mode=True)
+
+
+# Update photo2
+@router.callback_query(F.data.startswith("update_photo2_"))
+async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.PHOTO2)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Отправьте новое второе фото квартиры:")
+    await callback_query.answer()
+
+
+@router.message(F.photo, EditApartmentState.PHOTO2)
+async def handler_update_photo2(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        file_id = message.photo[-1].file_id
+        apartment.photo2 = file_id
+        update_apartment_data(
+            apartment.id,
+            apartment.photo1,
+            apartment.photo2,
+            apartment.photo3,
+            apartment.total_area,
+            apartment.living_area,
+            apartment.kitchen_area,
+            apartment.description,
+            apartment.address,
+            apartment.price,
+            apartment.category
+        )
+        USER_DATA['apartments'] = get_catalog_data()
+        await state.clear()
+        await message.answer("Первое фото успешно обновлено!")
+        await show_apartment_data(message, edit_mode=True)
+
+
+# Update photo3
+@router.callback_query(F.data.startswith("update_photo3_"))
+async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.PHOTO3)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Отправьте новое третье фото квартиры:")
+    await callback_query.answer()
+
+
+@router.message(F.photo, EditApartmentState.PHOTO3)
+async def handler_update_photo3(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        file_id = message.photo[-1].file_id
+        apartment.photo3 = file_id
+        update_apartment_data(
+            apartment.id,
+            apartment.photo1,
+            apartment.photo2,
+            apartment.photo3,
+            apartment.total_area,
+            apartment.living_area,
+            apartment.kitchen_area,
+            apartment.description,
+            apartment.address,
+            apartment.price,
+            apartment.category
+        )
+        USER_DATA['apartments'] = get_catalog_data()
+        await state.clear()
+        await message.answer("Первое фото успешно обновлено!")
+        await show_apartment_data(message, edit_mode=True)
+
+
 # Update description
 @router.callback_query(F.data.startswith("update_description_"))
 async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
