@@ -132,7 +132,7 @@ async def handler_price(message: types.Message, state: FSMContext):
         await state.update_data(price=price)
         data = await state.get_data()
         current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        await insert_apartment_data({
+        insert_apartment_data({
             "date": current_date,
             "photo1": data['photo1'],
             "photo2": data['photo2'],
