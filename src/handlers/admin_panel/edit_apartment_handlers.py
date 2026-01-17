@@ -40,16 +40,22 @@ def save_apartment(apartment, **fields):
 # Delete apartment
 @router.callback_query(F.data.startswith("delete_"))
 async def delete_apartment(callback_query: types.CallbackQuery):
-    apartment = USER_DATA.get('current_apartment')
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
     if apartment:
+        # deleting by object ID
         delete_apartment_data(apartment.id)
+        # Update the cache to keep the list up to date
+        USER_DATA['apartments'] = get_catalog_data()
+        USER_DATA['current_apartment'] = None
     await callback_query.answer("Квартира удалена!")
+    await callback_query.answer()
 
 
 # Edit apartment menu
 @router.callback_query(F.data.startswith("edit_"))
 async def edit_apartment(callback_query: types.CallbackQuery):
-    apartment_id = int(callback_query.data.split("_")[1])
+    apartment_id = int(callback_query.data.split("_")[-1])
     keyboard = edit_apartment_keyboard(apartment_id)
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
     await callback_query.answer()
