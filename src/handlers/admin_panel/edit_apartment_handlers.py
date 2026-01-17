@@ -126,6 +126,96 @@ async def handler_update_photo3(message: types.Message, state: FSMContext):
         await message.answer("Третье фото успешно обновлено!")
         await show_apartment_data(message, edit_mode=True)
 
+# Update total area
+@router.callback_query(F.data.startswith("update_total_area_"))
+async def update_total_area(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.TOTAL_AREA)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Введите новую общую площадь квартиры (в м²):")
+    await callback_query.answer()
+
+
+@router.message(EditApartmentState.TOTAL_AREA)
+async def handler_update_total_area(message: types.Message, state: FSMContext):
+    if message.content_type != types.ContentType.TEXT:
+        await message.answer("Введите числовое значение для общей площади.")
+        return
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        try:
+            total_area = float(message.text)
+            if total_area <= 0:
+                await message.answer("Общая площадь должна быть больше 0.")
+                return
+            save_apartment(apartment, total_area=total_area)
+            await state.clear()
+            await message.answer("Общая площадь успешно обновлена!")
+            await show_apartment_data(message, edit_mode=True)
+        except ValueError:
+            await message.answer("Введите корректное числовое значение для общей площади.")
+
+
+# Update living area
+@router.callback_query(F.data.startswith("update_living_area_"))
+async def update_living_area(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.LIVING_AREA)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Введите новую жилую площадь квартиры (в м²):")
+    await callback_query.answer()
+
+
+@router.message(EditApartmentState.LIVING_AREA)
+async def handler_update_living_area(message: types.Message, state: FSMContext):
+    if message.content_type != types.ContentType.TEXT:
+        await message.answer("Введите числовое значение для жилой площади.")
+        return
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        try:
+            living_area = float(message.text)
+            if living_area <= 0:
+                await message.answer("Жилая площадь должна быть больше 0.")
+                return
+            save_apartment(apartment, living_area=living_area)
+            await state.clear()
+            await message.answer("Жилая площадь успешно обновлена!")
+            await show_apartment_data(message, edit_mode=True)
+        except ValueError:
+            await message.answer("Введите корректное числовое значение для жилой площади.")
+
+# Update kitchen area
+@router.callback_query(F.data.startswith("update_kitchen_area_"))
+async def update_kitchen_area(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.KITCHEN_AREA)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Введите новую площадь кухни (в м²):")
+    await callback_query.answer()
+
+
+@router.message(EditApartmentState.KITCHEN_AREA)
+async def handler_update_kitchen_area(message: types.Message, state: FSMContext):
+    if message.content_type != types.ContentType.TEXT:
+        await message.answer("Введите числовое значение для площади кухни.")
+        return
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        try:
+            kitchen_area = float(message.text)
+            if kitchen_area <= 0:
+                await message.answer("Площадь кухни должна быть больше 0.")
+                return
+            save_apartment(apartment, kitchen_area=kitchen_area)
+            await state.clear()
+            await message.answer("Площадь кухни успешно обновлена!")
+            await show_apartment_data(message, edit_mode=True)
+        except ValueError:
+            await message.answer("Введите корректное числовое значение для площади кухни.")
 
 # Update description
 @router.callback_query(F.data.startswith("update_description_"))
