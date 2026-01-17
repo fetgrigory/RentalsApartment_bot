@@ -67,4 +67,11 @@ def edit_apartment_keyboard(index):
     keyboard.row(
         types.InlineKeyboardButton(text='Обновить адрес', callback_data=f'update_address_{index}')
     )
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить общую площадь', callback_data=f'update_total_area_{index}'),
+        types.InlineKeyboardButton(text='Обновить жилую площадь', callback_data=f'update_living_area_{index}')
+    )
+    keyboard.row(
+        types.InlineKeyboardButton(text='Обновить площадь кухни', callback_data=f'update_kitchen_area_{index}')
+    )
     return keyboard.as_markup()
