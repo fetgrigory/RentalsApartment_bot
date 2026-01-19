@@ -33,8 +33,26 @@ def save_apartment(apartment, **fields):
         apartment.price,
         apartment.category
     )
-
     USER_DATA['apartments'] = get_catalog_data()
+
+
+# Universal functions
+async def update_apartment_photo(apartment, message: types.Message, state: FSMContext, photo_field: str):
+    file_id = message.photo[-1].file_id
+    save_apartment(apartment, **{photo_field: file_id})
+    await state.clear()
+    await message.answer(f"{photo_field} успешно обновлено!")
+    await show_apartment_data(message, edit_mode=True)
+
+
+async def update_text_field(apartment, message: types.Message, state: FSMContext, field_name: str, field_label: str):
+    if message.content_type != types.ContentType.TEXT:
+        await message.answer(f"Введите текст для {field_label}.")
+        return
+    save_apartment(apartment, **{field_name: message.text})
+    await state.clear()
+    await message.answer(f"{field_label} успешно обновлено!")
+    await show_apartment_data(message, edit_mode=True)
 
 
 # Delete apartment
@@ -63,7 +81,7 @@ async def edit_apartment(callback_query: types.CallbackQuery):
 
 # Update photo1
 @router.callback_query(F.data.startswith("update_photo1_"))
-async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_photo1_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PHOTO1)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -76,16 +94,12 @@ async def update_photo1(callback_query: types.CallbackQuery, state: FSMContext):
 async def handler_update_photo1(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
-        file_id = message.photo[-1].file_id
-        save_apartment(apartment, photo1=file_id)
-        await state.clear()
-        await message.answer("Первое фото успешно обновлено!")
-        await show_apartment_data(message, edit_mode=True)
+        await update_apartment_photo(apartment, message, state, "photo1")
 
 
 # Update photo2
 @router.callback_query(F.data.startswith("update_photo2_"))
-async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_photo2_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PHOTO2)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -98,16 +112,11 @@ async def update_photo2(callback_query: types.CallbackQuery, state: FSMContext):
 async def handler_update_photo2(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
-        file_id = message.photo[-1].file_id
-        save_apartment(apartment, photo2=file_id)
-        await state.clear()
-        await message.answer("Второе фото успешно обновлено!")
-        await show_apartment_data(message, edit_mode=True)
-
+        await update_apartment_photo(apartment, message, state, "photo2")
 
 # Update photo3
 @router.callback_query(F.data.startswith("update_photo3_"))
-async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_photo3_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PHOTO3)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -120,15 +129,47 @@ async def update_photo3(callback_query: types.CallbackQuery, state: FSMContext):
 async def handler_update_photo3(message: types.Message, state: FSMContext):
     apartment = USER_DATA.get('current_apartment')
     if apartment:
-        file_id = message.photo[-1].file_id
-        save_apartment(apartment, photo3=file_id)
-        await state.clear()
-        await message.answer("Третье фото успешно обновлено!")
-        await show_apartment_data(message, edit_mode=True)
+        await update_apartment_photo(apartment, message, state, "photo3")
+
+
+# Update description
+@router.callback_query(F.data.startswith("update_description_"))
+async def update_description_callback(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.DESCRIPTION)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Введите новое описание квартиры:")
+    await callback_query.answer()
+
+
+@router.message(EditApartmentState.DESCRIPTION)
+async def handler_update_description(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        await update_text_field(apartment, message, state, "description", "описание")
+
+# Update address
+@router.callback_query(F.data.startswith("update_address_"))
+async def update_address_callback(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.set_state(EditApartmentState.ADDRESS)
+    index = int(callback_query.data.split("_")[-1])
+    apartment = USER_DATA["apartments"][index]
+    USER_DATA["current_apartment"] = apartment
+    await callback_query.message.edit_text("Введите новый адрес квартиры:")
+    await callback_query.answer()
+
+
+@router.message(EditApartmentState.ADDRESS)
+async def handler_update_address(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if apartment:
+        await update_text_field(apartment, message, state, "address", "адрес")
+
 
 # Update total area
 @router.callback_query(F.data.startswith("update_total_area_"))
-async def update_total_area(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_total_area_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.TOTAL_AREA)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -139,27 +180,28 @@ async def update_total_area(callback_query: types.CallbackQuery, state: FSMConte
 
 @router.message(EditApartmentState.TOTAL_AREA)
 async def handler_update_total_area(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if not apartment:
+        return
     if message.content_type != types.ContentType.TEXT:
         await message.answer("Введите числовое значение для общей площади.")
         return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        try:
-            total_area = float(message.text)
-            if total_area <= 0:
-                await message.answer("Общая площадь должна быть больше 0.")
-                return
-            save_apartment(apartment, total_area=total_area)
-            await state.clear()
-            await message.answer("Общая площадь успешно обновлена!")
-            await show_apartment_data(message, edit_mode=True)
-        except ValueError:
-            await message.answer("Введите корректное числовое значение для общей площади.")
+    try:
+        value = float(message.text)
+        if value <= 0:
+            await message.answer("Общая площадь должна быть больше 0.")
+            return
+        save_apartment(apartment, total_area=value)
+        await state.clear()
+        await message.answer("Общая площадь успешно обновлена!")
+        await show_apartment_data(message, edit_mode=True)
+    except ValueError:
+        await message.answer("Введите корректное числовое значение для общей площади.")
 
 
 # Update living area
 @router.callback_query(F.data.startswith("update_living_area_"))
-async def update_living_area(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_living_area_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.LIVING_AREA)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -170,26 +212,27 @@ async def update_living_area(callback_query: types.CallbackQuery, state: FSMCont
 
 @router.message(EditApartmentState.LIVING_AREA)
 async def handler_update_living_area(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if not apartment:
+        return
     if message.content_type != types.ContentType.TEXT:
         await message.answer("Введите числовое значение для жилой площади.")
         return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        try:
-            living_area = float(message.text)
-            if living_area <= 0:
-                await message.answer("Жилая площадь должна быть больше 0.")
-                return
-            save_apartment(apartment, living_area=living_area)
-            await state.clear()
-            await message.answer("Жилая площадь успешно обновлена!")
-            await show_apartment_data(message, edit_mode=True)
-        except ValueError:
-            await message.answer("Введите корректное числовое значение для жилой площади.")
+    try:
+        value = float(message.text)
+        if value <= 0:
+            await message.answer("Жилая площадь должна быть больше 0.")
+            return
+        save_apartment(apartment, living_area=value)
+        await state.clear()
+        await message.answer("Жилая площадь успешно обновлена!")
+        await show_apartment_data(message, edit_mode=True)
+    except ValueError:
+        await message.answer("Введите корректное числовое значение для жилой площади.")
 
 # Update kitchen area
 @router.callback_query(F.data.startswith("update_kitchen_area_"))
-async def update_kitchen_area(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_kitchen_area_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.KITCHEN_AREA)
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
@@ -200,96 +243,51 @@ async def update_kitchen_area(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.message(EditApartmentState.KITCHEN_AREA)
 async def handler_update_kitchen_area(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if not apartment:
+        return
     if message.content_type != types.ContentType.TEXT:
         await message.answer("Введите числовое значение для площади кухни.")
         return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        try:
-            kitchen_area = float(message.text)
-            if kitchen_area <= 0:
-                await message.answer("Площадь кухни должна быть больше 0.")
-                return
-            save_apartment(apartment, kitchen_area=kitchen_area)
-            await state.clear()
-            await message.answer("Площадь кухни успешно обновлена!")
-            await show_apartment_data(message, edit_mode=True)
-        except ValueError:
-            await message.answer("Введите корректное числовое значение для площади кухни.")
-
-# Update description
-@router.callback_query(F.data.startswith("update_description_"))
-async def update_description(callback_query: types.CallbackQuery, state: FSMContext):
-    await state.set_state(EditApartmentState.DESCRIPTION)
-    index = int(callback_query.data.split("_")[-1])
-    apartment = USER_DATA["apartments"][index]
-    USER_DATA["current_apartment"] = apartment
-    await callback_query.message.edit_text("Введите новое описание квартиры:")
-
-
-@router.message(EditApartmentState.DESCRIPTION)
-async def handler_update_description(message: types.Message, state: FSMContext):
-    if message.content_type != types.ContentType.TEXT:
-        await message.answer("Введите текст")
-        return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        save_apartment(apartment, description=message.text)
+    try:
+        value = float(message.text)
+        if value <= 0:
+            await message.answer("Площадь кухни должна быть больше 0.")
+            return
+        save_apartment(apartment, kitchen_area=value)
         await state.clear()
-        await message.answer("Описание успешно обновлено!")
+        await message.answer("Площадь кухни успешно обновлена!")
         await show_apartment_data(message, edit_mode=True)
-
-
-# Update address
-@router.callback_query(F.data.startswith("update_address_"))
-async def update_address(callback_query: types.CallbackQuery, state: FSMContext):
-    await state.set_state(EditApartmentState.ADDRESS)
-    await callback_query.answer()
-    index = int(callback_query.data.split("_")[-1])
-    apartment = USER_DATA["apartments"][index]
-    USER_DATA["current_apartment"] = apartment
-    await callback_query.message.edit_text("Введите новый адрес квартиры:")
-
-
-@router.message(EditApartmentState.ADDRESS)
-async def handler_update_address(message: types.Message, state: FSMContext):
-    if message.content_type != types.ContentType.TEXT:
-        await message.answer("Введите текст для адреса.")
-        return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        save_apartment(apartment, address=message.text)
-        await state.clear()
-        await message.answer("Адрес успешно обновлен!")
-        await show_apartment_data(message, edit_mode=True)
-
+    except ValueError:
+        await message.answer("Введите корректное числовое значение для площади кухни.")
 
 # Update price
 @router.callback_query(F.data.startswith("update_price_"))
-async def update_price(callback_query: types.CallbackQuery, state: FSMContext):
+async def update_price_callback(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(EditApartmentState.PRICE)
-    await callback_query.answer()
     index = int(callback_query.data.split("_")[-1])
     apartment = USER_DATA["apartments"][index]
     USER_DATA["current_apartment"] = apartment
     await callback_query.message.edit_text("Введите новую цену квартиры:")
+    await callback_query.answer()
 
 
 @router.message(EditApartmentState.PRICE)
 async def handler_update_price(message: types.Message, state: FSMContext):
+    apartment = USER_DATA.get('current_apartment')
+    if not apartment:
+        return
     if message.content_type != types.ContentType.TEXT:
         await message.answer("Введите числовое значение для цены.")
         return
-    apartment = USER_DATA.get('current_apartment')
-    if apartment:
-        try:
-            price = int(message.text)
-            if price <= 0:
-                await message.answer("Цена не может быть равна 0 или быть отрицательной.")
-                return
-            save_apartment(apartment, price=price)
-            await state.clear()
-            await message.answer("Цена успешно обновлена!")
-            await show_apartment_data(message, edit_mode=True)
-        except ValueError:
-            await message.answer("Введите корректное целое числовое значение для цены.")
+    try:
+        value = int(message.text)
+        if value <= 0:
+            await message.answer("Цена не может быть равна 0 или быть отрицательной.")
+            return
+        save_apartment(apartment, price=value)
+        await state.clear()
+        await message.answer("Цена успешно обновлена!")
+        await show_apartment_data(message, edit_mode=True)
+    except ValueError:
+        await message.answer("Введите корректное целое числовое значение для цены.")
