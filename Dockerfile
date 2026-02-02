@@ -1,16 +1,17 @@
+# Basic Python image
 FROM python:3.12
-WORKDIR /src
 
-# Installing system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Environment variables to control Python behavior
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-# Updating pip before installing dependencies
-RUN pip install --upgrade pip
+# Working directory in the container
+WORKDIR /app
 
-# Copying and installing Python dependencies
+# Updating pip and installing wheel
+RUN pip install --upgrade pip wheel
+
+# Copy dependencies and install them
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
