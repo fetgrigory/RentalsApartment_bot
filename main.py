@@ -35,7 +35,11 @@ router = Router()
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
 if not TOKEN:
-    logger.error("TOKEN не задан в переменных окружения!")
+    logger.critical("TOKEN не задан в переменных окружения!")
+    raise RuntimeError("TOKEN не задан!")
+if not ADMIN_ID:
+    logger.critical("ADMIN_ID не задан в переменных окружения!")
+    raise RuntimeError("ADMIN_ID не задан!")
 # Dictionary to store user data temporarily
 USER_DATA = {}
 
