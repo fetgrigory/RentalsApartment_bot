@@ -9,6 +9,7 @@ Ending //
 # Installing the necessary libraries
 import os
 import logging
+import asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
@@ -71,13 +72,17 @@ async def start(message: types.Message):
         reply_markup=keyboard
     )
 
+
 # Creating a database at startup
-try:
-    init_db()
-    logger.info("Database successfully created/connected")
-except Exception as e:
-    logger.exception("Error creating database: %s", e)
+async def main():
+    try:
+        init_db()
+        logger.info("Database successfully created/connected")
+    except Exception as e:
+        logger.exception("Error creating database: %s", e)
+
+    logger.info("Start polling")
+    await dp.start_polling(bot, skip_updates=True)
 
 if __name__ == "__main__":
-    logger.info("Start polling")
-    dp.run_polling(bot, skip_updates=True)
+    asyncio.run(main())
