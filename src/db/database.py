@@ -23,7 +23,7 @@ PORT = os.getenv("PORT")
 # Creating a connection string
 DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
 # Creating an engine
-async_engine = create_engine(
+sync_engine = create_engine(
     DATABASE_URL,
     echo=False,
     pool_size=5,
@@ -31,7 +31,7 @@ async_engine = create_engine(
 )
 # Session factory
 session_factory = sessionmaker(
-    bind=async_engine,
+    bind=sync_engine,
     autoflush=False,
     autocommit=False
 
@@ -42,4 +42,4 @@ session_factory = sessionmaker(
 def init_db():
     """AI is creating summary for init_db
     """
-    Base.metadata.create_all(bind=async_engine)
+    Base.metadata.create_all(bind=sync_engine)
