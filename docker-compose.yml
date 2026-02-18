@@ -2,8 +2,8 @@ version: '3.12'
 
 services:
   db:
-    image: postgres:18
-    container_name: postgres-container
+    image: pgvector/pgvector:pg18
+    container_name: pgvector-container
     env_file:
       - .env
     environment:
