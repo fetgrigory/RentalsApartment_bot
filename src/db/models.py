@@ -10,6 +10,7 @@ Ending //
 import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
 from sqlalchemy import ForeignKey
+from pgvector.sqlalchemy import Vector
 
 
 # Creating a base class for models
@@ -32,6 +33,7 @@ class Catalog(Base):
     description: Mapped[str]
     address: Mapped[str]
     price: Mapped[float]
+    embedding: Mapped[Vector] = mapped_column(Vector(384))
     category: Mapped[str]
     bookings: Mapped[list["Booking"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
