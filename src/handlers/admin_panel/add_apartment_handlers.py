@@ -12,11 +12,14 @@ import os
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
+from sentence_transformers import SentenceTransformer
 from src.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard
 from src.db.crud import insert_apartment_data
 from src.states import AddApartmentState
 
 router = Router()
+# Model for creating embeddings
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 # Admin Panel
@@ -132,6 +135,10 @@ async def handler_price(message: types.Message, state: FSMContext):
         await state.update_data(price=price)
         data = await state.get_data()
         current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Generating embedding for finding a suitable apartment
+        embedding_text = f"{data['total_area']}.{data['living_area']}.{data['kitchen_area']}.{data['description']}.{data['price']}.Category:{data['category']}"
+        embedding_vector = embedding_model.encode(embedding_text, convert_to_numpy=True).tolist()
+
         insert_apartment_data({
             "date": current_date,
             "photo1": data['photo1'],
@@ -143,6 +150,7 @@ async def handler_price(message: types.Message, state: FSMContext):
             "description": data['description'],
             "address": data['address'],
             "price": str(data['price']),
+            "embedding": embedding_vector,
             "category": data['category']
         })
 
