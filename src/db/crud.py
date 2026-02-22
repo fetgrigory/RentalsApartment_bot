@@ -98,6 +98,7 @@ def insert_apartment_data(data):
             description=data['description'],
             address=data['address'],
             price=data['price'],
+            embedding=data['embedding'],
             category=data['category']
         )
         session.add(apartment)
