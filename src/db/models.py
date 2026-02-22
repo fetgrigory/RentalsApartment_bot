@@ -9,7 +9,7 @@ Ending //
 # Installing the necessary libraries
 import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Date
 from pgvector.sqlalchemy import Vector
 
 
@@ -23,7 +23,7 @@ class Catalog(Base):
     __tablename__ = 'catalog'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    date: Mapped[str]
+    date: Mapped[datetime.date] = mapped_column(Date)
     photo1: Mapped[str]
     photo2: Mapped[str]
     photo3: Mapped[str]
@@ -44,7 +44,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(unique=True)
+    user_id: Mapped[int] = mapped_column(unique=True, index=True)
     first_name: Mapped[str]
     last_name: Mapped[str]
     phone: Mapped[str]
@@ -57,8 +57,8 @@ class Booking(Base):
     __tablename__ = 'bookings'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE"))
-    apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"), index=True)
     start_date: Mapped[datetime.date]
     end_date: Mapped[datetime.date]
     rent_days: Mapped[int]
@@ -72,8 +72,8 @@ class Review(Base):
     __tablename__ = 'reviews'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE"))
-    apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    apartment_id: Mapped[int] = mapped_column(ForeignKey('catalog.id', ondelete="CASCADE"), index=True)
     review_text: Mapped[str]
     sentiment_label: Mapped[str]
     sentiment_score: Mapped[float]
