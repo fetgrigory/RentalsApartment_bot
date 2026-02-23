@@ -153,11 +153,12 @@ RentalsApartment_bot/
 | `psycopg-binary`|Предкомпилированный клиент PostgreSQL для быстрого развертывания бота|
 | `SQLAlchemy`| Работа с PostgreSQL через ORM и выполнение SQL-запросов|
 | `pgvector`|Расширение PostgreSQL для хранения и поиска по векторным данным (эмбеддингам)|
+| `alembic`|Инструмент для управления миграциями базы данных и автоматического обновления схемы PostgreSQL|
 | `python-dotenv` | Работа с переменными окружения|
 | `transformers` | Библиотека для NLP и работы с трансформерами от Hugging Face|
 | `sentence-transformers`|Библиотека для генерации векторных представлений текста (эмбеддингов) на основе трансформер-моделей|
 | `torch` |Фреймворк PyTorch для запуска и обработки готовых нейросетевых моделей|
-| `ollama`           |Локальный клиент для работы с GPT-моделями через Ollama|
+| `ollama`|Локальный клиент для работы с GPT-моделями через Ollama|
 | **NLP-модель**  | [blanchefort/rubert-base-cased-sentiment](https://huggingface.co/blanchefort/rubert-base-cased-sentiment) |
 
 ---
