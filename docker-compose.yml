@@ -41,6 +41,8 @@ services:
     build: .
     env_file:
       - .env
+    volumes:
+      - .:/app
     environment:
       - TOKEN=${TOKEN}
       - ADMIN_ID=${ADMIN_ID}
@@ -58,3 +60,4 @@ services:
 volumes:
   pg_data:
   ollama:
+  

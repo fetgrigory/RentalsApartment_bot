@@ -5,6 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.db.models import Base
+import pgvector.sqlalchemy
+from pgvector.sqlalchemy import Vector
 config = context.config
 
 if config.config_file_name is not None:
