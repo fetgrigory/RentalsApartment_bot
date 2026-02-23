@@ -36,10 +36,3 @@ session_factory = sessionmaker(
     autocommit=False
 
 )
-
-
-# Creates all tables if they do not exist
-def init_db():
-    """AI is creating summary for init_db
-    """
-    Base.metadata.create_all(bind=sync_engine)

@@ -20,7 +20,6 @@ from src.handlers.admin_panel.edit_apartment_handlers import router as edit_rout
 from src.handlers.admin_panel.catalog_handlers import router as catalog_router
 from src.handlers.admin_panel.reviews_handlers import router as reviews_router
 from src.handlers.admin_panel.bookings_handlers import router as bookings_router
-from src.db.database import init_db
 from src.keyboards.user_keyboard import start_keyboard
 
 logging.basicConfig(
