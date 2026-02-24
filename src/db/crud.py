@@ -115,7 +115,7 @@ def delete_apartment_data(apartment_id):
 
 
 # Updates apartment data in the 'catalog' table by the specified ID
-def update_apartment_data(apartment_id, photo1, photo2, photo3, total_area, living_area, kitchen_area, description, address, price, category):
+def update_apartment_data(apartment_id, photo1, photo2, photo3, total_area, living_area, kitchen_area, description, address, price, embedding, category):
     with session_factory() as session:
         apartment = session.query(Catalog).get(apartment_id)
         if apartment:
@@ -128,6 +128,7 @@ def update_apartment_data(apartment_id, photo1, photo2, photo3, total_area, livi
             apartment.description = description
             apartment.address = address
             apartment.price = price
+            apartment.embedding = embedding
             apartment.category = category
             session.commit()
 

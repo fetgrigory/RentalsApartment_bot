@@ -8,18 +8,24 @@ Ending //
 # Installing the necessary libraries
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
+from sentence_transformers import SentenceTransformer
+from src.db.crud import delete_apartment_data, get_catalog_data, update_apartment_data
 from src.keyboards.admin_keyboard import edit_apartment_keyboard
-from src.db.crud import get_catalog_data, update_apartment_data, delete_apartment_data
 from src.states import EditApartmentState
 from src.utils.catalog_utils import USER_DATA, show_apartment_data
 
 router = Router()
+
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 # Updates apartment fields
 def save_apartment(apartment, **fields):
     for key, value in fields.items():
         setattr(apartment, key, value)
+# Recalculating embedding
+    embedding_text = f"{apartment.total_area}.{apartment.living_area}.{apartment.kitchen_area}.{apartment.description}.{apartment.price}"
+    embedding_vector = embedding_model.encode(embedding_text, convert_to_numpy=True).tolist()
     update_apartment_data(
         apartment.id,
         apartment.photo1,
@@ -31,6 +37,7 @@ def save_apartment(apartment, **fields):
         apartment.description,
         apartment.address,
         apartment.price,
+        embedding_vector,
         apartment.category
     )
     USER_DATA['apartments'] = get_catalog_data()
