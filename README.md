@@ -244,7 +244,7 @@ PORT="5432"
    ```bash
    docker compose exec bot alembic revision --autogenerate
    ```
-10. Создание новой миграции:
+10. Применение миграций к базе данных:
    ```bash
    docker compose exec bot alembic upgrade head
    ```
