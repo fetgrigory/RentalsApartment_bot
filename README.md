@@ -124,7 +124,8 @@ RentalsApartment_bot/
 │   ├── nlp/                      # NLP и обработка текстов
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
-│   │   └── sentiment_analyzer.py
+│   │   ├── sentiment_analyzer.py
+│   │   └── vector_search.py
 ├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
 │   ├── admin_panel/              # Админские хендлеры
