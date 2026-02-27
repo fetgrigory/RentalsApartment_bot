@@ -8,6 +8,7 @@ Ending //
 # Installing the necessary libraries
 import os
 from ollama import Client, ChatResponse
+from src.nlp.vector_search import format_results
 
 # System prompt for GPT to define its behavior
 system_prompt = """
@@ -74,8 +75,11 @@ def ask_gpt(messages: list) -> str:
 
         api_url = os.getenv("OLLAMA_API_URL")
         client = Client(host=api_url)
-        # Add system prompt to the beginning of messages
-        messages_with_system = [{"role": "system", "content": system_prompt}] + messages
+        # Add system prompt and RAG search context to the messages
+        search_context = f"Найденные квартиры:\n{format_results(format)}"
+        messages_with_system = [
+            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": search_context}] + messages
         response: ChatResponse = client.chat(
             model='infidelis/GigaChat-20B-A3B-instruct:q4_0',
             messages=messages_with_system,
