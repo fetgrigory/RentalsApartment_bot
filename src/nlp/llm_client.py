@@ -75,15 +75,15 @@ def ask_gpt(messages: list[dict]) -> str:
 
         api_url = os.getenv("OLLAMA_API_URL")
         client = Client(host=api_url)
-        # Search the catalog
+        # Search the catalog and form context from results
         results = search_catalog(user_query, limit=1)
-        # Forming a context from the apartments found
         search_context = f"Найденные квартиры:\n{format_results(results)}"
-        # Initialize the list with the system prompt
+        # Initialize messages with system prompt and optional context
         messages_with_system = [{"role": "system", "content": system_prompt}]
         # Check the context and add it if it exists
         if search_context:
             messages_with_system.append({"role": "system", "content": search_context})
+        # User messages
         messages_with_system += messages
         response: ChatResponse = client.chat(
             model='infidelis/GigaChat-20B-A3B-instruct:q4_0',
