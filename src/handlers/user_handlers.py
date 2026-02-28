@@ -194,10 +194,11 @@ async def handle_question(message: types.Message):
     USER_DATA.setdefault(user_id, {'messages': []})
     # Save user's question
     USER_DATA[user_id]['messages'].append({"role": "user", "content": message.text})
+    user_query = message.text
     thinking_msg = await message.answer("Думаю над ответом...")
     try:
         # Get GPT's response, remove the indicator, and send the response
-        response = ask_gpt(USER_DATA[user_id]['messages'])
+        response = ask_gpt(USER_DATA[user_id]['messages'], user_query)
         await message.bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
         USER_DATA[user_id]['messages'].append({"role": "assistant", "content": response})
         await message.answer(response)

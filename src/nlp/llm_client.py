@@ -62,7 +62,7 @@ system_prompt = """
 
 
 # Get response from GPT model
-def ask_gpt(messages: list[dict]) -> str:
+def ask_gpt(messages: list[dict], user_query: str) -> str:
     """AI is creating summary for ask_gpt
 
     Args:
