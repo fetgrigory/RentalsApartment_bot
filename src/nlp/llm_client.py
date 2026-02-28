@@ -8,7 +8,7 @@ Ending //
 # Installing the necessary libraries
 import os
 from ollama import Client, ChatResponse
-from src.nlp.vector_search import format_results
+from src.nlp.vector_search import format_results, search_catalog
 
 # System prompt for GPT to define its behavior
 system_prompt = """
@@ -62,11 +62,11 @@ system_prompt = """
 
 
 # Get response from GPT model
-def ask_gpt(messages: list) -> str:
+def ask_gpt(messages: list[dict]) -> str:
     """AI is creating summary for ask_gpt
 
     Args:
-        messages (list): [description]
+        messages (list[dict]): [description]
 
     Returns:
         str: [description]
@@ -75,11 +75,16 @@ def ask_gpt(messages: list) -> str:
 
         api_url = os.getenv("OLLAMA_API_URL")
         client = Client(host=api_url)
-        # Add system prompt and RAG search context to the messages
-        search_context = f"Найденные квартиры:\n{format_results(format)}"
-        messages_with_system = [
-            {"role": "system", "content": system_prompt},
-            {"role": "system", "content": search_context}] + messages
+        # Search the catalog
+        results = search_catalog(user_query, limit=1)
+        # Forming a context from the apartments found
+        search_context = f"Найденные квартиры:\n{format_results(results)}"
+        # Initialize the list with the system prompt
+        messages_with_system = [{"role": "system", "content": system_prompt}]
+        # Check the context and add it if it exists
+        if search_context:
+            messages_with_system.append({"role": "system", "content": search_context})
+        messages_with_system += messages
         response: ChatResponse = client.chat(
             model='infidelis/GigaChat-20B-A3B-instruct:q4_0',
             messages=messages_with_system,
@@ -89,5 +94,3 @@ def ask_gpt(messages: list) -> str:
     except Exception as e:
         print(f"Error getting GPT response: {e}")
         return "Извините, в данный момент я не могу ответить на ваш вопрос. Пожалуйста, попробуйте позже."
-
-
