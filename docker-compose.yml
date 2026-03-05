@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
 
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.17.4
     container_name: ollama
     volumes:
       - ollama:/root/.ollama
@@ -41,6 +41,8 @@ services:
     build: .
     env_file:
       - .env
+    volumes:
+      - .:/app
     environment:
       - TOKEN=${TOKEN}
       - ADMIN_ID=${ADMIN_ID}
