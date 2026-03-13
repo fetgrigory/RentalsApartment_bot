@@ -10,7 +10,7 @@ Ending //
 import datetime
 from sqlalchemy.orm import joinedload
 from src.db.database import session_factory
-from src.db.models import User, Catalog, Booking, Review
+from src.db.models import User, Catalog, Booking, Review, DocumentChunk
 from src.nlp.sentiment_analyzer import analyze_review
 
 
@@ -151,3 +151,14 @@ def insert_review(user_id, apartment_id, review_text):
 def get_reviews():
     with session_factory() as session:
         return session.query(Review).order_by(Review.date.desc()).all()
+
+
+# Inserts contract text chunks and their embeddings
+def insert_contract_data(data):
+    with session_factory() as session:
+        contract_chunk = DocumentChunk(
+            text=data['text'],
+            embedding=data['embedding']
+        )
+        session.add(contract_chunk)
+        session.commit()
