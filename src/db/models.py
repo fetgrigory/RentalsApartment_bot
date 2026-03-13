@@ -18,7 +18,7 @@ class Base(DeclarativeBase):
     pass
 
 
-# Defining the 'catalog' table structure
+# Catalog table
 class Catalog(Base):
     __tablename__ = 'catalog'
 
@@ -33,13 +33,12 @@ class Catalog(Base):
     description: Mapped[str]
     address: Mapped[str]
     price: Mapped[float]
-    embedding: Mapped[Vector] = mapped_column(Vector(384))
     category: Mapped[str]
     bookings: Mapped[list["Booking"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship(back_populates="apartment", cascade="all, delete-orphan")
 
 
-# Defining the 'users' table structure
+# Users table
 class User(Base):
     __tablename__ = 'users'
 
@@ -52,7 +51,7 @@ class User(Base):
     reviews: Mapped[list["Review"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 
-# Defining the 'bookings' table structure
+# Bookings table
 class Booking(Base):
     __tablename__ = 'bookings'
 
@@ -67,7 +66,7 @@ class Booking(Base):
     apartment: Mapped["Catalog"] = relationship(back_populates="bookings")
 
 
-# Defining the 'reviews' table structure
+# Reviews table
 class Review(Base):
     __tablename__ = 'reviews'
 
@@ -80,3 +79,12 @@ class Review(Base):
     date: Mapped[datetime.date] = mapped_column(default=datetime.date.today)
     user: Mapped["User"] = relationship(back_populates="reviews")
     apartment: Mapped["Catalog"] = relationship(back_populates="reviews")
+
+
+# Document chunks table
+class DocumentChunk(Base):
+    __tablename__ = 'document_chunks'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    text: Mapped[str]
+    embedding: Mapped[Vector] = mapped_column(Vector(384))
