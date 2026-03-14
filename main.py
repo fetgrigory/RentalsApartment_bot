@@ -20,6 +20,7 @@ from src.handlers.admin_panel.edit_apartment_handlers import router as edit_rout
 from src.handlers.admin_panel.catalog_handlers import router as catalog_router
 from src.handlers.admin_panel.reviews_handlers import router as reviews_router
 from src.handlers.admin_panel.bookings_handlers import router as bookings_router
+from src.nlp.rag.add_document_handlers import router as document_router
 from src.db.database import init_db
 from src.keyboards.user_keyboard import start_keyboard
 
@@ -57,6 +58,7 @@ dp.include_router(edit_router)
 dp.include_router(catalog_router)
 dp.include_router(reviews_router)
 dp.include_router(bookings_router)
+dp.include_router(document_router)
 
 
 @router.message(Command("start"))
