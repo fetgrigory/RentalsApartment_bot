@@ -47,3 +47,7 @@ class ReviewState(StatesGroup):
 
 class QuestionState(StatesGroup):
     WAITING_QUESTION = State()
+
+
+class AddDocumentState(StatesGroup):
+    TEXT = State()
