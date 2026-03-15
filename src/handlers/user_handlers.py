@@ -15,6 +15,7 @@ from src.db.crud import is_apartment_available, check_user_exists, insert_user_d
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard
 from src.payment import send_invoice
 from src.nlp.llm_client import ask_gpt
+from src.nlp.rag.vector_search import search_contract, format_contract_results
 from src.utils.catalog_utils import USER_DATA
 
 router = Router()
@@ -196,11 +197,19 @@ async def handle_question(message: types.Message):
     USER_DATA[user_id]['messages'].append({"role": "user", "content": message.text})
     thinking_msg = await message.answer("Думаю над ответом...")
     try:
-        # Get GPT's response, remove the indicator, and send the response
-        response = ask_gpt(USER_DATA[user_id]['messages'])
-        await message.bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
-        USER_DATA[user_id]['messages'].append({"role": "assistant", "content": response})
-        await message.answer(response)
+        # Search contracts and respond if no results found
+        results = search_contract(message.text, limit=3)
+        if results:
+            formatted = format_contract_results(results)
+            await message.bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
+            USER_DATA[user_id]['messages'].append({"role": "assistant", "content": formatted})
+            await message.answer(formatted)
+        else:
+            # Get GPT's response, remove the indicator, and send the response
+            response = ask_gpt(USER_DATA[user_id]['messages'])
+            await message.bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
+            USER_DATA[user_id]['messages'].append({"role": "assistant", "content": response})
+            await message.answer(response)
     except Exception as e:
         print(f"Error (User {user_id}): {e}")
         await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
