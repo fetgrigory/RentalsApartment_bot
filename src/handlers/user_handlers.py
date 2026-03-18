@@ -184,7 +184,7 @@ async def save_review(message: types.Message, state: FSMContext):
 @router.message(F.text == "🎧 Задать вопрос")
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
-    await message.answer("Пожалуйста, задайте ваш вопрос по аренде жилья. Я постараюсь помочь!")
+    await message.answer("Пожалуйста, задайте ваш вопрос. Я помогу с правилами проживания, каталогом квартир и бронированием через сервис.")
 
 
 # Handles user's question, saves message history, and returns GPT's response
