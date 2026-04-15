@@ -1,12 +1,3 @@
-'''
-This bot make
-
-Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 28/05/2024
-Ending //
-
-'''
-# Installing the necessary libraries
 import os
 import logging
 import asyncio
@@ -14,6 +5,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.context import FSMContext
 from src.handlers.user_handlers import router as user_router
 from src.handlers.admin_panel.add_apartment_handlers import router as add_router
 from src.handlers.admin_panel.edit_apartment_handlers import router as edit_router
@@ -42,8 +34,6 @@ if not TOKEN:
 if not ADMIN_ID:
     logger.critical("ADMIN_ID не задан в переменных окружения!")
     raise RuntimeError("ADMIN_ID не задан!")
-# Dictionary to store user data temporarily
-USER_DATA = {}
 
 # Setting up the bot and dispatcher
 storage = MemoryStorage()
@@ -62,9 +52,9 @@ dp.include_router(document_router)
 
 
 @router.message(Command("start"))
-async def start(message: types.Message):
+async def start(message: types.Message, state: FSMContext):
     logger.info("User pressed /start")
-    USER_DATA.clear()
+    await state.clear()
     keyboard = start_keyboard(message.from_user.id)
     me = await message.bot.get_me()
     await message.answer(
