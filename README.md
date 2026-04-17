@@ -122,6 +122,7 @@ RentalsApartment_bot/
 │   └── user_handlers.py          # Хендлеры для обычных пользователей
 ├── utils/                        # Утилиты
 │   └── catalog_utils.py
+│   └── paginator.py
 ├── payment.py                     # Логика платежей
 ├── states.py                      # Состояния FSM
 ├── main.py                        # Точка входа бота
