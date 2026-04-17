@@ -24,7 +24,7 @@ async def show_apartment_data(message: types.Message, apartments=None, index=0, 
         await message.answer("Каталог пуст!")
         return
 
-    record = apartments[0]
+    record = apartments[index]
 
     photos_info = [
         types.InputMediaPhoto(media=getattr(record, f'photo{i}'), caption=f"Фото квартиры")
