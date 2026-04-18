@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from src.keyboards.admin_keyboard import admin_category_keyboard
 from src.db.crud import get_catalog_data, get_catalog_by_category
 from src.utils.catalog_utils import show_apartment_data
-from utils.paginator import Paginator
+from src.utils.paginator import Paginator
 
 router = Router()
 
