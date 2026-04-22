@@ -1,6 +1,7 @@
 from aiogram import types
 from src.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
 from src.keyboards.user_keyboard import catalog_navigation_keyboard
+from src.utils.paginator import Paginator
 
 
 # Render apartment data for catalog
@@ -9,7 +10,8 @@ async def show_apartment_data(message: types.Message, apartments, index=0, edit_
         await message.answer("Каталог пуст!")
         return
 
-    record = apartments[index]
+    paginator = Paginator(apartments, page=index + 1)
+    record = paginator.get_page()[0]
 
     photos_info = [
         types.InputMediaPhoto(
@@ -25,7 +27,8 @@ async def show_apartment_data(message: types.Message, apartments, index=0, edit_
         f"  • Общая: {record.total_area} м²\n"
         f"  • Жилая: {record.living_area} м²\n"
         f"  • Кухня: {record.kitchen_area} м²\n\n"
-        f"💰 Цена (в сутки): {record.price} ₽"
+        f"💰 Цена (в сутки): {record.price} ₽ \n\n"
+        f"{paginator.page} из {paginator.pages}"
     )
 
     keyboard = (
