@@ -1,12 +1,3 @@
-'''
-This module make
-
-Author: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 10/01/2026
-Ending //
-
-'''
-# Installing the necessary libraries
 import datetime
 from sqlalchemy.orm import joinedload
 from src.db.database import session_factory
@@ -98,7 +89,6 @@ def insert_apartment_data(data):
             description=data['description'],
             address=data['address'],
             price=data['price'],
-            embedding=data['embedding'],
             category=data['category']
         )
         session.add(apartment)
