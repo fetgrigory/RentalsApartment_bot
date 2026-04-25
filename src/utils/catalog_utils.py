@@ -21,14 +21,14 @@ async def show_apartment_data(message: types.Message, apartments, index=0, edit_
         for i in range(1, 4)
     ]
     message_text = (
-        f"🏠 Описание:\n{record.description}\n\n"
-        f"📍 Адрес:\n{record.address}\n\n"
-        f"📐 Площадь:\n"
+        f"🏠 <strong>Описание:</strong>\n{record.description}\n\n"
+        f"📍 <strong>Адрес:</strong>\n{record.address}\n\n"
+        f"📐 <strong>Площадь:</strong>\n"
         f"  • Общая: {record.total_area} м²\n"
         f"  • Жилая: {record.living_area} м²\n"
         f"  • Кухня: {record.kitchen_area} м²\n\n"
-        f"💰 Цена (в сутки): {record.price} ₽ \n\n"
-        f"{paginator.page} из {paginator.pages}"
+        f"💰 <strong>Цена (в сутки):</strong> {record.price} ₽\n\n"
+        f"<strong>Объявление {paginator.page} из {paginator.pages}</strong>"
     )
 
     keyboard = (
@@ -38,4 +38,4 @@ async def show_apartment_data(message: types.Message, apartments, index=0, edit_
     )
 
     await message.bot.send_media_group(message.chat.id, media=photos_info)
-    await message.answer(message_text, reply_markup=keyboard)
+    await message.answer(message_text, reply_markup=keyboard, parse_mode="HTML")
