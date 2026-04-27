@@ -52,8 +52,9 @@ def is_apartment_available(apartment_id, start_date, end_date):
 def insert_booking_data(user_id, apartment_id, start_date, rent_days, total_price):
     end_date = start_date + datetime.timedelta(days=rent_days)
     with session_factory() as session:
+        user = session.query(User).filter_by(user_id=user_id).first()
         booking = Booking(
-            user_id=user_id,
+            user_id=user.id,
             apartment_id=apartment_id,
             start_date=start_date,
             end_date=end_date,
