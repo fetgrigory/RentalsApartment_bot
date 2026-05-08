@@ -85,6 +85,7 @@ class ReservationDraft(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow)
     user: Mapped["User"] = relationship(backref="reservation_drafts")
     apartment: Mapped["Catalog"] = relationship(backref="reservation_drafts")
+    services: Mapped[list["ReservationDraftService"]]
 
 # Service table
 class Service(Base):

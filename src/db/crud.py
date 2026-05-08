@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy.orm import joinedload
 from src.db.database import session_factory
-from src.db.models import User, Catalog, Booking, Review, DocumentChunk
+from src.db.models import User, Catalog, Booking, Review, ReservationDraft, ReservationDraftService, DocumentChunk
 from src.nlp.sentiment_analyzer import analyze_review
 
 
@@ -75,6 +75,23 @@ def get_bookings():
             )\
             .all()
 
+# Retrieves the current reservation draft for a user
+def get_user_reservation_draft(user_telegram_id: int):
+    with session_factory() as session:
+        return session.query(ReservationDraft).join(User).filter(
+            User.user_id == user_telegram_id
+        ).options(
+            joinedload(ReservationDraft.apartment),
+            joinedload(ReservationDraft.services).joinedload(ReservationDraftService.service)
+        ).first()
+
+# Deletes a user's reservation draft
+def delete_reservation_draft(user_telegram_id: int):
+    with session_factory() as session:
+        user = session.query(User).filter_by(user_id=user_telegram_id).first()
+        if user:
+            session.query(ReservationDraft).filter_by(user_id=user.id).delete()
+            session.commit()
 
 # Insert a new record into the 'catalog' table using the provided data
 def insert_apartment_data(data):
