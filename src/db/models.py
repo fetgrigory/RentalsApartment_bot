@@ -85,7 +85,7 @@ class ReservationDraft(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow)
     user: Mapped["User"] = relationship(backref="reservation_drafts")
     apartment: Mapped["Catalog"] = relationship(backref="reservation_drafts")
-    services: Mapped[list["ReservationDraftService"]]
+    services: Mapped[list["ReservationDraftService"]] = relationship(back_populates="reservation_draft",cascade="all, delete-orphan")
 
 # Service table
 class Service(Base):
@@ -105,7 +105,7 @@ class ReservationDraftService(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     reservation_draft_id: Mapped[int] = mapped_column(ForeignKey('reservation_drafts.id', ondelete='CASCADE'), index=True)
     service_id: Mapped[int] = mapped_column(ForeignKey('services.id', ondelete='CASCADE'), index=True)
-    reservation_draft: Mapped["ReservationDraft"] = relationship(backref="services")
+    reservation_draft: Mapped["ReservationDraft"] = relationship(back_populates="services")
     service: Mapped["Service"] = relationship(backref="reservation_drafts")
 
 # Document chunks table
