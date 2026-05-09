@@ -23,11 +23,7 @@ def start_keyboard(user_id):
         # For regular users, provide buttons for catalog and site, with contacts
     else:
         keyboard.add(types.KeyboardButton(text="🛍Каталог"))
-        keyboard.row(
-            types.KeyboardButton(text="🌐 Наш сайт"),
-            types.KeyboardButton(text="☎️ Контакты"),
-            types.KeyboardButton(text="🎧 Задать вопрос")
-        )
+        keyboard.row(types.KeyboardButton(text="🎧 Задать вопрос"))
     return keyboard.as_markup(resize_keyboard=True)
 
 
@@ -48,6 +44,7 @@ def catalog_categories_keyboard():
 # Create an InlineKeyboardMarkup for catalog navigation
 def catalog_navigation_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
+    keyboard.row(types.InlineKeyboardButton(text="🛒 Положить в корзину", callback_data="add_to_cart"))
     keyboard.row(types.InlineKeyboardButton(text="Забронировать ✅", callback_data="add"))
     keyboard.row(types.InlineKeyboardButton(text="Оставить отзыв ⭐", callback_data="add_review"))
     # Add a button to go to the previous item if not on the first item

@@ -22,17 +22,10 @@ async def start(message: types.Message, state: FSMContext):
                          f"Меня зовут {me.first_name}. Я помогу вам арендовать квартиру.",
                          parse_mode='html', reply_markup=keyboard)
 
-
-#  Inform user about website availability
-@router.message(F.text == '🌐 Наш сайт')
-async def website(message: types.Message):
-    await message.answer('Сожалею, но у нас пока нет сайта')
-
-
-# Provide contact information
-@router.message(F.text == '☎️ Контакты')
-async def contact(message: types.Message):
-    await message.answer('Наш телефон: 8-901-133-00-00')
+# Add to cart action
+@router.callback_query(F.data == "add_to_cart")
+async def add_to_cart(callback_query: types.CallbackQuery):
+    await callback_query.message.answer('Корзина пуста!')
 
 
 # Navigate to the next or previous apartment details
