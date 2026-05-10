@@ -75,6 +75,29 @@ def get_bookings():
             )\
             .all()
 
+# Adds apartment to user's reservation draft
+def add_apartment_to_draft(user_telegram_id: int, apartment_id: int, start_date, end_date):
+    with session_factory() as session:
+        user = session.query(User).filter_by(user_id=user_telegram_id).first()
+        if not user:
+            return
+
+        draft = session.query(ReservationDraft).filter_by(user_id=user.id).first()
+        if not draft:
+            draft = ReservationDraft(
+                user_id=user.id,
+                apartment_id=apartment_id,
+                start_date=start_date,
+                end_date=end_date
+            )
+            session.add(draft)
+        else:
+            draft.apartment_id = apartment_id
+            draft.start_date = start_date
+            draft.end_date = end_date
+
+        session.commit()
+
 # Retrieves the current reservation draft for a user
 def get_user_reservation_draft(user_telegram_id: int):
     with session_factory() as session:
