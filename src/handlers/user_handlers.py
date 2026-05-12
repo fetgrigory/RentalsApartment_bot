@@ -26,8 +26,8 @@ async def start(message: types.Message, state: FSMContext):
 
 # Add to draft action
 @router.callback_query(F.data == "add_to_draft")
-async def add_to_draft_handler(callback_query: types.CallbackQuery):
-    await process_add_apartment_to_draft(callback_query)
+async def add_to_draft_handler(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_add_apartment_to_draft(callback_query, state)
 
 
 # Navigate to the next or previous apartment details
