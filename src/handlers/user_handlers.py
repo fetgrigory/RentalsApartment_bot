@@ -4,6 +4,7 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from src.states import BookingState, ReviewState, QuestionState
+from src.services.reservation_draft import process_add_apartment_to_draft
 from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard
 from src.payment import send_invoice
@@ -22,10 +23,11 @@ async def start(message: types.Message, state: FSMContext):
                          f"Меня зовут {me.first_name}. Я помогу вам арендовать квартиру.",
                          parse_mode='html', reply_markup=keyboard)
 
-# Add to cart action
-@router.callback_query(F.data == "add_to_cart")
-async def add_to_cart(callback_query: types.CallbackQuery):
-    await callback_query.message.answer('Корзина пуста!')
+
+# Add to draft action
+@router.callback_query(F.data == "add_to_draft")
+async def add_to_draft_handler(callback_query: types.CallbackQuery):
+    await process_add_apartment_to_draft(callback_query)
 
 
 # Navigate to the next or previous apartment details
