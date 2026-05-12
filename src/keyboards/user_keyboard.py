@@ -1,11 +1,3 @@
-'''
-This module make
-
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 02/10/2024
-Ending //
-
-'''
 import os
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
@@ -44,7 +36,7 @@ def catalog_categories_keyboard():
 # Create an InlineKeyboardMarkup for catalog navigation
 def catalog_navigation_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
-    keyboard.row(types.InlineKeyboardButton(text="🛒 Положить в корзину", callback_data="add_to_cart"))
+    keyboard.row(types.InlineKeyboardButton(text="🛒 Положить в корзину", callback_data="add_to_draft"))
     keyboard.row(types.InlineKeyboardButton(text="Забронировать ✅", callback_data="add"))
     keyboard.row(types.InlineKeyboardButton(text="Оставить отзыв ⭐", callback_data="add_review"))
     # Add a button to go to the previous item if not on the first item
