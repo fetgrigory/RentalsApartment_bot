@@ -110,6 +110,9 @@ RentalsApartment_bot/
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
+│   ├── services/                 # Бизнес-логика (use cases)
+│   │   ├── __init__.py
+│   │   └── reservation_draft.py
 ├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
 │   ├── admin_panel/              # Админские хендлеры
