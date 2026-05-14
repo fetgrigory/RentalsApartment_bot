@@ -5,8 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
 from src.states import BookingState, ReviewState, QuestionState
 from src.services.reservation_draft import process_add_apartment_to_draft
-from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review
-from src.keyboards.user_keyboard import start_keyboard, booking_keyboard
+from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_user_reservation_draft, delete_reservation_draft
+from src.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
 from src.payment import send_invoice
 from src.nlp.llm_client import ask_gpt
 from src.nlp.rag.vector_search import search_contract, format_contract_results
@@ -224,3 +224,37 @@ async def handle_question(message: types.Message, state: FSMContext):
     except Exception as e:
         print(f"Error (User {user_id}): {e}")
         await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
+
+# Reservation draft handlers
+@router.message(F.text == "🛒 Корзина")
+async def show_booking_draft(message: types.Message):
+    draft = get_user_reservation_draft(message.from_user.id)
+    if not draft or not draft.apartment:
+        await message.answer("🛒 Ваша корзина пуста", reply_markup=start_keyboard(message.from_user.id))
+        return
+    days = (draft.end_date - draft.start_date).days
+    total_price = draft.apartment.price * days
+    text = (
+        f"🛒 **Ваш черновик бронирования:**\n\n"
+        f"🏠 {draft.apartment.address}\n"
+        f"📅 Заезд: {draft.start_date.strftime('%d.%m.%Y')}\n"
+        f"🏁 Выезд: {draft.end_date.strftime('%d.%m.%Y')}\n"
+        f"⏱️ {days} дней\n"
+        f"💰 {total_price} ₽"
+    )
+
+    keyboard = booking_keyboard()
+    await message.answer(text, reply_markup=keyboard)
+
+# Clear reservation draft
+@router.callback_query(F.data == "clear_draft")
+async def clear_draft(callback: types.CallbackQuery):
+    delete_reservation_draft(callback.from_user.id)
+    await callback.message.edit_text("🧹 Корзина очищена")
+    await callback.answer()
+
+
+@router.callback_query(F.data == "back_to_catalog")
+async def back_to_catalog(callback: types.CallbackQuery):
+    await callback.message.edit_text("Выберите категорию квартир:", reply_markup=catalog_categories_keyboard())
+    await callback.answer()

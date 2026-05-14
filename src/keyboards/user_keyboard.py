@@ -36,7 +36,6 @@ def catalog_categories_keyboard():
 # Create an InlineKeyboardMarkup for catalog navigation
 def catalog_navigation_keyboard(index, total_records):
     keyboard = InlineKeyboardBuilder()
-    keyboard.row(types.InlineKeyboardButton(text="🛒 Положить в корзину", callback_data="add_to_draft"))
     keyboard.row(types.InlineKeyboardButton(text="Забронировать ✅", callback_data="add"))
     keyboard.row(types.InlineKeyboardButton(text="Оставить отзыв ⭐", callback_data="add_review"))
     # Add a button to go to the previous item if not on the first item
@@ -54,8 +53,13 @@ def booking_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
         types.InlineKeyboardButton(text="-1", callback_data="subtract_days"),
-        types.InlineKeyboardButton(text="+1", callback_data="add_days")
+        types.InlineKeyboardButton(text="+1", callback_data="add_days"),
+        types.InlineKeyboardButton(text="🛒 Положить в корзину", callback_data="add_to_draft"),
+        types.InlineKeyboardButton(text="🗑 Очистить корзину", callback_data="clear_draft"),
+        types.InlineKeyboardButton(text="🔙 Продолжить выбор", callback_data="back_to_catalog"),
+        types.InlineKeyboardButton(text="💳 Оплатить", callback_data="pay")
     )
-    # Add buttons to modify the number of days and a payment button
-    keyboard.row(types.InlineKeyboardButton(text="💳Оплатить", callback_data="pay"))
+
+    keyboard.adjust(2, 1, 2, 1)
+
     return keyboard.as_markup()
