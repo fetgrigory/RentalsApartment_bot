@@ -112,6 +112,7 @@ RentalsApartment_bot/
 │   │   └── sentiment_analyzer.py
 │   ├── services/                 # Сервисы бизнес-логики
 │   │   ├── __init__.py
+│   │   ├── ai_service.py
 │   │   └── reservation_draft.py
 ├── handlers/                     # Хендлеры бота
 │   ├── __init__.py
