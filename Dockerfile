@@ -1,5 +1,5 @@
 # Basic Python image
-FROM python:3.12
+FROM python:3.12.6-bookworm
 
 # Environment configuration for Python
 ENV PYTHONUNBUFFERED=1
@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
 
 # Install uv package manager for dependency management
-RUN pip install uv
+RUN pip install --no-cache-dir uv
 
 # Copy dependency metadata and install locked dependencies
 COPY pyproject.toml uv.lock ./
