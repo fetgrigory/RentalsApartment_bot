@@ -1,23 +1,21 @@
 # Basic Python image
 FROM python:3.12
 
-# Environment variables to control Python behavior
+# Environment configuration for Python
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Working directory in the container
 WORKDIR /app
 
-# Updating pip and installing wheel
-RUN pip install --upgrade pip wheel
+# Install uv package manager for dependency management
+RUN pip install uv
 
-# Copy dependencies and install them
-COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
-    
-# Copying the source code
+# Copy dependency metadata and install locked dependencies
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+
+# Copy application source code
 COPY . .
 
-# Launching the bot
+# Run application entrypoint
 CMD ["python", "main.py"]

@@ -8,3 +8,9 @@ src/keyboards/__pycache__/user_keyboard.cpython-312.pyc
 src/keyboards/__pycache__/admin_keyboard.cpython-312.pyc
 src/keyboards/__pycache__/__init__.cpython-312.pyc
 src/database/__pycache__/PostgreSQL_db.cpython-312.pyc
+/.idea/RentalsApartment_bot.iml
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml
