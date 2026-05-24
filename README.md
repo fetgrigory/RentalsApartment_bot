@@ -193,21 +193,21 @@ PORT="5432"
 1. Создайте виртуальное окружение для изоляции зависимостей проекта. 
    Используйте команду:
    ```bash
-   python -m venv venv
+   uv venv
    ```
 
 2. Активируйте виртуальное окружение:
    - На Windows:
      ```bash
-     venv\Scripts\activate
+     .venv\Scripts\activate
      ```
    - На macOS и Linux:
      ```bash
-     source venv/bin/activate
+     source .venv/bin/activate
      ```
 3. Установка зависимостей:
       ```bash
-      pip install -r requirements.txt
+      uv sync
       ```
 4. Запуск Ollama (скачивается образ, если нет):
    ```bash
