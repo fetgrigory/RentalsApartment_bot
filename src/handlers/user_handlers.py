@@ -1,4 +1,3 @@
-import datetime
 from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
@@ -7,6 +6,7 @@ from src.services.reservation_draft import process_add_apartment_to_draft
 from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_user_reservation_draft, delete_reservation_draft
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
 from src.payment import send_invoice
+from src.services.booking_service import calculate_days, calculate_price, get_dates
 from src.services.ai_service import process_question
 
 router = Router()
@@ -37,9 +37,8 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
         apartment = apartments[0]
         await state.update_data(current_apartment=apartment)
         user_id = callback_query.from_user.id
-        start_date = datetime.datetime.now().date()
         rent_days = data.get('rent_days', 1)
-        end_date = start_date + datetime.timedelta(days=rent_days)
+        start_date, end_date = get_dates(rent_days)
         if is_apartment_available(apartment.id, start_date, end_date):
             if check_user_exists(user_id):
                 keyboard = booking_keyboard()
@@ -86,7 +85,7 @@ async def process_phone(message: types.Message, state: FSMContext):
     await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
     apartment = user_data['current_apartment']
     rent_days = user_data.get('rent_days', 1)
-    total_price = apartment.price * rent_days
+    total_price = calculate_price(apartment.price, rent_days)
     text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
     keyboard = booking_keyboard()
     await message.answer(text, reply_markup=keyboard)
@@ -98,10 +97,10 @@ async def add_days(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     apartment = data['current_apartment']
 
-    rent_days = data.get('rent_days', 1) + 1
+    rent_days = calculate_days(data.get('rent_days', 1), 1)
     await state.update_data(rent_days=rent_days)
 
-    new_price = apartment.price * rent_days
+    new_price = calculate_price(apartment.price, rent_days)
 
     text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {new_price} RUB"
     keyboard = booking_keyboard()
@@ -115,10 +114,10 @@ async def subtract_days(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     apartment = data['current_apartment']
 
-    rent_days = max(data.get('rent_days', 1) - 1, 1)
+    rent_days = calculate_days(data.get('rent_days', 1), -1)
     await state.update_data(rent_days=rent_days)
 
-    new_price = apartment.price * rent_days
+    new_price = calculate_price(apartment.price, rent_days)
 
     text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {new_price} RUB"
     keyboard = booking_keyboard()
@@ -148,9 +147,9 @@ async def handler_successful_payment(bot, message, state: FSMContext):
     data = await state.get_data()
 
     apartment = data['current_apartment']
-    start_date = datetime.datetime.now().date()
     rent_days = data.get('rent_days', 1)
-    total_price = apartment.price * rent_days
+    start_date, _ = get_dates(rent_days)
+    total_price = calculate_price(apartment.price, rent_days)
 
     insert_booking_data(user_id, apartment.id, start_date, rent_days, total_price)
 
@@ -208,7 +207,7 @@ async def show_booking_draft(message: types.Message):
         await message.answer("🛒 Ваша корзина пуста", reply_markup=start_keyboard(message.from_user.id))
         return
     days = (draft.end_date - draft.start_date).days
-    total_price = draft.apartment.price * days
+    total_price = calculate_price(draft.apartment.price, days)
     text = (
         f"🛒 **Ваш черновик бронирования:**\n\n"
         f"🏠 {draft.apartment.address}\n"
