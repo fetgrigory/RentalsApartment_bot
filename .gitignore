@@ -1,4 +1,4 @@
-/venv
+/.venv
 src/__pycache__/admin_handlers.cpython-312.pyc
 src/__pycache__/nlp_processor.cpython-312.pyc
 src/__pycache__/payment.cpython-312.pyc

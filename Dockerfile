@@ -18,4 +18,4 @@ RUN uv sync --frozen
 COPY . .
 
 # Run application entrypoint
-CMD ["python", "main.py"]
+CMD ["uv", "run", "python", "main.py"]
