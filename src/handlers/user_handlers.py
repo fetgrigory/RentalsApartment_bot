@@ -19,8 +19,7 @@ async def start(message: types.Message, state: FSMContext):
     await state.update_data(apartments=None, rent_days=1, messages=[])
     keyboard = start_keyboard(message.from_user.id)
     me = await message.bot.get_me()
-    await message.answer(f"Здравствуйте, {message.from_user.first_name}!\n"
-                         f"Меня зовут {me.first_name}. Я помогу вам арендовать квартиру.",
+    await message.answer(texts.WELCOME.format(user_name=message.from_user.first_name, bot_name=me.first_name),
                          parse_mode='html', reply_markup=keyboard)
 
 
