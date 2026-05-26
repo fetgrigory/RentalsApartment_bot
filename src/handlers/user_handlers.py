@@ -7,6 +7,7 @@ from src.db.crud import is_apartment_available, check_user_exists, insert_user_d
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
 from src.payment import send_invoice
 from src.common.callbacks import BookingCB
+from src.common import texts
 from src.services.booking_service import calculate_days, calculate_price, get_dates
 from src.services.ai_service import process_question
 
@@ -47,13 +48,13 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
             else:
                 # If the user is not registered, request data
                 await state.set_state(BookingState.FIRST_NAME)
-                await callback_query.message.answer("👤Для бронирования квартиры потребуется небольшая регистрация. Это займет всего пару минут!\n Эти данные мы не передаем третьим лицам и нигде не публикуем кроме внутренних ресурсов.")
-                await callback_query.message.answer("Шаг 1 из 3. 🟩⬜️⬜️")
-                await callback_query.message.answer("Введите ваше имя:")
+                await callback_query.message.answer(texts.REGISTRATION_INFO)
+                await callback_query.message.answer(texts.STEP_1)
+                await callback_query.message.answer(texts.BOOKING_FIRST_NAME)
         else:
-            await callback_query.answer("К сожалению, квартира уже забронирована. Пожалуйста, выберите другую квартиру.")
+            await callback_query.answer(texts.ERROR_ALREADY_BOOKED)
     else:
-        await callback_query.answer("Ошибка: данные о квартире не найдены.")
+        await callback_query.answer(texts.ERROR_APARTMENT_NOT_FOUND)
 
 
 # Get username
@@ -61,8 +62,8 @@ async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
 async def process_first_name(message: types.Message, state: FSMContext):
     await state.update_data(first_name=message.text)
     await state.set_state(BookingState.LAST_NAME)
-    await message.answer("Шаг 2 из 3. 🟩🟩⬜️")
-    await message.answer("Введите вашу фамилию:")
+    await message.answer(texts.STEP_2)
+    await message.answer(texts.BOOKING_LAST_NAME)
 
 
 # Get user last name
@@ -70,8 +71,8 @@ async def process_first_name(message: types.Message, state: FSMContext):
 async def process_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
     await state.set_state(BookingState.PHONE)
-    await message.answer("Шаг 3 из 3. 🟩🟩🟩")
-    await message.answer("Введите ваш номер телефона:")
+    await message.answer(texts.STEP_3)
+    await message.answer(texts.BOOKING_PHONE)
 
 
 # Get user phone number
@@ -83,11 +84,11 @@ async def process_phone(message: types.Message, state: FSMContext):
 
     insert_user_data(user_id, user_data['first_name'], user_data['last_name'], user_data['phone'])
     await state.clear()
-    await message.answer("Данные сохранены! Теперь вы можете использовать их для будущих бронирований. Продолжайте бронирование.")
+    await message.answer(texts.REGISTRATION_DONE)
     apartment = user_data['current_apartment']
     rent_days = user_data.get('rent_days', 1)
     total_price = calculate_price(apartment.price, rent_days)
-    text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {total_price} RUB"
+    text = texts.BOOKING_SUMMARY.format(days=rent_days, price=total_price)
     keyboard = booking_keyboard()
     await message.answer(text, reply_markup=keyboard)
 
@@ -103,7 +104,7 @@ async def add_days(callback_query: types.CallbackQuery, state: FSMContext):
 
     new_price = calculate_price(apartment.price, rent_days)
 
-    text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {new_price} RUB"
+    text = texts.BOOKING_SUMMARY.format(days=rent_days, price=new_price)
     keyboard = booking_keyboard()
 
     await callback_query.message.edit_text(text=text, reply_markup=keyboard)
@@ -120,7 +121,7 @@ async def subtract_days(callback_query: types.CallbackQuery, state: FSMContext):
 
     new_price = calculate_price(apartment.price, rent_days)
 
-    text = f"Количество дней аренды: {rent_days}\nОбщая сумма к оплате: {new_price} RUB"
+    text = texts.BOOKING_SUMMARY.format(days=rent_days, price=new_price)
     keyboard = booking_keyboard()
 
     await callback_query.message.edit_text(text=text, reply_markup=keyboard)
@@ -154,14 +155,14 @@ async def handler_successful_payment(bot, message, state: FSMContext):
 
     insert_booking_data(user_id, apartment.id, start_date, rent_days, total_price)
 
-    await bot.send_message(user_id, "Оплата прошла успешно! Ваше бронирование подтверждено.")
+    await bot.send_message(user_id, texts.PAYMENT_SUCCESS)
 
 
 # User review input
 @router.callback_query(F.data == BookingCB.ADD_REVIEW)
 async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(ReviewState.TEXT)
-    await callback_query.message.answer("Пожалуйста, введите ваш отзыв:")
+    await callback_query.message.answer(texts.ADD_REVIEW_PROMPT)
 
 
 @router.message(ReviewState.TEXT)
@@ -172,7 +173,7 @@ async def save_review(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     insert_review(user_id, apartment.id, message.text)
 
-    await message.answer("Спасибо за ваш отзыв!")
+    await message.answer(texts.REVIEWS_THANK_YOU)
     await state.clear()
 
 
@@ -181,7 +182,7 @@ async def save_review(message: types.Message, state: FSMContext):
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
     await state.update_data(messages=[])
-    await message.answer("Пожалуйста, задайте ваш вопрос. Я помогу с правилами проживания, каталогом квартир и бронированием через сервис.")
+    await message.answer(texts.AI_QUESTION_PROMPT)
 
 
 @router.message(QuestionState.WAITING_QUESTION)
@@ -189,7 +190,7 @@ async def handler_question(message: types.Message, state: FSMContext):
     data = await state.get_data()
     messages = data.get('messages', [])
     user_id = message.from_user.id
-    thinking_msg = await message.answer("Думаю над ответом...")
+    thinking_msg = await message.answer(texts.AI_THINKING)
     try:
         response, updated_messages = process_question(message.text, messages)
         await message.bot.delete_message(chat_id=message.chat.id, message_id=thinking_msg.message_id)
@@ -197,7 +198,7 @@ async def handler_question(message: types.Message, state: FSMContext):
         await message.answer(response)
     except Exception as e:
         print(f"Error (User {user_id}): {e}")
-        await message.answer("Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте позже.")
+        await message.answer(texts.AI_ERROR)
 
 
 # Reservation draft
@@ -205,7 +206,7 @@ async def handler_question(message: types.Message, state: FSMContext):
 async def show_booking_draft(message: types.Message):
     draft = get_user_reservation_draft(message.from_user.id)
     if not draft or not draft.apartment:
-        await message.answer("🛒 Ваша корзина пуста", reply_markup=start_keyboard(message.from_user.id))
+        await message.answer(texts.DRAFT_EMPTY, reply_markup=start_keyboard(message.from_user.id))
         return
     days = (draft.end_date - draft.start_date).days
     total_price = calculate_price(draft.apartment.price, days)
@@ -225,11 +226,11 @@ async def show_booking_draft(message: types.Message):
 @router.callback_query(F.data == BookingCB.CLEAR_DRAFT)
 async def clear_draft(callback: types.CallbackQuery):
     delete_reservation_draft(callback.from_user.id)
-    await callback.message.edit_text("🧹 Корзина очищена")
+    await callback.message.edit_text(texts.DRAFT_CLEARED)
     await callback.answer()
 
 
 @router.callback_query(F.data == BookingCB.BACK_TO_CATALOG)
 async def back_to_catalog(callback: types.CallbackQuery):
-    await callback.message.edit_text("Выберите категорию квартир:", reply_markup=catalog_categories_keyboard())
+    await callback.message.edit_text(texts.BACK_TO_CATALOG, reply_markup=catalog_categories_keyboard())
     await callback.answer()
