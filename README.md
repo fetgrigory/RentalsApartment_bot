@@ -111,6 +111,7 @@ RentalsApartment_bot/
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
 │   ├── common/                  # Общие компоненты бота
+│   │   ├── __init__.py
 │   │   ├── callbacks.py
 │   │   └── texts.py
 │   ├── services/                 # Сервисы бизнес-логики
