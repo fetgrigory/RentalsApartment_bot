@@ -6,6 +6,7 @@ from src.services.reservation_draft import process_add_apartment_to_draft
 from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_user_reservation_draft, delete_reservation_draft
 from src.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
 from src.payment import send_invoice
+from src.common.callbacks import BookingCB
 from src.services.booking_service import calculate_days, calculate_price, get_dates
 from src.services.ai_service import process_question
 
@@ -23,13 +24,13 @@ async def start(message: types.Message, state: FSMContext):
 
 
 # Add to draft action
-@router.callback_query(F.data == "add_to_draft")
+@router.callback_query(F.data == BookingCB.ADD_TO_DRAFT)
 async def add_to_draft_handler(callback_query: types.CallbackQuery, state: FSMContext):
     await process_add_apartment_to_draft(callback_query, state)
 
 
 # Start booking process
-@router.callback_query(F.data == "add")
+@router.callback_query(F.data == BookingCB.ADD)
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     apartments = data.get('apartments')
@@ -92,7 +93,7 @@ async def process_phone(message: types.Message, state: FSMContext):
 
 
 # Increase the rental period and calculate the total price
-@router.callback_query(F.data == "add_days")
+@router.callback_query(F.data == BookingCB.ADD_DAYS)
 async def add_days(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     apartment = data['current_apartment']
@@ -109,7 +110,7 @@ async def add_days(callback_query: types.CallbackQuery, state: FSMContext):
 
 
 # Decrease the rental period and calculate the total price
-@router.callback_query(F.data == "subtract_days")
+@router.callback_query(F.data == BookingCB.SUBTRACT_DAYS)
 async def subtract_days(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     apartment = data['current_apartment']
@@ -126,7 +127,7 @@ async def subtract_days(callback_query: types.CallbackQuery, state: FSMContext):
 
 
 # Payment processing
-@router.callback_query(F.data == "pay")
+@router.callback_query(F.data == BookingCB.PAY)
 async def pay_for_apartment(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     await send_invoice(callback_query.bot, callback_query, data)
@@ -157,7 +158,7 @@ async def handler_successful_payment(bot, message, state: FSMContext):
 
 
 # User review input
-@router.callback_query(F.data == "add_review")
+@router.callback_query(F.data == BookingCB.ADD_REVIEW)
 async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(ReviewState.TEXT)
     await callback_query.message.answer("Пожалуйста, введите ваш отзыв:")
@@ -221,14 +222,14 @@ async def show_booking_draft(message: types.Message):
     await message.answer(text, reply_markup=keyboard)
 
 
-@router.callback_query(F.data == "clear_draft")
+@router.callback_query(F.data == BookingCB.CLEAR_DRAFT)
 async def clear_draft(callback: types.CallbackQuery):
     delete_reservation_draft(callback.from_user.id)
     await callback.message.edit_text("🧹 Корзина очищена")
     await callback.answer()
 
 
-@router.callback_query(F.data == "back_to_catalog")
+@router.callback_query(F.data == BookingCB.BACK_TO_CATALOG)
 async def back_to_catalog(callback: types.CallbackQuery):
-    await callback.message.edit_text("Выберите категорию квартир:",reply_markup=catalog_categories_keyboard())
+    await callback.message.edit_text("Выберите категорию квартир:", reply_markup=catalog_categories_keyboard())
     await callback.answer()
