@@ -161,7 +161,7 @@ async def handler_successful_payment(bot, message, state: FSMContext):
 @router.callback_query(F.data == BookingCB.ADD_REVIEW)
 async def request_review(callback_query: types.CallbackQuery, state: FSMContext):
     await state.set_state(ReviewState.TEXT)
-    await callback_query.message.answer(texts.ADD_REVIEW_PROMPT)
+    await callback_query.message.answer(texts.REVIEW_INPUT_MESSAGE)
 
 
 @router.message(ReviewState.TEXT)
@@ -172,7 +172,7 @@ async def save_review(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     insert_review(user_id, apartment.id, message.text)
 
-    await message.answer(texts.REVIEWS_THANK_YOU)
+    await message.answer(texts.REVIEW_SUBMITTED)
     await state.clear()
 
 
@@ -181,7 +181,7 @@ async def save_review(message: types.Message, state: FSMContext):
 async def ask_question_handler(message: types.Message, state: FSMContext):
     await state.set_state(QuestionState.WAITING_QUESTION)
     await state.update_data(messages=[])
-    await message.answer(texts.AI_QUESTION_PROMPT)
+    await message.answer(texts.AI_QUESTION_MESSAGE)
 
 
 @router.message(QuestionState.WAITING_QUESTION)

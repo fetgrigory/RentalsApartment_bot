@@ -40,11 +40,11 @@ PAYMENT_SUCCESS = (
 )
 
 # Reviews
-REVIEW_PROMPT = "Пожалуйста, введите ваш отзыв:"
-REVIEW_THANK_YOU = "Спасибо за ваш отзыв!"
+REVIEW_INPUT_MESSAGE = "Пожалуйста, введите ваш отзыв:"
+REVIEW_SUBMITTED = "Спасибо за ваш отзыв!"
 
 # AI assistant
-AI_QUESTION_PROMPT = (
+AI_QUESTION_MESSAGE = (
     "Пожалуйста, задайте ваш вопрос. "
     "Я помогу с правилами проживания, "
     "каталогом квартир и бронированием через сервис."
