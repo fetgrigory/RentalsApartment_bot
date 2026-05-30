@@ -96,50 +96,85 @@ CVC/CVV: 111<br />
 
 ```text
 RentalsApartment_bot/
-├── src/                          # Основной код приложения
+├── apps/                         # Django приложения
+│   ├── core/                     # Базовое приложение проекта
+│   │   ├── migrations/
+│   │   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   └── room/                     # Модуль работы с комнатами/объектами
+│       ├── migrations/
+│       │   └── __init__.py
+│       ├── __init__.py
+│       ├── admin.py
+│       ├── apps.py
+│       ├── models.py
+│       ├── tests.py
+│       └── views.py
+├── config/                       # Конфигурация проекта Django
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── src/                          # Основной backend / бизнес-логика приложения
+│   ├── common/                   # Общие компоненты проекта
+│   │   ├── __init__.py
+│   │   ├── callbacks.py
+│   │   └── texts.py
 │   ├── db/                       # Работа с базой данных
 │   │   ├── __init__.py
 │   │   ├── crud.py
 │   │   ├── database.py
 │   │   └── models.py
-│   ├── keyboards/                # Клавиатуры для пользователей и админов
+│   ├── handlers/                 # Обработчики (API / логика взаимодействия)
+│   │   ├── admin_panel/          # Админская часть обработчиков
+│   │   │   ├── __init__.py
+│   │   │   ├── add_apartment_handlers.py
+│   │   │   ├── bookings_handlers.py
+│   │   │   ├── catalog_handlers.py
+│   │   │   ├── edit_apartment_handlers.py
+│   │   │   └── reviews_handlers.py
+│   │   ├── __init__.py
+│   │   └── user_handlers.py
+│   ├── keyboards/                # Клавиатуры интерфейса
 │   │   ├── __init__.py
 │   │   ├── admin_keyboard.py
 │   │   └── user_keyboard.py
-│   ├── nlp/                      # NLP и обработка текстов
+│   ├── nlp/                      # NLP и работа с LLM
+│   │   ├── rag/                 # Retrieval-Augmented Generation модуль
+│   │   │   ├── __init__.py
+│   │   │   ├── add_document_handlers.py
+│   │   │   └── vector_search.py
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
-│   ├── common/                  # Общие компоненты бота
-│   │   ├── __init__.py
-│   │   ├── callbacks.py
-│   │   └── texts.py
-│   ├── services/                 # Сервисы бизнес-логики
+│   ├── services/                # Бизнес-сервисы приложения
 │   │   ├── __init__.py
 │   │   ├── ai_service.py
+│   │   ├── booking_service.py
 │   │   └── reservation_draft.py
-├── handlers/                     # Хендлеры бота
-│   ├── __init__.py
-│   ├── admin_panel/              # Админские хендлеры
+│   ├── utils/                   # Вспомогательные утилиты
 │   │   ├── __init__.py
-│   │   ├── add_apartment_handlers.py
-│   │   ├── edit_apartment_handlers.py
-│   │   ├── catalog_handlers.py
-│   │   ├── reviews_handlers.py
-│   │   └── bookings_handlers.py
-│   └── user_handlers.py          # Хендлеры для обычных пользователей
-├── utils/                        # Утилиты
-│   └── catalog_utils.py
-│   └── paginator.py
-├── payment.py                     # Логика платежей
-├── states.py                      # Состояния FSM
-├── main.py                        # Точка входа бота
-├── Dockerfile                     # Контейнеризация
-├── docker-compose.yml             # Сборка и запуск контейнеров
-├── pyproject.toml                 # Конфигурация проекта (зависимости и инструменты)
-├── .python-version                # Версия Python для окружения
-├── uv.lock                        # Фиксация зависимостей (lock-файл UV)
-└── .env                           # Переменные окружения
+│   │   ├── catalog_utils.py
+│   │   └── paginator.py
+│   ├── payment.py               # Логика платежей
+│   └── states.py               # FSM состояния
+├── .dockerignore                 # Игнор для Docker
+├── .env                          # Переменные окружения
+├── .gitignore                    # Игнор Git
+├── .python-version              # Версия Python
+├── docker-compose.yml           # Оркестрация контейнеров
+├── Dockerfile                   # Сборка контейнера
+├── main.py                      # Точка входа приложения
+├── manage.py                    # Django CLI
+├── pyproject.toml              # Конфигурация проекта и зависимостей
+├── README.md                   # Документация проекта
+└── uv.lock                     # Lock-файл зависимостей
 ```
 ## 🛠️ Технологии
 
