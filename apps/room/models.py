@@ -28,3 +28,7 @@ class Room(models.Model):
     # String representation for admin panel
     def __str__(self):
         return f"{self.get_category_display()} #{self.id}"
+
+    class Meta:
+        verbose_name = "Номер"
+        verbose_name_plural = "Номера"
