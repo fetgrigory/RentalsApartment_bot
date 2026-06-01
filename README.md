@@ -71,7 +71,7 @@ CVC/CVV: 111<br />
 ## 📸 Скриншоты
 
 ### Админ-панель
-<img width="1049" height="999" alt="Снимок экрана 2025-09-21 194522" src="https://github.com/user-attachments/assets/73b30e1e-9657-45d8-b2f6-1423b6e938bf" /><br />
+<img width="1049" height="999" alt="Снимок экрана 2025-09-21 194522" bot="https://github.com/user-attachments/assets/73b30e1e-9657-45d8-b2f6-1423b6e938bf" /><br />
 ![Снимок экрана 2025-05-19 203315](https://github.com/user-attachments/assets/79582897-ae75-42a9-9500-3410c01c4786)<br />
 ![Снимок экрана 2025-05-19 204407](https://github.com/user-attachments/assets/fc5f0f3f-a8d7-44ab-9088-3632b4ae8691)<br />
 ![Снимок экрана 2025-05-19 205924](https://github.com/user-attachments/assets/2d7ba07a-87cd-4669-8d30-b06a27e5d126)<br />
@@ -121,7 +121,7 @@ RentalsApartment_bot/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── src/                          # Основной backend / бизнес-логика приложения
+├── bot/                          # Основной backend / бизнес-логика приложения
 │   ├── common/                   # Общие компоненты проекта
 │   │   ├── __init__.py
 │   │   ├── callbacks.py

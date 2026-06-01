@@ -6,15 +6,15 @@ from aiogram import Bot, Router, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
-from src.handlers.user_handlers import router as user_router
-from src.handlers.admin_panel.add_apartment_handlers import router as add_router
-from src.handlers.admin_panel.edit_apartment_handlers import router as edit_router
-from src.handlers.admin_panel.catalog_handlers import router as catalog_router
-from src.handlers.admin_panel.reviews_handlers import router as reviews_router
-from src.handlers.admin_panel.bookings_handlers import router as bookings_router
-from src.nlp.rag.add_document_handlers import router as document_router
-from src.db.database import init_db
-from src.keyboards.user_keyboard import start_keyboard
+from bot.handlers.user_handlers import router as user_router
+from bot.handlers.admin_panel.add_apartment_handlers import router as add_router
+from bot.handlers.admin_panel.edit_apartment_handlers import router as edit_router
+from bot.handlers.admin_panel.catalog_handlers import router as catalog_router
+from bot.handlers.admin_panel.reviews_handlers import router as reviews_router
+from bot.handlers.admin_panel.bookings_handlers import router as bookings_router
+from bot.nlp.rag.add_document_handlers import router as document_router
+from bot.db.database import init_db
+from bot.keyboards.user_keyboard import start_keyboard
 
 logging.basicConfig(
     level=logging.INFO,

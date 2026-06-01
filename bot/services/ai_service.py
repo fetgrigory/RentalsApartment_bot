@@ -1,6 +1,6 @@
 from typing import List, Dict
-from src.nlp.llm_client import ask_gpt
-from src.nlp.rag.vector_search import search_contract, format_contract_results
+from bot.nlp.llm_client import ask_gpt
+from bot.nlp.rag.vector_search import search_contract, format_contract_results
 
 
 def process_question(message_text: str, messages: List[Dict]) -> tuple[str, List[Dict]]:

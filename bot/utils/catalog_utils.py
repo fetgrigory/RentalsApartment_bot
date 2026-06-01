@@ -1,7 +1,7 @@
 from aiogram import types
-from src.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
-from src.keyboards.user_keyboard import catalog_navigation_keyboard
-from src.utils.paginator import Paginator
+from bot.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
+from bot.keyboards.user_keyboard import catalog_navigation_keyboard
+from bot.utils.paginator import Paginator
 
 
 # Render apartment data for catalog

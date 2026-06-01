@@ -1,9 +1,9 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from src.keyboards.admin_keyboard import edit_apartment_keyboard
-from src.db.crud import get_catalog_data, update_apartment_data, delete_apartment_data
-from src.states import EditApartmentState
-from src.utils.catalog_utils import show_apartment_data
+from bot.keyboards.admin_keyboard import edit_apartment_keyboard
+from bot.db.crud import get_catalog_data, update_apartment_data, delete_apartment_data
+from bot.states import EditApartmentState
+from bot.utils.catalog_utils import show_apartment_data
 
 router = Router()
 

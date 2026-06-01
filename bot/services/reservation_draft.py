@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from datetime import datetime, timedelta
-from src.db.crud import add_apartment_to_draft, is_apartment_available
+from bot.db.crud import add_apartment_to_draft, is_apartment_available
 
 
 # Add apartment to draft

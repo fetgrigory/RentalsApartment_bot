@@ -8,7 +8,7 @@ Ending //
 '''
 # Installing the necessary libraries
 from aiogram import F, Router, types
-from src.db.crud import get_bookings
+from bot.db.crud import get_bookings
 
 router = Router()
 

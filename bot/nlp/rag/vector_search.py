@@ -8,7 +8,7 @@ Ending //
 from sentence_transformers import SentenceTransformer
 from sqlalchemy import text, bindparam
 from pgvector.sqlalchemy import Vector
-from src.db.database import sync_engine
+from bot.db.database import sync_engine
 
 # Uploading a model for embeddings
 model = SentenceTransformer('all-MiniLM-L6-v2')

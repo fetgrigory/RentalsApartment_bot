@@ -10,9 +10,9 @@ Ending //
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from src.states import AddDocumentState
+from bot.states import AddDocumentState
 from sentence_transformers import SentenceTransformer
-from src.db.crud import insert_contract_data
+from bot.db.crud import insert_contract_data
 
 # Model for creating embeddings
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')

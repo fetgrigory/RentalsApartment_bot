@@ -3,9 +3,9 @@ import os
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from src.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard
-from src.db.crud import insert_apartment_data
-from src.states import AddApartmentState
+from bot.keyboards.admin_keyboard import admin_keyboard, admin_category_keyboard
+from bot.db.crud import insert_apartment_data
+from bot.states import AddApartmentState
 
 router = Router()
 

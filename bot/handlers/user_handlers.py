@@ -1,15 +1,15 @@
 from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from src.states import BookingState, ReviewState, QuestionState
-from src.services.reservation_draft import process_add_apartment_to_draft
-from src.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_user_reservation_draft, delete_reservation_draft
-from src.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
-from src.payment import send_invoice
-from src.common.callbacks import BookingCB
-from src.common import texts
-from src.services.booking_service import calculate_days, calculate_price, get_dates
-from src.services.ai_service import process_question
+from bot.states import BookingState, ReviewState, QuestionState
+from bot.services.reservation_draft import process_add_apartment_to_draft
+from bot.db.crud import is_apartment_available, check_user_exists, insert_user_data, insert_booking_data, insert_review, get_user_reservation_draft, delete_reservation_draft
+from bot.keyboards.user_keyboard import start_keyboard, booking_keyboard, catalog_categories_keyboard
+from bot.payment import send_invoice
+from bot.common.callbacks import BookingCB
+from bot.common import texts
+from bot.services.booking_service import calculate_days, calculate_price, get_dates
+from bot.services.ai_service import process_question
 
 router = Router()
 

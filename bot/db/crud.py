@@ -1,8 +1,8 @@
 import datetime
 from sqlalchemy.orm import joinedload
-from src.db.database import session_factory
-from src.db.models import User, Catalog, Booking, Review, ReservationDraft, ReservationDraftService, DocumentChunk
-from src.nlp.sentiment_analyzer import analyze_review
+from bot.db.database import session_factory
+from bot.db.models import User, Catalog, Booking, Review, ReservationDraft, ReservationDraftService, DocumentChunk
+from bot.nlp.sentiment_analyzer import analyze_review
 
 
 # Adding the user to the database
