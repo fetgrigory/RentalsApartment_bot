@@ -18,4 +18,4 @@ RUN uv sync --frozen
 COPY . .
 
 # Run application entrypoint
-CMD ["uv", "run", "python", "start_bot.py"]
+CMD ["bash"]

@@ -1,6 +1,31 @@
 version: '3.12'
 
 services:
+  django:
+    build: .
+    command: uv run python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - venv:/app/.venv
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  bot:
+    build: .
+    command: uv run python start_bot.py
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - venv:/app/.venv
+    depends_on:
+      - db
+      - ollama
+
   db:
     image: pgvector/pgvector:pg18
     container_name: pgvector-container
@@ -13,7 +38,7 @@ services:
     ports:
       - "${PORT}:5432"
     volumes:
-       - pg_data:/var/lib/postgresql
+      - pg_data:/var/lib/postgresql
     restart: unless-stopped
 
   pgadmin:
@@ -37,27 +62,7 @@ services:
       - "11434:11434"
     restart: unless-stopped
 
-  bot:
-    build: .
-    env_file:
-      - .env
-    volumes:
-      - /app/.venv
-      - .:/app
-    environment:
-      - TOKEN=${TOKEN}
-      - ADMIN_ID=${ADMIN_ID}
-      - PAYMENTS_TOKEN=${PAYMENTS_TOKEN}
-      - DBNAME=${DBNAME}
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
-      - PORT=${PORT}
-      - OLLAMA_API_URL=http://ollama:11434
-    depends_on:
-      - db
-      - ollama
-    restart: unless-stopped
-
 volumes:
   pg_data:
   ollama:
+  venv:
