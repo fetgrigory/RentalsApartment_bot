@@ -1,4 +1,9 @@
+import django
 import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+django.setup()
+
 import logging
 import asyncio
 from dotenv import load_dotenv
