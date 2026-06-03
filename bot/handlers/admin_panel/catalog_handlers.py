@@ -14,7 +14,7 @@ router = Router()
 @router.message(F.text == "🛍Каталог")
 async def show_catalog_categories(message: types.Message, state: FSMContext):
     await state.clear()
-    apartments = list(get_catalog_data())
+    apartments = await get_catalog_data()
     await state.update_data(
         edit_mode=False,
         apartments=apartments,
@@ -31,7 +31,7 @@ async def show_catalog_categories(message: types.Message, state: FSMContext):
 @router.callback_query(F.data.in_(["one-room_apartment", "two-room_apartment", "three-room_apartment", "studio"]))
 async def show_apartments_by_category(callback: types.CallbackQuery, state: FSMContext):
     category = callback.data
-    apartments = list(get_catalog_by_category(category))
+    apartments = await get_catalog_by_category(category)
 
     if not apartments:
         await callback.answer("Квартиры не найдены в этой категории.", show_alert=True)
