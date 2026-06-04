@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.types import FSInputFile
 from bot.keyboards.user_keyboard import catalog_navigation_keyboard
 from bot.utils.paginator import Paginator
 
@@ -14,9 +15,10 @@ async def show_room_data(message: types.Message, rooms, index=0):
 
     photos_info = [
         types.InputMediaPhoto(
-            media=getattr(record, f'photo{i}'),
+            media=FSInputFile(getattr(record, f'photo{i}').path)
         )
         for i in range(1, 4)
+        if getattr(record, f'photo{i}')
     ]
     message_text = (
         f"🏨 <strong>Описание:</strong>\n{record.description}\n\n"
