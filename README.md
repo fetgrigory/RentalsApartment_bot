@@ -132,14 +132,8 @@ RentalsApartment_bot/
 │   │   ├── database.py
 │   │   └── models.py
 │   ├── handlers/                 # Обработчики (API / логика взаимодействия)
-│   │   ├── admin_panel/          # Админская часть обработчиков
-│   │   │   ├── __init__.py
-│   │   │   ├── add_apartment_handlers.py
-│   │   │   ├── bookings_handlers.py
-│   │   │   ├── catalog_handlers.py
-│   │   │   ├── edit_apartment_handlers.py
-│   │   │   └── reviews_handlers.py
 │   │   ├── __init__.py
+│   │   ├── catalog_handlers.py
 │   │   └── user_handlers.py
 │   ├── keyboards/                # Клавиатуры интерфейса
 │   │   ├── __init__.py
