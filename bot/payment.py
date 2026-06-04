@@ -1,15 +1,7 @@
-'''
-This module make
-
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 02/10/2024
-Ending //
-
-'''
 import os
 from aiogram import Bot, types
 from aiogram.types import LabeledPrice
-from bot.db.crud import get_catalog_data
+from apps.rooms.selectors import get_catalog_data
 
 
 async def send_invoice(bot: Bot, callback_query: types.CallbackQuery, user_data: dict):
@@ -23,7 +15,7 @@ async def send_invoice(bot: Bot, callback_query: types.CallbackQuery, user_data:
     if not current_apartment:
         await callback_query.answer("Ошибка: данные квартиры не найдены")
         return
-    data = get_catalog_data()
+    data = await get_catalog_data()
     if not data:
         await callback_query.answer("Ошибка: данные каталога не найдены")
         return
