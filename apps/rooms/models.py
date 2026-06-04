@@ -2,10 +2,11 @@ from django.db import models
 
 
 class Room(models.Model):
-    # Room category (standard / comfort / imperial)
+    # Room category (standard / comfort / superior / imperial)
     CATEGORY_CHOICES = [
         ('standard', 'Стандарт'),
         ('comfort', 'Комфорт'),
+        ('superior', 'Улучшенный'),
         ('imperial', 'Империал')
     ]
     category = models.CharField(
