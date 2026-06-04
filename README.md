@@ -137,7 +137,6 @@ RentalsApartment_bot/
 │   │   └── user_handlers.py
 │   ├── keyboards/                # Клавиатуры интерфейса
 │   │   ├── __init__.py
-│   │   ├── admin_keyboard.py
 │   │   └── user_keyboard.py
 │   ├── nlp/                      # NLP и работа с LLM
 │   │   ├── rag/                 # Retrieval-Augmented Generation модуль
