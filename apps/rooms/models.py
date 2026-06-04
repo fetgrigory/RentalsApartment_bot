@@ -15,6 +15,11 @@ class Room(models.Model):
         default='standard',
         verbose_name="Категория"
     )
+    room_number = models.CharField(
+        max_length=10,
+        verbose_name="Номер комнаты",
+        help_text="Например: 101, 205, 310",
+    )
     # Date added
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата добавления")
     # Room photos (gallery)
@@ -28,7 +33,7 @@ class Room(models.Model):
 
     # String representation for admin panel
     def __str__(self):
-        return f"{self.get_category_display()} #{self.id}"
+        return f"{self.get_category_display()} #{self.room_number}"
 
     class Meta:
         verbose_name = "Номер"
