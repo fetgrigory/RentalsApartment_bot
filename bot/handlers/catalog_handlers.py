@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from apps.rooms.selectors import (
     get_catalog_data,
     get_catalog_by_category)
-from bot.keyboards.admin_keyboard import admin_category_keyboard
+from bot.keyboards.user_keyboard import catalog_categories_keyboard
 from bot.utils.catalog_utils import show_room_data
 from bot.utils.paginator import Paginator
 
@@ -23,7 +23,7 @@ async def show_catalog_categories(message: types.Message, state: FSMContext):
 
     await message.answer(
         "Выберите тип квартиры:",
-        reply_markup=admin_category_keyboard()
+        reply_markup=catalog_categories_keyboard()
     )
 
 

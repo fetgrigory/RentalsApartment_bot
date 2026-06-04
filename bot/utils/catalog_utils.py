@@ -1,11 +1,10 @@
 from aiogram import types
-from bot.keyboards.admin_keyboard import catalog_navigation_edit_keyboard
 from bot.keyboards.user_keyboard import catalog_navigation_keyboard
 from bot.utils.paginator import Paginator
 
 
 # Render apartment data for catalog
-async def show_room_data(message: types.Message, rooms, index=0, edit_mode=False):
+async def show_room_data(message: types.Message, rooms, index=0):
     if not rooms:
         await message.answer("Каталог пуст!")
         return
@@ -25,11 +24,7 @@ async def show_room_data(message: types.Message, rooms, index=0, edit_mode=False
         f"<strong>Номер {paginator.page} из {paginator.pages}</strong>"
     )
 
-    keyboard = (
-        catalog_navigation_edit_keyboard(index, len(rooms))
-        if edit_mode
-        else catalog_navigation_keyboard(index, len(rooms))
-    )
+    keyboard = catalog_navigation_keyboard(index, len(rooms))
 
     if photos_info:
         await message.bot.send_media_group(
