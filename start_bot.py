@@ -12,11 +12,6 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
 from bot.handlers.user_handlers import router as user_router
-from bot.handlers.admin_panel.add_apartment_handlers import router as add_router
-from bot.handlers.admin_panel.edit_apartment_handlers import router as edit_router
-from bot.handlers.admin_panel.catalog_handlers import router as catalog_router
-from bot.handlers.admin_panel.reviews_handlers import router as reviews_router
-from bot.handlers.admin_panel.bookings_handlers import router as bookings_router
 from bot.nlp.rag.add_document_handlers import router as document_router
 from bot.db.database import init_db
 from bot.keyboards.user_keyboard import start_keyboard
@@ -48,11 +43,6 @@ dp = Dispatcher(storage=storage)
 # Connecting routers
 dp.include_router(router)
 dp.include_router(user_router)
-dp.include_router(add_router)
-dp.include_router(edit_router)
-dp.include_router(catalog_router)
-dp.include_router(reviews_router)
-dp.include_router(bookings_router)
 dp.include_router(document_router)
 
 
