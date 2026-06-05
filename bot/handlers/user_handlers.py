@@ -17,7 +17,7 @@ router = Router()
 @router.message(F.command("start"))
 async def start(message: types.Message, state: FSMContext):
     await state.update_data(apartments=None, rent_days=1, messages=[])
-    keyboard = start_keyboard(message.from_user.id)
+    keyboard = start_keyboard()
     me = await message.bot.get_me()
     await message.answer(texts.WELCOME.format(user_name=message.from_user.first_name, bot_name=me.first_name),
                          parse_mode='html', reply_markup=keyboard)
