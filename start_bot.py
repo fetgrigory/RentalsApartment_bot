@@ -14,7 +14,6 @@ from aiogram.fsm.context import FSMContext
 from bot.handlers.user_handlers import router as user_router
 from bot.handlers.catalog_handlers import router as catalog_router
 from bot.nlp.rag.add_document_handlers import router as document_router
-from bot.db.database import init_db
 from bot.keyboards.user_keyboard import start_keyboard
 
 logging.basicConfig(
@@ -22,19 +21,16 @@ logging.basicConfig(
     format='[%(asctime)s] [%(levelname)s] %(name)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 # Initialize bot and dispatcher in combination with state storage
 load_dotenv()
 router = Router()
 
 
 TOKEN = os.getenv("TOKEN")
-ADMIN_ID = os.getenv("ADMIN_ID")
 if not TOKEN:
     logger.critical("TOKEN не задан в переменных окружения!")
     raise RuntimeError("TOKEN не задан!")
-if not ADMIN_ID:
-    logger.critical("ADMIN_ID не задан в переменных окружения!")
-    raise RuntimeError("ADMIN_ID не задан!")
 
 # Setting up the bot and dispatcher
 storage = MemoryStorage()
@@ -52,7 +48,7 @@ dp.include_router(document_router)
 async def start(message: types.Message, state: FSMContext):
     logger.info("User pressed /start")
     await state.clear()
-    keyboard = start_keyboard(message.from_user.id)
+    keyboard = start_keyboard()
     me = await message.bot.get_me()
     await message.answer(
         f"Здравствуйте, {message.from_user.first_name}!\n"
@@ -62,14 +58,7 @@ async def start(message: types.Message, state: FSMContext):
     )
 
 
-# Creating a database at startup
 async def main():
-    try:
-        init_db()
-        logger.info("Database successfully created/connected")
-    except Exception as e:
-        logger.exception("Error creating database: %s", e)
-
     logger.info("Start polling")
     await dp.start_polling(bot, skip_updates=True)
 
