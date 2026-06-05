@@ -255,13 +255,16 @@ PORT="5432"
    ```bash
    docker exec -it ollama /bin/ollama list
      ```
-7. Сборка образа в Docker:
+7. Сборка образа и запуск контейнера в Docker:
    ```bash
     docker-compose up -d --build
      ```
-8. Запуск контейнера:
+8.  Создание миграций (только при изменении моделей):
    ```bash
-   docker-compose up
+   docker compose exec django uv run python manage.py makemigrations
    ```
-
+9. Применить миграции:
+   ```bash
+   docker compose exec django uv run python manage.py migrate
+   ```
 Теперь бот должен быть готов к использованию. Убедитесь, что ваше соединение с интернетом активно и все конфигурации настроены корректно. Если возникнут ошибки, проверьте файл ".env" на наличие опечаток или некорректных значений.
