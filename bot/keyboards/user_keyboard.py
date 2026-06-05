@@ -1,21 +1,11 @@
-import os
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 
-def start_keyboard(user_id):
-    # Check if the user is an admin by comparing user_id with the ADMIN_ID environment variable
+def start_keyboard():
     keyboard = ReplyKeyboardBuilder()
-    if user_id == int(os.getenv('ADMIN_ID')):
-        # For admins, provide buttons for admin panel and catalog
-        keyboard.add(types.KeyboardButton(text="🛠️Админ-панель"))
-        keyboard.row(
-            types.KeyboardButton(text="🌐 Наш сайт")
-        )
-        # For regular users, provide buttons for catalog and site, with contacts
-    else:
-        keyboard.add(types.KeyboardButton(text="🛍Каталог"))
-        keyboard.row(types.KeyboardButton(text="🎧 Задать вопрос"))
+    keyboard.add(types.KeyboardButton(text="🛍Каталог"))
+    keyboard.row(types.KeyboardButton(text="🎧 Задать вопрос"))
     return keyboard.as_markup(resize_keyboard=True)
 
 
