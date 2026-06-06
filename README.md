@@ -71,13 +71,8 @@ CVC/CVV: 111<br />
 ## 📸 Скриншоты
 
 ### Админ-панель
-<img width="1049" height="999" alt="Снимок экрана 2025-09-21 194522" bot="https://github.com/user-attachments/assets/73b30e1e-9657-45d8-b2f6-1423b6e938bf" /><br />
-![Снимок экрана 2025-05-19 203315](https://github.com/user-attachments/assets/79582897-ae75-42a9-9500-3410c01c4786)<br />
-![Снимок экрана 2025-05-19 204407](https://github.com/user-attachments/assets/fc5f0f3f-a8d7-44ab-9088-3632b4ae8691)<br />
-![Снимок экрана 2025-05-19 205924](https://github.com/user-attachments/assets/2d7ba07a-87cd-4669-8d30-b06a27e5d126)<br />
-![Снимок экрана 2025-05-19 212014](https://github.com/user-attachments/assets/184f5746-3452-489b-9f16-11226d07e064)<br />
-![Снимок экрана 2025-05-19 222702](https://github.com/user-attachments/assets/fa6aa593-7c30-4712-8fe7-e4f4e68b3096)<br />
-![Снимок экрана 2025-05-19 225710](https://github.com/user-attachments/assets/6b6b5c31-b507-4830-8334-0b9a2502da1f)<br />
+<img width="855" height="484" alt="admin" src="https://github.com/user-attachments/assets/eb38fc13-cd08-4d98-8c2b-675af61a27ed" /><br />
+<img width="1669" height="911" alt="admin_2" src="https://github.com/user-attachments/assets/c520c609-df25-41a3-a780-8d8b29109db2" /><br />
 
 ### Пользовательский интерфейс
 ![Снимок экрана 2025-06-06 164056](https://github.com/user-attachments/assets/863e2b1a-277e-4d5c-b589-1539369ab59e)<br />
