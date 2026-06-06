@@ -16,7 +16,7 @@ router = Router()
 
 @router.message(F.command("start"))
 async def start(message: types.Message, state: FSMContext):
-    await state.update_data(apartments=None, rent_days=1, messages=[])
+    await state.update_data(rooms=None, rent_days=1, messages=[])
     keyboard = start_keyboard()
     me = await message.bot.get_me()
     await message.answer(texts.WELCOME.format(user_name=message.from_user.first_name, bot_name=me.first_name),
@@ -33,9 +33,9 @@ async def add_to_draft_handler(callback_query: types.CallbackQuery, state: FSMCo
 @router.callback_query(F.data == BookingCB.ADD)
 async def add_button(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    apartments = data.get('apartments')
-    if apartments:
-        apartment = apartments[0]
+    rooms = data.get('rooms')
+    if rooms:
+        apartment = rooms[0]
         await state.update_data(current_apartment=apartment)
         user_id = callback_query.from_user.id
         rent_days = data.get('rent_days', 1)

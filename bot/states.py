@@ -9,7 +9,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 # States group
-class AddApartmentState(StatesGroup):
+class Addroomstate(StatesGroup):
     PHOTO1 = State()
     PHOTO2 = State()
     PHOTO3 = State()
@@ -22,7 +22,7 @@ class AddApartmentState(StatesGroup):
     CATEGORY = State()
 
 
-class EditApartmentState(StatesGroup):
+class Editroomstate(StatesGroup):
     PHOTO1 = State()
     PHOTO2 = State()
     PHOTO3 = State()
