@@ -1,40 +1,7 @@
-'''
-This module make
-
-Athor: Fetkulin Grigory, Fetkulin.G.R@yandex.ru
-Starting 15/09/2025
-Ending //
-'''
 from aiogram.fsm.state import StatesGroup, State
 
 
 # States group
-class Addroomstate(StatesGroup):
-    PHOTO1 = State()
-    PHOTO2 = State()
-    PHOTO3 = State()
-    TOTAL_AREA = State()
-    LIVING_AREA = State()
-    KITCHEN_AREA = State()
-    DESCRIPTION = State()
-    ADDRESS = State()
-    PRICE = State()
-    CATEGORY = State()
-
-
-class Editroomstate(StatesGroup):
-    PHOTO1 = State()
-    PHOTO2 = State()
-    PHOTO3 = State()
-    TOTAL_AREA = State()
-    LIVING_AREA = State()
-    KITCHEN_AREA = State()
-    DESCRIPTION = State()
-    ADDRESS = State()
-    PRICE = State()
-    CATEGORY = State()
-
-
 class BookingState(StatesGroup):
     FIRST_NAME = State()
     LAST_NAME = State()
