@@ -28,7 +28,7 @@ async def show_catalog_categories(message: types.Message, state: FSMContext):
 
 
 # Showing apartments by selected category
-@router.callback_query(F.data.in_(["one-room_apartment", "two-room_apartment", "three-room_apartment", "studio"]))
+@router.callback_query(F.data.in_(["standard", "comfort", "superior", "imperial"]))
 async def show_apartments_by_category(callback: types.CallbackQuery, state: FSMContext):
     category = callback.data
     apartments = await get_catalog_by_category(category)
