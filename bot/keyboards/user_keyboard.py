@@ -13,12 +13,12 @@ def start_keyboard():
 def catalog_categories_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
-        types.InlineKeyboardButton(text="Однокомнатная", callback_data="one-room_apartment"),
-        types.InlineKeyboardButton(text="Двухкомнатная", callback_data="two-room_apartment")
+        types.InlineKeyboardButton(text="Стандарт", callback_data="standard"),
+        types.InlineKeyboardButton(text="Комфорт", callback_data="comfort")
     )
     keyboard.row(
-        types.InlineKeyboardButton(text="Трехкомнатная", callback_data="three-room_apartment"),
-        types.InlineKeyboardButton(text="Студия", callback_data="studio")
+        types.InlineKeyboardButton(text="Улучшенный", callback_data="superior"),
+        types.InlineKeyboardButton(text="Империал", callback_data="imperial")
     )
     return keyboard.as_markup()
 
