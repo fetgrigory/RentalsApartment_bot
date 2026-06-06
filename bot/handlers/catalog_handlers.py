@@ -16,7 +16,6 @@ async def show_catalog_categories(message: types.Message, state: FSMContext):
     await state.clear()
     rooms = await get_catalog_data()
     await state.update_data(
-        edit_mode=False,
         rooms=rooms,
         page=1
     )
@@ -42,8 +41,7 @@ async def show_rooms_by_category(callback: types.CallbackQuery, state: FSMContex
     await show_room_data(
         callback.message,
         rooms=rooms,
-        index=0,
-        edit_mode=data.get('edit_mode', False)
+        index=0
     )
     await callback.answer()
 
@@ -58,17 +56,15 @@ async def next_apartment(callback: types.CallbackQuery, state: FSMContext):
     if not rooms:
         return await callback.answer()
 
-    is_edit = callback.data == "next_edit"
     paginator = Paginator(rooms, page=page)
     if paginator.has_next():
         page += 1
-        await state.update_data(page=page, edit_mode=is_edit)
+        await state.update_data(page=page)
 
     await show_room_data(
         callback.message,
         rooms=rooms,
-        index=page - 1,
-        edit_mode=is_edit
+        index=page - 1
     )
     await callback.answer()
 
@@ -83,16 +79,14 @@ async def prev_apartment(callback: types.CallbackQuery, state: FSMContext):
     if not rooms:
         return await callback.answer()
 
-    is_edit = callback.data == "prev_edit"
     paginator = Paginator(rooms, page=page)
     if paginator.has_previous():
         page -= 1
-        await state.update_data(page=page, edit_mode=is_edit)
+        await state.update_data(page=page)
 
     await show_room_data(
         callback.message,
         rooms=rooms,
-        index=page - 1,
-        edit_mode=is_edit
+        index=page - 1
     )
     await callback.answer()
