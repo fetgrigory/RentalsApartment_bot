@@ -9,7 +9,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="Имя")
     last_name = models.CharField(max_length=50, verbose_name="Фамилия")
 
-    #  Phone number
+    # Phone number
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
 
     # Date of registration
