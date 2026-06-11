@@ -67,7 +67,7 @@ CVC/CVV: 111<br />
 
 ## 📸 Скриншоты
 
-### Админ-панель
+### Django Admin
 <img width="855" height="484" alt="admin" src="https://github.com/user-attachments/assets/eb38fc13-cd08-4d98-8c2b-675af61a27ed" /><br />
 <img width="1669" height="911" alt="admin_2" src="https://github.com/user-attachments/assets/c520c609-df25-41a3-a780-8d8b29109db2" /><br />
 
@@ -185,6 +185,7 @@ RentalsApartment_bot/
 | Модуль          | Описание                          |
 |-----------------|-----------------------------------|
 | `aiogram`       | Фреймворк для создания Telegram-ботов|
+| `Django`|Веб-фреймворк с ORM и встроенной административной панелью|
 | `psycopg-binary`|Предкомпилированный клиент PostgreSQL для быстрого развертывания бота|
 | `SQLAlchemy`| Работа с PostgreSQL через ORM и выполнение SQL-запросов|
 | `pgvector`|Расширение PostgreSQL для хранения и поиска по векторным данным (эмбеддингам)|
