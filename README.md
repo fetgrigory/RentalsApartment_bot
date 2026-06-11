@@ -101,21 +101,36 @@ RentalsApartment_bot/
 │   │   ├── models.py
 │   │   ├── tests.py
 │   │   └── views.py
-│   └── rooms/                     # Модуль работы с комнатами/объектами
+│   │
+│   ├── rooms/                    # Модуль работы с комнатами
+│   │   ├── migrations/
+│   │   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── selectors.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   │
+│   └── users/                    # Модуль работы с пользователями
 │       ├── migrations/
 │       │   └── __init__.py
 │       ├── __init__.py
 │       ├── admin.py
 │       ├── apps.py
+│       ├── selectors.py
 │       ├── models.py
 │       ├── tests.py
 │       └── views.py
+│
 ├── config/                       # Конфигурация проекта Django
 │   ├── __init__.py
 │   ├── asgi.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
+│
 ├── bot/                          # Основной backend / бизнес-логика приложения
 │   ├── common/                   # Общие компоненты проекта
 │   │   ├── __init__.py
@@ -141,28 +156,32 @@ RentalsApartment_bot/
 │   │   ├── __init__.py
 │   │   ├── llm_client.py
 │   │   └── sentiment_analyzer.py
+│   │
 │   ├── services/                # Бизнес-сервисы приложения
 │   │   ├── __init__.py
 │   │   ├── ai_service.py
 │   │   ├── booking_service.py
 │   │   └── reservation_draft.py
+│   │
 │   ├── utils/                   # Вспомогательные утилиты
 │   │   ├── __init__.py
 │   │   ├── catalog_utils.py
 │   │   └── paginator.py
+│   │
 │   ├── payment.py               # Логика платежей
 │   └── states.py               # FSM состояния
-├── .dockerignore                 # Игнор для Docker
-├── .env                          # Переменные окружения
-├── .gitignore                    # Игнор Git
-├── .python-version              # Версия Python
-├── docker-compose.yml           # Оркестрация контейнеров
-├── Dockerfile                   # Сборка контейнера
-├── main.py                      # Точка входа приложения
-├── manage.py                    # Django CLI
-├── pyproject.toml              # Конфигурация проекта и зависимостей
-├── README.md                   # Документация проекта
-└── uv.lock                     # Lock-файл зависимостей
+│
+├── .dockerignore
+├── .env
+├── .gitignore
+├── .python-version
+├── docker-compose.yml
+├── Dockerfile
+├── main.py
+├── manage.py
+├── pyproject.toml
+├── README.md
+└── uv.lock
 ```
 ## 🛠️ Технологии
 
