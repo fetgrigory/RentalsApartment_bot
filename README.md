@@ -289,4 +289,8 @@ PORT="5432"
    ```bash
    docker compose exec django uv run python manage.py migrate
    ```
+11. Создание суперпользователя (админ-доступ к Django):
+   ```bash
+   docker compose exec django uv run python manage.py createsuperuser
+   ```
 Теперь бот должен быть готов к использованию. Убедитесь, что ваше соединение с интернетом активно и все конфигурации настроены корректно. Если возникнут ошибки, проверьте файл ".env" на наличие опечаток или некорректных значений.
