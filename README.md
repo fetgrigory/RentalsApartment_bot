@@ -87,7 +87,7 @@ CVC/CVV: 111<br />
 ## 📂 Структура проекта
 
 ```text
-RentalsApartment_bot/
+HotelReserve_bot/
 ├── apps/                         # Django приложения
 │   ├── core/                     # Базовое приложение проекта
 │   │   ├── migrations/
@@ -99,6 +99,15 @@ RentalsApartment_bot/
 │   │   ├── tests.py
 │   │   └── views.py
 │   │
+│   ├── bookings/                   # Модуль работы с бронированиями
+│   │   ├── migrations/
+│   │   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
 │   ├── rooms/                    # Модуль работы с комнатами
 │   │   ├── migrations/
 │   │   │   └── __init__.py
@@ -269,9 +278,9 @@ PORT="5432"
     docker-compose up -d --build
      ```
 8. Запуск контейнера:
-  ```bash
-    docker-compose up
-     ```
+   ```bash
+   docker-compose up
+   ```
 9.  Создание миграций (только при изменении моделей):
    ```bash
    docker compose exec django uv run python manage.py makemigrations
