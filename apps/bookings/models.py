@@ -1,16 +1,18 @@
 from django.db import models
+from apps.users.models import User
+from apps.rooms.models import Room
 
 
 class Booking(models.Model):
     # Foreign keys with cascade deletion
     user = models.ForeignKey(
-        'User',
+        User,
         on_delete=models.CASCADE,
         related_name='bookings',
         verbose_name="Пользователь"
     )
     room = models.ForeignKey(
-        'Room',
+        Room,
         on_delete=models.CASCADE,
         related_name='bookings',
         verbose_name="Номер"
